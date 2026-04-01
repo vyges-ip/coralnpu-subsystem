@@ -1,0 +1,176 @@
+{
+  "$schema": "https://vyges.com/schema/v1/vyges-metadata.schema.json",
+  "x-version": "1.0.0",
+  "name": "coralnpu-subsystem",
+  "version": "0.1.0",
+  "description": "The CoralNPU subsystem is a Chisel-generated SoC design featuring a crossbar interconnect, peripherals (GPIO, SPI, CLINT, DMA), and DDR bridges. It is optimized for AI/ML workloads and includes memory and bus interfaces.",
+  "license": "Apache-2.0",
+  "maturity": "production",
+  "target": [
+    "asic",
+    "fpga"
+  ],
+  "design_type": [
+    "digital"
+  ],
+  "created": "2026-04-01T05:50:08Z",
+  "updated": "2026-04-01T05:50:08Z",
+  "source": {
+    "type": "git",
+    "url": "https://github.com/google-coral/coralnpu",
+    "commit": "2f4aeb0760e86ca3ecd14b43cc4c52e648c87c94",
+    "ip_path": "hdl/chisel",
+    "private": false,
+    "containsEncryptedPayload": false,
+    "indexing": true
+  },
+  "maintainers": [
+    {
+      "name": "Vyges",
+      "email": "team@vyges.com",
+      "url": "https://vyges.com",
+      "github": "vyges"
+    }
+  ],
+  "interfaces": [
+    {
+      "type": "bus",
+      "direction": "slave",
+      "protocol": "TL-UL",
+      "port": "io_enq",
+      "width": 8,
+      "description": "Enqueue interface for TL-UL transactions."
+    },
+    {
+      "type": "bus",
+      "direction": "master",
+      "protocol": "TL-UL",
+      "port": "io_deq",
+      "width": 8,
+      "description": "Dequeue interface for TL-UL transactions."
+    },
+    {
+      "type": "clock",
+      "direction": "input",
+      "protocol": "standard",
+      "port": "clock",
+      "width": 1,
+      "description": "System clock input."
+    },
+    {
+      "type": "reset",
+      "direction": "input",
+      "protocol": "standard",
+      "port": "reset",
+      "width": 1,
+      "description": "System reset input."
+    }
+  ],
+  "parameters": [
+    {
+      "name": "DATA_WIDTH",
+      "type": "int",
+      "default": 32,
+      "description": "Width of the data bus."
+    },
+    {
+      "name": "ADDR_WIDTH",
+      "type": "int",
+      "default": 32,
+      "description": "Width of the address bus."
+    },
+    {
+      "name": "DEPTH",
+      "type": "int",
+      "default": 8,
+      "description": "Depth of the internal FIFO buffer."
+    }
+  ],
+  "performance": {
+    "max_clock_frequency": "500 MHz",
+    "latency_cycles": 3,
+    "throughput": "1 transaction per cycle"
+  },
+  "architecture": {
+    "type": "processor",
+    "features": [
+      "Crossbar interconnect",
+      "Peripheral support (GPIO, SPI, CLINT, DMA)",
+      "DDR memory bridges",
+      "ECC encoding for memory protection"
+    ]
+  },
+  "asic": {
+    "flavor": "digital",
+    "technology": [
+      "sky130A"
+    ]
+  },
+  "fpga": {
+    "toolchain": [
+      "Vivado"
+    ],
+    "devices": [
+      "Artix-7"
+    ]
+  },
+  "dependencies": [
+    {
+      "name": "TL-UL",
+      "type": "bus",
+      "description": "TileLink Ultra-Lite protocol for interconnect."
+    },
+    {
+      "name": "Chisel",
+      "type": "library",
+      "description": "Hardware construction language used for design generation."
+    }
+  ],
+  "test": {
+    "testbenches": [
+      "unit_tests",
+      "integration_tests"
+    ],
+    "status": "upstream_passing",
+    "coverage": "functional"
+  },
+  "documentation": {
+    "upstream": "https://github.com/google-coral/coralnpu"
+  },
+  "artifacts": {
+    "total_rtl_lines": 137772
+  },
+  "categories": [
+    {
+      "main_category": "Processing Cores",
+      "sub_category": "Co-Processors"
+    }
+  ],
+  "keywords": [
+    "AI",
+    "ML",
+    "SoC",
+    "Chisel",
+    "CoralNPU",
+    "Crossbar",
+    "Peripherals"
+  ],
+  "trust": {
+    "verification_level": "silicon_proven",
+    "tapeout_count": 0,
+    "fpga_validated": false,
+    "formal_verified": false,
+    "maintained": true,
+    "last_activity": "2026-04-01"
+  },
+  "meta": {
+    "template": {
+      "generator": "github-models-ai",
+      "template_version": "1.0.0",
+      "generated_at": "2026-04-01T05:50:08Z"
+    },
+    "schema": {
+      "version": "1.0.0"
+    }
+  }
+}
