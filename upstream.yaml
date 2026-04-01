@@ -1,0 +1,17 @@
+schema_version: "vyges-upstream-v1"
+upstream:
+  type: "monorepo"
+  source: https://github.com/google-coral/coralnpu
+  path: hdl/chisel
+  commit: 2f4aeb0760e86ca3ecd14b43cc4c52e648c87c94
+  extracted_at: "2026-04-01T05:49:31Z"
+  note: "SystemVerilog generated from Chisel via Bazel (bazelisk build). See BUILD files for emitter targets."
+import:
+  rtl:
+    - path: "rtl"
+      map_to: "rtl"
+  license:
+    - path: "Apache-2.0"
+license:
+  spdx: Apache-2.0
+  file: LICENSE

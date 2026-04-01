@@ -1,0 +1,22 @@
+name: Upstream Sync
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+    inputs:
+      force_metadata:
+        description: 'Force regenerate'
+        required: false
+        default: false
+        type: boolean
+  push:
+    paths: ['upstream.yaml', '.github/workflows/upstream-sync.yml']
+jobs:
+  sync:
+    uses: vyges-ip/.github/.github/workflows/upstream-sync.yml@main
+    with:
+      force_metadata: ${{ inputs.force_metadata || false }}
+    permissions:
+      contents: write
+      models: read
