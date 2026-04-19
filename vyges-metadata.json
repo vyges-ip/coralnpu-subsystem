@@ -3,7 +3,7 @@
   "x-version": "1.0.0",
   "name": "coralnpu-subsystem",
   "version": "0.1.0",
-  "description": "The CoralNPU subsystem is a Chisel-generated SoC design featuring a crossbar interconnect, peripherals (GPIO, SPI, CLINT, DMA), and DDR bridges. It is optimized for AI/ML workloads and includes memory and bus interfaces.",
+  "description": "CoralNPU subsystem for AI/ML acceleration, including crossbar interconnect, peripherals (GPIO, SPI, CLINT, DMA), and DDR bridges. Generated from Chisel.",
   "license": "Apache-2.0",
   "maturity": "production",
   "target": [
@@ -13,12 +13,12 @@
   "design_type": [
     "digital"
   ],
-  "created": "2026-04-01T05:50:08Z",
-  "updated": "2026-04-02T04:30:00Z",
+  "created": "2026-04-19T06:11:12Z",
+  "updated": "2026-04-19T06:11:12Z",
   "source": {
     "type": "git",
     "url": "https://github.com/google-coral/coralnpu",
-    "commit": "2f4aeb0760e86ca3ecd14b43cc4c52e648c87c94",
+    "commit": "2dec130e5c81ad562bd10037b0245412dc0a7217",
     "ip_path": "hdl/chisel",
     "private": false,
     "containsEncryptedPayload": false,
@@ -39,7 +39,7 @@
       "protocol": "TL-UL",
       "port": "io_enq",
       "width": 8,
-      "description": "Enqueue interface for TL-UL transactions."
+      "description": "Input enqueue interface for TL-UL transactions."
     },
     {
       "type": "bus",
@@ -47,12 +47,12 @@
       "protocol": "TL-UL",
       "port": "io_deq",
       "width": 8,
-      "description": "Dequeue interface for TL-UL transactions."
+      "description": "Output dequeue interface for TL-UL transactions."
     },
     {
       "type": "clock",
       "direction": "input",
-      "protocol": "standard",
+      "protocol": "none",
       "port": "clock",
       "width": 1,
       "description": "System clock input."
@@ -60,7 +60,7 @@
     {
       "type": "reset",
       "direction": "input",
-      "protocol": "standard",
+      "protocol": "none",
       "port": "reset",
       "width": 1,
       "description": "System reset input."
@@ -68,36 +68,36 @@
   ],
   "parameters": [
     {
-      "name": "DATA_WIDTH",
-      "type": "int",
-      "default": 32,
-      "description": "Width of the data bus."
-    },
-    {
       "name": "ADDR_WIDTH",
       "type": "int",
       "default": 32,
-      "description": "Width of the address bus."
+      "description": "Address width for memory-mapped transactions."
+    },
+    {
+      "name": "DATA_WIDTH",
+      "type": "int",
+      "default": 64,
+      "description": "Data width for memory-mapped transactions."
     },
     {
       "name": "DEPTH",
       "type": "int",
       "default": 8,
-      "description": "Depth of the internal FIFO buffer."
+      "description": "Depth of internal FIFOs."
     }
   ],
   "performance": {
-    "max_clock_frequency": "500 MHz",
-    "latency_cycles": 3,
-    "throughput": "1 transaction per cycle"
+    "max_clock_frequency_mhz": 500,
+    "throughput_gbps": 64,
+    "latency_cycles": 5
   },
   "architecture": {
-    "type": "processor",
+    "type": "peripheral",
     "features": [
       "Crossbar interconnect",
-      "Peripheral support (GPIO, SPI, CLINT, DMA)",
-      "DDR memory bridges",
-      "ECC encoding for memory protection"
+      "Peripheral interfaces (GPIO, SPI, CLINT, DMA)",
+      "DDR bridges",
+      "ECC encoding and decoding"
     ]
   },
   "asic": {
@@ -118,12 +118,12 @@
     {
       "name": "TL-UL",
       "type": "bus",
-      "description": "TileLink Ultra-Lite protocol for interconnect."
+      "description": "TileLink Uncached Lightweight protocol for interconnect."
     },
     {
       "name": "Chisel",
       "type": "library",
-      "description": "Hardware construction language used for design generation."
+      "description": "Hardware construction language used to generate the RTL."
     }
   ],
   "test": {
@@ -149,11 +149,11 @@
   "keywords": [
     "AI",
     "ML",
-    "SoC",
+    "NPU",
     "Chisel",
-    "CoralNPU",
+    "TileLink",
     "Crossbar",
-    "Peripherals"
+    "Peripheral"
   ],
   "trust": {
     "verification_level": "silicon_proven",
@@ -161,33 +161,16 @@
     "fpga_validated": false,
     "formal_verified": false,
     "maintained": true,
-    "last_activity": "2026-04-01"
+    "last_activity": "2026-04-19"
   },
   "meta": {
     "template": {
       "generator": "github-models-ai",
       "template_version": "1.0.0",
-      "generated_at": "2026-04-01T05:50:08Z"
+      "generated_at": "2026-04-19T06:11:12Z"
     },
     "schema": {
       "version": "1.0.0"
     }
-  },
-  "rtl_files": [
-    "rtl/coralnpu-Subsystem.sv",
-    "rtl/coralnpu-Subsystem.sv"
-  ],
-  "rtl_quality": {
-    "module_prefixed": true,
-    "defines_prefixed": true,
-    "header_guards": false,
-    "one_module_per_file": true,
-    "self_contained_includes": false,
-    "no_translate_pragmas": true,
-    "lint_clean": false,
-    "no_casex": true,
-    "width_clean": false,
-    "no_sv_keyword_conflicts": true
-  },
-  "defines": []
+  }
 }
