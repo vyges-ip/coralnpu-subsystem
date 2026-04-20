@@ -3,7 +3,7 @@
   "x-version": "1.0.0",
   "name": "coralnpu-subsystem",
   "version": "0.1.0",
-  "description": "CoralNPU subsystem for AI/ML acceleration, including crossbar interconnect, peripherals (GPIO, SPI, CLINT, DMA), and DDR bridges. Generated from Chisel.",
+  "description": "CoralNPU subsystem for SoC integration, featuring crossbar interconnect, peripherals (GPIO, SPI, CLINT, DMA), and DDR bridges. Generated using Chisel HDL.",
   "license": "Apache-2.0",
   "maturity": "production",
   "target": [
@@ -13,12 +13,12 @@
   "design_type": [
     "digital"
   ],
-  "created": "2026-04-19T06:11:12Z",
-  "updated": "2026-04-19T06:11:12Z",
+  "created": "2026-04-20T03:26:20Z",
+  "updated": "2026-04-20T03:26:20Z",
   "source": {
     "type": "git",
     "url": "https://github.com/google-coral/coralnpu",
-    "commit": "2dec130e5c81ad562bd10037b0245412dc0a7217",
+    "commit": "2f85116f7266fc613d307de048ccc270c29b49ad",
     "ip_path": "hdl/chisel",
     "private": false,
     "containsEncryptedPayload": false,
@@ -37,67 +37,133 @@
       "type": "bus",
       "direction": "slave",
       "protocol": "TL-UL",
-      "port": "io_enq",
-      "width": 8,
-      "description": "Input enqueue interface for TL-UL transactions."
+      "port": "io_enq_ready",
+      "width": 1,
+      "description": "Ready signal for enqueue operation."
     },
     {
       "type": "bus",
       "direction": "master",
       "protocol": "TL-UL",
-      "port": "io_deq",
+      "port": "io_enq_valid",
+      "width": 1,
+      "description": "Valid signal for enqueue operation."
+    },
+    {
+      "type": "bus",
+      "direction": "input",
+      "protocol": "TL-UL",
+      "port": "io_enq_bits_source",
       "width": 8,
-      "description": "Output dequeue interface for TL-UL transactions."
+      "description": "Source identifier for enqueue operation."
+    },
+    {
+      "type": "bus",
+      "direction": "input",
+      "protocol": "TL-UL",
+      "port": "io_enq_bits_beats",
+      "width": 3,
+      "description": "Number of beats for enqueue operation."
+    },
+    {
+      "type": "bus",
+      "direction": "input",
+      "protocol": "TL-UL",
+      "port": "io_enq_bits_size",
+      "width": 4,
+      "description": "Size of data for enqueue operation."
+    },
+    {
+      "type": "bus",
+      "direction": "slave",
+      "protocol": "TL-UL",
+      "port": "io_deq_ready",
+      "width": 1,
+      "description": "Ready signal for dequeue operation."
+    },
+    {
+      "type": "bus",
+      "direction": "master",
+      "protocol": "TL-UL",
+      "port": "io_deq_valid",
+      "width": 1,
+      "description": "Valid signal for dequeue operation."
+    },
+    {
+      "type": "bus",
+      "direction": "output",
+      "protocol": "TL-UL",
+      "port": "io_deq_bits_source",
+      "width": 8,
+      "description": "Source identifier for dequeue operation."
+    },
+    {
+      "type": "bus",
+      "direction": "output",
+      "protocol": "TL-UL",
+      "port": "io_deq_bits_beats",
+      "width": 3,
+      "description": "Number of beats for dequeue operation."
+    },
+    {
+      "type": "bus",
+      "direction": "output",
+      "protocol": "TL-UL",
+      "port": "io_deq_bits_size",
+      "width": 4,
+      "description": "Size of data for dequeue operation."
     },
     {
       "type": "clock",
       "direction": "input",
-      "protocol": "none",
+      "protocol": "generic",
       "port": "clock",
       "width": 1,
-      "description": "System clock input."
+      "description": "Clock signal for synchronous operations."
     },
     {
       "type": "reset",
       "direction": "input",
-      "protocol": "none",
+      "protocol": "generic",
       "port": "reset",
       "width": 1,
-      "description": "System reset input."
+      "description": "Reset signal for initialization."
     }
   ],
   "parameters": [
     {
-      "name": "ADDR_WIDTH",
-      "type": "int",
-      "default": 32,
-      "description": "Address width for memory-mapped transactions."
+      "name": "ENABLE_INITIAL_MEM_",
+      "type": "bit",
+      "default": 0,
+      "description": "Enable memory initialization during synthesis."
     },
     {
-      "name": "DATA_WIDTH",
-      "type": "int",
-      "default": 64,
-      "description": "Data width for memory-mapped transactions."
+      "name": "RANDOMIZE_REG_INIT",
+      "type": "bit",
+      "default": 0,
+      "description": "Enable random initialization of registers."
     },
     {
-      "name": "DEPTH",
-      "type": "int",
-      "default": 8,
-      "description": "Depth of internal FIFOs."
+      "name": "RANDOMIZE_MEM_INIT",
+      "type": "bit",
+      "default": 0,
+      "description": "Enable random initialization of memory."
+    },
+    {
+      "name": "RANDOMIZE_DELAY",
+      "type": "float",
+      "default": 0.002,
+      "description": "Delay for random initialization."
     }
   ],
-  "performance": {
-    "max_clock_frequency_mhz": 500,
-    "throughput_gbps": 64,
-    "latency_cycles": 5
-  },
+  "performance": {},
   "architecture": {
-    "type": "peripheral",
+    "type": "processor",
     "features": [
       "Crossbar interconnect",
-      "Peripheral interfaces (GPIO, SPI, CLINT, DMA)",
+      "Peripheral integration (GPIO, SPI, CLINT, DMA)",
       "DDR bridges",
-      "ECC encoding and decoding"
+      "ECC encoding"
     ]
   },
   "asic": {
@@ -116,21 +182,13 @@
   },
   "dependencies": [
     {
-      "name": "TL-UL",
-      "type": "bus",
-      "description": "TileLink Uncached Lightweight protocol for interconnect."
-    },
-    {
       "name": "Chisel",
       "type": "library",
-      "description": "Hardware construction language used to generate the RTL."
+      "description": "Hardware construction language used for generating RTL."
     }
   ],
   "test": {
-    "testbenches": [
-      "unit_tests",
-      "integration_tests"
-    ],
+    "testbenches": [],
     "status": "upstream_passing",
     "coverage": "functional"
   },
@@ -143,17 +201,17 @@
   "categories": [
     {
       "main_category": "Processing Cores",
-      "sub_category": "Co-Processors"
+      "sub_category": "Custom ISAs"
     }
   ],
   "keywords": [
-    "AI",
-    "ML",
-    "NPU",
+    "CoralNPU",
+    "SoC",
     "Chisel",
-    "TileLink",
     "Crossbar",
-    "Peripheral"
+    "Peripherals",
+    "DDR",
+    "ECC"
   ],
   "trust": {
     "verification_level": "silicon_proven",
@@ -161,13 +219,13 @@
     "fpga_validated": false,
     "formal_verified": false,
     "maintained": true,
-    "last_activity": "2026-04-19"
+    "last_activity": "2026-04-20T03:26:20Z"
   },
   "meta": {
     "template": {
       "generator": "github-models-ai",
       "template_version": "1.0.0",
-      "generated_at": "2026-04-19T06:11:12Z"
+      "generated_at": "2026-04-20T03:26:20Z"
     },
     "schema": {
       "version": "1.0.0"
