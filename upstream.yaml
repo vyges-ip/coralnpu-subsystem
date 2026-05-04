@@ -3,7 +3,7 @@ upstream:
   type: "monorepo"
   source: https://github.com/google-coral/coralnpu
   path: hdl/chisel
-  commit: b6797c809ca22196aba108d8833c81e845c5aab2
+  commit: baa424c8a6ace6be61795e65f4e32a6653424c6f
   extracted_at: "2026-04-01T05:49:31Z"
   note: "SystemVerilog generated from Chisel via Bazel (bazelisk build). See BUILD files for emitter targets."
 import:
