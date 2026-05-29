@@ -39948,7 +39948,6 @@ module Regfile(
                 io_busPort_data_3,
   input  [4:0]  io_debugBusPort_idx,
   output [31:0] io_debugBusPort_data,
-  input         io_debugWriteValid,
   output        io_readData_0_valid,
   output [31:0] io_readData_0_data,
   output        io_readData_1_valid,
@@ -41507,28 +41506,11 @@ module Regfile(
     io_busAddr_2_bypass ? rwdata_4 : rdata_4_value_5_0 + io_busAddr_2_immed;
   wire [31:0] busAddr_3 =
     io_busAddr_3_bypass ? rwdata_6 : rdata_6_value_5_0 + io_busAddr_3_immed;
-  reg         write_fail;
-  reg         write_fail_1;
-  reg         write_fail_2;
-  reg         write_fail_3;
-  reg         write_fail_4;
-  reg         write_fail_5;
-  reg         write_fail_6;
-  reg         write_fail_7;
-  reg         write_fail_8;
-  reg         write_fail_9;
-  reg         write_fail_10;
-  reg         write_fail_11;
-  reg         write_fail_12;
-  reg         write_fail_13;
-  reg         write_fail_14;
-  reg         scoreboard_error;
   wire [31:0] scoreboard_set =
     (io_writeAddr_0_valid ? 32'h1 << io_writeAddr_0_addr : 32'h0)
     | (io_writeAddr_1_valid ? 32'h1 << io_writeAddr_1_addr : 32'h0)
     | (io_writeAddr_2_valid ? 32'h1 << io_writeAddr_2_addr : 32'h0)
     | (io_writeAddr_3_valid ? 32'h1 << io_writeAddr_3_addr : 32'h0);
-  wire [31:0] scoreboard_clr = {scoreboard_clr0, 1'h0};
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       regfile_1 <= 32'h0;
@@ -41579,22 +41561,6 @@ module Regfile(
       readDataBits_5 <= 32'h0;
       readDataBits_6 <= 32'h0;
       readDataBits_7 <= 32'h0;
-      write_fail <= 1'h0;
-      write_fail_1 <= 1'h0;
-      write_fail_2 <= 1'h0;
-      write_fail_3 <= 1'h0;
-      write_fail_4 <= 1'h0;
-      write_fail_5 <= 1'h0;
-      write_fail_6 <= 1'h0;
-      write_fail_7 <= 1'h0;
-      write_fail_8 <= 1'h0;
-      write_fail_9 <= 1'h0;
-      write_fail_10 <= 1'h0;
-      write_fail_11 <= 1'h0;
-      write_fail_12 <= 1'h0;
-      write_fail_13 <= 1'h0;
-      write_fail_14 <= 1'h0;
-      scoreboard_error <= 1'h0;
     end
     else begin
       if (|_writeValid_1_T)
@@ -41701,68 +41667,6 @@ module Regfile(
         readDataBits_7 <= io_readSet_7_value;
       else if (io_readAddr_7_valid)
         readDataBits_7 <= rwdata_7;
-      write_fail <=
-        io_writeData_0_valid & io_writeData_1_valid
-        & io_writeData_0_bits_addr == io_writeData_1_bits_addr
-        & (|io_writeData_0_bits_addr);
-      write_fail_1 <=
-        io_writeData_0_valid & io_writeData_2_valid
-        & io_writeData_0_bits_addr == io_writeData_2_bits_addr
-        & (|io_writeData_0_bits_addr);
-      write_fail_2 <=
-        io_writeData_0_valid & io_writeData_3_valid
-        & io_writeData_0_bits_addr == io_writeData_3_bits_addr
-        & (|io_writeData_0_bits_addr);
-      write_fail_3 <=
-        io_writeData_0_valid & io_writeData_4_valid
-        & io_writeData_0_bits_addr == io_writeData_4_bits_addr
-        & (|io_writeData_0_bits_addr);
-      write_fail_4 <=
-        io_writeData_0_valid & io_writeData_5_valid
-        & io_writeData_0_bits_addr == io_writeData_5_bits_addr
-        & (|io_writeData_0_bits_addr);
-      write_fail_5 <=
-        io_writeData_1_valid & io_writeData_2_valid
-        & io_writeData_1_bits_addr == io_writeData_2_bits_addr
-        & (|io_writeData_1_bits_addr);
-      write_fail_6 <=
-        io_writeData_1_valid & io_writeData_3_valid
-        & io_writeData_1_bits_addr == io_writeData_3_bits_addr
-        & (|io_writeData_1_bits_addr);
-      write_fail_7 <=
-        io_writeData_1_valid & io_writeData_4_valid
-        & io_writeData_1_bits_addr == io_writeData_4_bits_addr
-        & (|io_writeData_1_bits_addr);
-      write_fail_8 <=
-        io_writeData_1_valid & io_writeData_5_valid
-        & io_writeData_1_bits_addr == io_writeData_5_bits_addr
-        & (|io_writeData_1_bits_addr);
-      write_fail_9 <=
-        io_writeData_2_valid & io_writeData_3_valid
-        & io_writeData_2_bits_addr == io_writeData_3_bits_addr
-        & (|io_writeData_2_bits_addr);
-      write_fail_10 <=
-        io_writeData_2_valid & io_writeData_4_valid
-        & io_writeData_2_bits_addr == io_writeData_4_bits_addr
-        & (|io_writeData_2_bits_addr);
-      write_fail_11 <=
-        io_writeData_2_valid & io_writeData_5_valid
-        & io_writeData_2_bits_addr == io_writeData_5_bits_addr
-        & (|io_writeData_2_bits_addr);
-      write_fail_12 <=
-        io_writeData_3_valid & io_writeData_4_valid
-        & io_writeData_3_bits_addr == io_writeData_4_bits_addr
-        & (|io_writeData_3_bits_addr);
-      write_fail_13 <=
-        io_writeData_3_valid & io_writeData_5_valid
-        & io_writeData_3_bits_addr == io_writeData_5_bits_addr
-        & (|io_writeData_3_bits_addr);
-      write_fail_14 <=
-        io_writeData_4_valid & io_writeData_5_valid
-        & io_writeData_4_bits_addr == io_writeData_5_bits_addr
-        & (|io_writeData_4_bits_addr);
-      scoreboard_error <=
-        (scoreboard & scoreboard_clr) != scoreboard_clr & ~io_debugWriteValid;
     end
   end // always @(posedge, posedge)
   `ifdef ENABLE_INITIAL_REG_
@@ -41826,22 +41730,6 @@ module Regfile(
         readDataBits_5 = {_RANDOM[6'h26][31:8], _RANDOM[6'h27][7:0]};
         readDataBits_6 = {_RANDOM[6'h27][31:8], _RANDOM[6'h28][7:0]};
         readDataBits_7 = {_RANDOM[6'h28][31:8], _RANDOM[6'h29][7:0]};
-        write_fail = _RANDOM[6'h29][8];
-        write_fail_1 = _RANDOM[6'h29][9];
-        write_fail_2 = _RANDOM[6'h29][10];
-        write_fail_3 = _RANDOM[6'h29][11];
-        write_fail_4 = _RANDOM[6'h29][12];
-        write_fail_5 = _RANDOM[6'h29][13];
-        write_fail_6 = _RANDOM[6'h29][14];
-        write_fail_7 = _RANDOM[6'h29][15];
-        write_fail_8 = _RANDOM[6'h29][16];
-        write_fail_9 = _RANDOM[6'h29][17];
-        write_fail_10 = _RANDOM[6'h29][18];
-        write_fail_11 = _RANDOM[6'h29][19];
-        write_fail_12 = _RANDOM[6'h29][20];
-        write_fail_13 = _RANDOM[6'h29][21];
-        write_fail_14 = _RANDOM[6'h29][22];
-        scoreboard_error = _RANDOM[6'h29][23];
       `endif // RANDOMIZE_REG_INIT
       if (reset) begin
         regfile_1 = 32'h0;
@@ -41892,22 +41780,6 @@ module Regfile(
         readDataBits_5 = 32'h0;
         readDataBits_6 = 32'h0;
         readDataBits_7 = 32'h0;
-        write_fail = 1'h0;
-        write_fail_1 = 1'h0;
-        write_fail_2 = 1'h0;
-        write_fail_3 = 1'h0;
-        write_fail_4 = 1'h0;
-        write_fail_5 = 1'h0;
-        write_fail_6 = 1'h0;
-        write_fail_7 = 1'h0;
-        write_fail_8 = 1'h0;
-        write_fail_9 = 1'h0;
-        write_fail_10 = 1'h0;
-        write_fail_11 = 1'h0;
-        write_fail_12 = 1'h0;
-        write_fail_13 = 1'h0;
-        write_fail_14 = 1'h0;
-        scoreboard_error = 1'h0;
       end
     end // initial
     `ifdef FIRRTL_AFTER_INITIAL
@@ -42039,12 +41911,6 @@ module FetchControl(
     _predecode_validsIn_T_9[2]
     & (predecode_insts_shifted[102:96] == 7'h6F | predecode_insts_shifted[102:96] == 7'h63
        & predecode_insts_shifted[127] & predecode_insts_shifted[110:109] != 2'h1);
-  wire [3:0]   predecode_firstJumpOH_enc =
-    predecode_jumped_0
-      ? 4'h1
-      : predecode_jumped_1
-          ? 4'h2
-          : predecode_jumped_2 ? 4'h4 : {predecode_jumped_3, 3'h0};
   wire         predecode_hasJumpedBefore_2 = predecode_jumped_0 | predecode_jumped_1;
   reg          pastBranchOrFlush;
   wire         currentBranchOrFlush = io_iflush_valid | io_branch_valid;
@@ -42071,6 +41937,12 @@ module FetchControl(
   wire         blockNewFetch =
     ~pc_valid | io_fetchData_valid | currentBranchOrFlush
     | {1'h0, io_bufferSpaces} < {1'h0, nValid} + 5'h4 | fetchFaultValid;
+  wire [3:0]   predecode_firstJumpOH_enc =
+    predecode_jumped_0
+      ? 4'h1
+      : predecode_jumped_1
+          ? 4'h2
+          : predecode_jumped_2 ? 4'h4 : {predecode_jumped_3, 3'h0};
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       pastBranchOrFlush <= 1'h0;
@@ -42709,10 +42581,6 @@ module InstructionBuffer(
   wire       io_out_1_valid_0 = (|(_circularBuffer_io_nEnqueued[3:1])) & ~io_flush;
   wire       io_out_2_valid_0 = _circularBuffer_io_nEnqueued > 4'h2 & ~io_flush;
   wire       io_out_3_valid_0 = (|(_circularBuffer_io_nEnqueued[3:2])) & ~io_flush;
-  wire       _nReady_T = io_out_0_ready & io_out_0_valid_0;
-  wire       _nReady_T_1 = io_out_1_ready & io_out_1_valid_0;
-  wire       _nReady_T_2 = io_out_2_ready & io_out_2_valid_0;
-  wire       _nReady_T_3 = io_out_3_ready & io_out_3_valid_0;
   CircularBufferMulti circularBuffer (
     .clock                (clock),
     .reset                (reset),
@@ -42744,8 +42612,12 @@ module InstructionBuffer(
     .io_dataOut_3_inst    (io_out_3_bits_inst),
     .io_dataOut_3_brchFwd (io_out_3_bits_brchFwd),
     .io_deqReady
-      ({1'h0, {1'h0, _nReady_T} + {1'h0, _nReady_T_1}}
-       + {1'h0, {1'h0, _nReady_T_2} + {1'h0, _nReady_T_3}}),
+      ({1'h0,
+        {1'h0, io_out_0_ready & io_out_0_valid_0}
+          + {1'h0, io_out_1_ready & io_out_1_valid_0}}
+       + {1'h0,
+          {1'h0, io_out_2_ready & io_out_2_valid_0}
+            + {1'h0, io_out_3_ready & io_out_3_valid_0}}),
     .io_flush             (io_flush)
   );
   assign io_feedIn_nReady =
@@ -42982,7 +42854,6 @@ module Csr(
   input  [11:0] io_req_bits_index,
   input  [4:0]  io_req_bits_rs1,
   input  [1:0]  io_req_bits_op,
-  input         io_rs1_valid,
   input  [31:0] io_rs1_data,
   output        io_rd_valid,
   output [4:0]  io_rd_bits_addr,
@@ -43094,17 +42965,14 @@ module Csr(
   wire             vxsatEn = req_bits_index == 12'h9;
   wire             vxrmEn = req_bits_index == 12'hA;
   wire             mstatusEn = req_bits_index == 12'h300;
-  wire             misaEn = req_bits_index == 12'h301;
   wire             mieEn = req_bits_index == 12'h304;
   wire             mtvecEn = req_bits_index == 12'h305;
   wire             mscratchEn = req_bits_index == 12'h340;
   wire             mepcEn = req_bits_index == 12'h341;
   wire             mcauseEn = req_bits_index == 12'h342;
   wire             mtvalEn = req_bits_index == 12'h343;
-  wire             mipEn = req_bits_index == 12'h344;
   wire             tdata1En = req_bits_index == 12'h7A1;
   wire             tdata2En = req_bits_index == 12'h7A2;
-  wire             tinfoEn = req_bits_index == 12'h7A4;
   wire             dcsrEn = req_bits_index == 12'h7B0;
   wire             dpcEn = req_bits_index == 12'h7B1;
   wire             dscratch0En = req_bits_index == 12'h7B2;
@@ -43123,15 +42991,6 @@ module Csr(
   wire             minstretEn = req_bits_index == 12'hB02;
   wire             mcyclehEn = req_bits_index == 12'hB80;
   wire             minstrethEn = req_bits_index == 12'hB82;
-  wire             vlEn = req_bits_index == 12'hC20;
-  wire             vtypeEn = req_bits_index == 12'hC21;
-  wire             vlenbEn = req_bits_index == 12'hC22;
-  wire             mvendoridEn = req_bits_index == 12'hF11;
-  wire             kscm0En = req_bits_index == 12'hFC4;
-  wire             kscm1En = req_bits_index == 12'hFC8;
-  wire             kscm2En = req_bits_index == 12'hFCC;
-  wire             kscm3En = req_bits_index == 12'hFD0;
-  wire             kscm4En = req_bits_index == 12'hFD4;
   wire             mtip_pending = io_timer_irq & mie[7];
   wire             meip_pending = io_irq & mie[11];
   wire             _interrupt_pending_T = mtip_pending | meip_pending;
@@ -43139,8 +42998,8 @@ module Csr(
     (fflagsEn ? {27'h0, fflags} : 32'h0) | (frmEn ? {29'h0, frm} : 32'h0)
     | (fcsrEn ? {24'h0, frm, fflags} : 32'h0)
     | (mstatusEn ? {24'h3A, mstatus_mpie, 3'h0, mstatus_mie, 3'h0} : 32'h0)
-    | (misaEn ? 32'h40201120 : 32'h0) | (mieEn ? mie : 32'h0)
-    | (mipEn ? {20'h0, io_irq, 3'h0, io_timer_irq, 7'h0} : 32'h0)
+    | (req_bits_index == 12'h301 ? 32'h40201120 : 32'h0) | (mieEn ? mie : 32'h0)
+    | (req_bits_index == 12'h344 ? {20'h0, io_irq, 3'h0, io_timer_irq, 7'h0} : 32'h0)
     | (mtvecEn ? mtvec : 32'h0) | (mscratchEn ? mscratch : 32'h0)
     | (mepcEn ? mepc : 32'h0) | (mcauseEn ? mcause : 32'h0) | (mtvalEn ? mtval : 32'h0)
     | (mcontext0En ? mcontext0 : 32'h0) | (mcontext1En ? mcontext1 : 32'h0)
@@ -43149,19 +43008,23 @@ module Csr(
     | (mcontext6En ? mcontext6 : 32'h0) | (mcontext7En ? mcontext7 : 32'h0)
     | (mpcEn ? mpc : 32'h0) | (mspEn ? msp : 32'h0) | (mcycleEn ? mcycle[31:0] : 32'h0)
     | (mcyclehEn ? mcycle[63:32] : 32'h0) | (minstretEn ? minstret[31:0] : 32'h0)
-    | (minstrethEn ? minstret[63:32] : 32'h0) | (mvendoridEn ? 32'h426 : 32'h0)
-    | (kscm0En ? 32'h48C87C94 : 32'h0) | (kscm1En ? 32'hCC4C52E6 : 32'h0)
-    | (kscm2En ? 32'hECD14B43 : 32'h0) | (kscm3En ? 32'h60E86CA3 : 32'h0)
-    | (kscm4En ? 32'h2F4AEB07 : 32'h0);
+    | (minstrethEn ? minstret[63:32] : 32'h0)
+    | (req_bits_index == 12'hF11 ? 32'h426 : 32'h0)
+    | (req_bits_index == 12'hFC4 ? 32'h48C87C94 : 32'h0)
+    | (req_bits_index == 12'hFC8 ? 32'hCC4C52E6 : 32'h0)
+    | (req_bits_index == 12'hFCC ? 32'hECD14B43 : 32'h0)
+    | (req_bits_index == 12'hFD0 ? 32'h60E86CA3 : 32'h0)
+    | (req_bits_index == 12'hFD4 ? 32'h2F4AEB07 : 32'h0);
   wire [31:0]      _rdata_T_205 =
     {_rdata_T_202[31:7],
-     _rdata_T_202[6:0] | (vstartEn ? io_rvv_vstart : 7'h0) | (vlEn ? io_rvv_vl : 7'h0)}
-    | (vtypeEn ? io_rvv_vtype : 32'h0);
+     _rdata_T_202[6:0] | (vstartEn ? io_rvv_vstart : 7'h0)
+       | (req_bits_index == 12'hC20 ? io_rvv_vl : 7'h0)}
+    | (req_bits_index == 12'hC21 ? io_rvv_vtype : 32'h0);
   wire [1:0]       _GEN = _rdata_T_205[1:0] | (vxrmEn ? io_rvv_vxrm : 2'h0);
   wire [31:0]      rdata =
     {_rdata_T_205[31:2], _GEN[1], _GEN[0] | vxsatEn & io_rvv_vxsat}
-    | {27'h0, vlenbEn, 4'h0} | (tdata1En ? tdata1_data : 32'h0)
-    | (tdata2En ? tdata2 : 32'h0) | (tinfoEn ? 32'h1000040 : 32'h0)
+    | {27'h0, req_bits_index == 12'hC22, 4'h0} | (tdata1En ? tdata1_data : 32'h0)
+    | (tdata2En ? tdata2 : 32'h0) | (req_bits_index == 12'h7A4 ? 32'h1000040 : 32'h0)
     | (dcsrEn
          ? {dcsr_debugver,
             1'h0,
@@ -43553,9 +43416,7 @@ module Csr(
 endmodule
 
 module DispatchV2(
-  input         clock,
-                reset,
-                io_halted,
+  input         io_halted,
                 io_lsuActive,
   input  [31:0] io_scoreboard_regd,
                 io_scoreboard_comb,
@@ -44438,8 +44299,6 @@ module DispatchV2(
     & ~io_retirement_buffer_trap_pending
     & (~(_io_rs2Set_0_valid_T_1 | decodedInsts_0_csrrc) | io_retirement_buffer_empty)
     & (~io_single_step | coreIdle) & (~decodedInsts_0_mpause | coreIdle);
-  wire        _alu_T_158 =
-    decodedInsts_0_auipc | decodedInsts_0_addi | decodedInsts_0_add;
   wire        _alu_T_160 = decodedInsts_0_slti | decodedInsts_0_slt;
   wire        _alu_T_161 = decodedInsts_0_sltiu | decodedInsts_0_sltu;
   wire        _alu_T_162 = decodedInsts_0_xori | decodedInsts_0_xor;
@@ -44450,7 +44309,8 @@ module DispatchV2(
   wire        _alu_T_167 = decodedInsts_0_srai | decodedInsts_0_sra;
   wire        io_alu_0_valid_0 =
     tryDispatch
-    & (_alu_T_158 | decodedInsts_0_sub | _alu_T_160 | _alu_T_161 | _alu_T_162 | _alu_T_163
+    & (decodedInsts_0_auipc | decodedInsts_0_addi | decodedInsts_0_add
+       | decodedInsts_0_sub | _alu_T_160 | _alu_T_161 | _alu_T_162 | _alu_T_163
        | _alu_T_164 | _alu_T_165 | _alu_T_166 | _alu_T_167 | decodedInsts_0_lui
        | decodedInsts_0_andn | decodedInsts_0_orn | decodedInsts_0_xnor
        | decodedInsts_0_clz | decodedInsts_0_ctz | decodedInsts_0_cpop
@@ -44705,8 +44565,6 @@ module DispatchV2(
          decodedInsts_1_rori,
          decodedInsts_d_rvv_ret_1_valid}) & (|(io_retirement_buffer_nSpace[4:1]))
     & ~io_retirement_buffer_trap_pending & ~io_single_step;
-  wire        _alu_T_376 =
-    decodedInsts_1_auipc | decodedInsts_1_addi | decodedInsts_1_add;
   wire        _alu_T_378 = decodedInsts_1_slti | decodedInsts_1_slt;
   wire        _alu_T_379 = decodedInsts_1_sltiu | decodedInsts_1_sltu;
   wire        _alu_T_380 = decodedInsts_1_xori | decodedInsts_1_xor;
@@ -44717,7 +44575,8 @@ module DispatchV2(
   wire        _alu_T_385 = decodedInsts_1_srai | decodedInsts_1_sra;
   wire        io_alu_1_valid_0 =
     tryDispatch_1
-    & (_alu_T_376 | decodedInsts_1_sub | _alu_T_378 | _alu_T_379 | _alu_T_380 | _alu_T_381
+    & (decodedInsts_1_auipc | decodedInsts_1_addi | decodedInsts_1_add
+       | decodedInsts_1_sub | _alu_T_378 | _alu_T_379 | _alu_T_380 | _alu_T_381
        | _alu_T_382 | _alu_T_383 | _alu_T_384 | _alu_T_385 | decodedInsts_1_lui
        | decodedInsts_1_andn | decodedInsts_1_orn | decodedInsts_1_xnor
        | decodedInsts_1_clz | decodedInsts_1_ctz | decodedInsts_1_cpop
@@ -44926,8 +44785,6 @@ module DispatchV2(
          decodedInsts_2_rori,
          decodedInsts_d_rvv_ret_2_valid}) & io_retirement_buffer_nSpace > 5'h2
     & ~io_retirement_buffer_trap_pending & ~io_single_step;
-  wire        _alu_T_594 =
-    decodedInsts_2_auipc | decodedInsts_2_addi | decodedInsts_2_add;
   wire        _alu_T_596 = decodedInsts_2_slti | decodedInsts_2_slt;
   wire        _alu_T_597 = decodedInsts_2_sltiu | decodedInsts_2_sltu;
   wire        _alu_T_598 = decodedInsts_2_xori | decodedInsts_2_xor;
@@ -44938,7 +44795,8 @@ module DispatchV2(
   wire        _alu_T_603 = decodedInsts_2_srai | decodedInsts_2_sra;
   wire        io_alu_2_valid_0 =
     tryDispatch_2
-    & (_alu_T_594 | decodedInsts_2_sub | _alu_T_596 | _alu_T_597 | _alu_T_598 | _alu_T_599
+    & (decodedInsts_2_auipc | decodedInsts_2_addi | decodedInsts_2_add
+       | decodedInsts_2_sub | _alu_T_596 | _alu_T_597 | _alu_T_598 | _alu_T_599
        | _alu_T_600 | _alu_T_601 | _alu_T_602 | _alu_T_603 | decodedInsts_2_lui
        | decodedInsts_2_andn | decodedInsts_2_orn | decodedInsts_2_xnor
        | decodedInsts_2_clz | decodedInsts_2_ctz | decodedInsts_2_cpop
@@ -45159,8 +45017,6 @@ module DispatchV2(
          decodedInsts_3_rori,
          decodedInsts_d_rvv_ret_3_valid}) & (|(io_retirement_buffer_nSpace[4:2]))
     & ~io_retirement_buffer_trap_pending & ~io_single_step;
-  wire        _alu_T_812 =
-    decodedInsts_3_auipc | decodedInsts_3_addi | decodedInsts_3_add;
   wire        _alu_T_814 = decodedInsts_3_slti | decodedInsts_3_slt;
   wire        _alu_T_815 = decodedInsts_3_sltiu | decodedInsts_3_sltu;
   wire        _alu_T_816 = decodedInsts_3_xori | decodedInsts_3_xor;
@@ -45171,7 +45027,8 @@ module DispatchV2(
   wire        _alu_T_821 = decodedInsts_3_srai | decodedInsts_3_sra;
   wire        io_alu_3_valid_0 =
     tryDispatch_3
-    & (_alu_T_812 | decodedInsts_3_sub | _alu_T_814 | _alu_T_815 | _alu_T_816 | _alu_T_817
+    & (decodedInsts_3_auipc | decodedInsts_3_addi | decodedInsts_3_add
+       | decodedInsts_3_sub | _alu_T_814 | _alu_T_815 | _alu_T_816 | _alu_T_817
        | _alu_T_818 | _alu_T_819 | _alu_T_820 | _alu_T_821 | decodedInsts_3_lui
        | decodedInsts_3_andn | decodedInsts_3_orn | decodedInsts_3_xnor
        | decodedInsts_3_clz | decodedInsts_3_ctz | decodedInsts_3_cpop
@@ -46721,12 +46578,6 @@ module LsuV2(
   wire              _ops_result_nfields_T_7 = io_req_0_bits_op == 5'hD;
   wire              _ops_result_nfields_T_8 = io_req_0_bits_op == 5'h11;
   wire              _ops_result_nfields_T_6 = io_req_0_bits_umop == 5'h8;
-  wire              _ops_result_emul_data_T_30 = io_req_0_bits_nfields == 3'h1;
-  wire              _ops_result_emul_data_T_14 = io_req_0_bits_nfields == 3'h3;
-  wire              _ops_result_nfields_T_5 =
-    _ops_result_nfields_T & (|{_ops_result_nfields_T_8, _ops_result_nfields_T_7});
-  wire              _ops_result_nfields_T_11 =
-    _ops_result_nfields_T_6 & (|{_ops_result_nfields_T_8, _ops_result_nfields_T_7});
   wire              _ops_emul_data_T_50 = io_req_1_bits_elemWidth == 3'h0;
   wire              _ops_emul_data_T_47 = _ops_emul_data_T_50 & _ops_emul_data_T_144;
   wire              _ops_emul_data_T_59 = io_req_1_bits_elemWidth == 3'h5;
@@ -46742,12 +46593,6 @@ module LsuV2(
   wire              _ops_result_nfields_T_29 = io_req_1_bits_op == 5'hD;
   wire              _ops_result_nfields_T_30 = io_req_1_bits_op == 5'h11;
   wire              _ops_result_nfields_T_28 = io_req_1_bits_umop == 5'h8;
-  wire              _ops_result_emul_data_T_73 = io_req_1_bits_nfields == 3'h1;
-  wire              _ops_result_emul_data_T_57 = io_req_1_bits_nfields == 3'h3;
-  wire              _ops_result_nfields_T_27 =
-    _ops_result_nfields_T_22 & (|{_ops_result_nfields_T_30, _ops_result_nfields_T_29});
-  wire              _ops_result_nfields_T_33 =
-    _ops_result_nfields_T_28 & (|{_ops_result_nfields_T_30, _ops_result_nfields_T_29});
   wire              _ops_emul_data_T_95 = io_req_2_bits_elemWidth == 3'h0;
   wire              _ops_emul_data_T_92 = _ops_emul_data_T_95 & _ops_emul_data_T_144;
   wire              _ops_emul_data_T_104 = io_req_2_bits_elemWidth == 3'h5;
@@ -46763,12 +46608,6 @@ module LsuV2(
   wire              _ops_result_nfields_T_51 = io_req_2_bits_op == 5'hD;
   wire              _ops_result_nfields_T_52 = io_req_2_bits_op == 5'h11;
   wire              _ops_result_nfields_T_50 = io_req_2_bits_umop == 5'h8;
-  wire              _ops_result_emul_data_T_116 = io_req_2_bits_nfields == 3'h1;
-  wire              _ops_result_emul_data_T_100 = io_req_2_bits_nfields == 3'h3;
-  wire              _ops_result_nfields_T_49 =
-    _ops_result_nfields_T_44 & (|{_ops_result_nfields_T_52, _ops_result_nfields_T_51});
-  wire              _ops_result_nfields_T_55 =
-    _ops_result_nfields_T_50 & (|{_ops_result_nfields_T_52, _ops_result_nfields_T_51});
   wire              _ops_emul_data_T_140 = io_req_3_bits_elemWidth == 3'h0;
   wire              _ops_emul_data_T_137 = _ops_emul_data_T_140 & _ops_emul_data_T_144;
   wire              _ops_emul_data_T_149 = io_req_3_bits_elemWidth == 3'h5;
@@ -46784,77 +46623,6 @@ module LsuV2(
   wire              _ops_result_nfields_T_73 = io_req_3_bits_op == 5'hD;
   wire              _ops_result_nfields_T_74 = io_req_3_bits_op == 5'h11;
   wire              _ops_result_nfields_T_72 = io_req_3_bits_umop == 5'h8;
-  wire              _ops_result_emul_data_T_159 = io_req_3_bits_nfields == 3'h1;
-  wire              _ops_result_emul_data_T_143 = io_req_3_bits_nfields == 3'h3;
-  wire              _ops_result_nfields_T_71 =
-    _ops_result_nfields_T_66 & (|{_ops_result_nfields_T_74, _ops_result_nfields_T_73});
-  wire              _ops_result_nfields_T_77 =
-    _ops_result_nfields_T_72 & (|{_ops_result_nfields_T_74, _ops_result_nfields_T_73});
-  wire [2:0]        opQueue_io_enqValid =
-    {1'h0,
-     {1'h0, _alignedOps_aligner_out_0_valid} + {1'h0, _alignedOps_aligner_out_1_valid}}
-    + {1'h0,
-       {1'h0, _alignedOps_aligner_out_2_valid} + {1'h0, _alignedOps_aligner_out_3_valid}};
-  wire              _nextSlot_result_elemStride_T = _opQueue_io_dataOut_0_op == 5'hD;
-  wire              _nextSlot_T_16 = _opQueue_io_dataOut_0_op == 5'hE;
-  wire              _nextSlot_unitStride_T = _opQueue_io_dataOut_0_op == 5'hF;
-  wire              _nextSlot_unitStride_T_1 = _opQueue_io_dataOut_0_op == 5'h10;
-  wire              _nextSlot_result_elemStride_T_1 = _opQueue_io_dataOut_0_op == 5'h11;
-  wire              _nextSlot_T_17 = _opQueue_io_dataOut_0_op == 5'h12;
-  wire              _nextSlot_unitStride_T_2 = _opQueue_io_dataOut_0_op == 5'h13;
-  wire              _nextSlot_unitStride_T_3 = _opQueue_io_dataOut_0_op == 5'h14;
-  wire              _nextSlot_unitStride_T_24 = _opQueue_io_dataOut_0_elemWidth == 3'h5;
-  wire              _nextSlot_elemMultiplier_T_4 = _opQueue_io_dataOut_0_sew == 3'h0;
-  wire              _nextSlot_elemMultiplier_T_2 =
-    _nextSlot_unitStride_T_24 & _nextSlot_elemMultiplier_T_4;
-  wire              _nextSlot_unitStride_T_25 = _opQueue_io_dataOut_0_elemWidth == 3'h6;
-  wire              _nextSlot_elemMultiplier_T_5 =
-    _nextSlot_unitStride_T_25 & _nextSlot_elemMultiplier_T_4;
-  wire              _nextSlot_result_indexParitions_T_1 =
-    _opQueue_io_dataOut_0_sew == 3'h1;
-  wire              _nextSlot_elemMultiplier_T_8 =
-    _nextSlot_unitStride_T_25 & _nextSlot_result_indexParitions_T_1;
-  wire [2:0]        _nextSlot_elemMultiplier_T_20 =
-    {1'h0, _nextSlot_elemMultiplier_T_2, 1'h0} | {_nextSlot_elemMultiplier_T_5, 2'h0};
-  wire [1:0]        _GEN =
-    _nextSlot_elemMultiplier_T_20[1:0] | {_nextSlot_elemMultiplier_T_8, 1'h0};
-  wire [2:0]        nextSlot_elemMultiplier =
-    {_nextSlot_elemMultiplier_T_20[2],
-     _GEN[1],
-     _GEN[0]
-       | ~(_nextSlot_elemMultiplier_T_2 | _nextSlot_elemMultiplier_T_5
-           | _nextSlot_elemMultiplier_T_8)};
-  wire              _nextSlot_max_subvector_T_3 =
-    nextSlot_elemMultiplier == 3'h2 & $signed(_opQueue_io_dataOut_0_emul_data) > -3'sh1;
-  wire              _nextSlot_max_subvector_T_8 = nextSlot_elemMultiplier == 3'h4;
-  wire              _nextSlot_max_subvector_T_7 =
-    _nextSlot_max_subvector_T_8 & $signed(_opQueue_io_dataOut_0_emul_data) > -3'sh1;
-  wire              _nextSlot_max_subvector_T_11 =
-    _nextSlot_max_subvector_T_8 & (&_opQueue_io_dataOut_0_emul_data);
-  wire              _nextSlot_unitStride_T_33 = _opQueue_io_dataOut_0_elemWidth == 3'h0;
-  wire              _nextSlot_result_indexParitions_T_2 =
-    _nextSlot_unitStride_T_33 & _nextSlot_result_indexParitions_T_1;
-  wire              _nextSlot_result_indexParitions_T_7 =
-    _opQueue_io_dataOut_0_sew == 3'h2;
-  wire              _nextSlot_result_indexParitions_T_5 =
-    _nextSlot_unitStride_T_33 & _nextSlot_result_indexParitions_T_7;
-  wire              _nextSlot_result_indexParitions_T_8 =
-    _nextSlot_unitStride_T_24 & _nextSlot_result_indexParitions_T_7;
-  wire [2:0]        _nextSlot_active_T_3 =
-    {_opQueue_io_dataOut_0_op == 5'h5,
-     _opQueue_io_dataOut_0_op == 5'h3,
-     _opQueue_io_dataOut_0_op == 5'h0};
-  wire [2:0]        _nextSlot_active_T_8 =
-    {_opQueue_io_dataOut_0_op == 5'h6,
-     _opQueue_io_dataOut_0_op == 5'h4,
-     _opQueue_io_dataOut_0_op == 5'h1};
-  wire [2:0]        _nextSlot_active_T_13 =
-    {_opQueue_io_dataOut_0_op == 5'hC,
-     _opQueue_io_dataOut_0_op == 5'h7,
-     _opQueue_io_dataOut_0_op == 5'h2};
-  wire              _nextSlot_unitStride_T_16 = _opQueue_io_dataOut_0_sew == 3'h0;
-  wire              _nextSlot_unitStride_T_7 = _opQueue_io_dataOut_0_sew == 3'h1;
-  wire              _nextSlot_unitStride_T_8 = _opQueue_io_dataOut_0_sew == 3'h2;
   reg               readFired_valid;
   reg  [1:0]        readFired_bits_bus;
   reg  [27:0]       readFired_bits_lineAddr;
@@ -46927,15 +46695,6 @@ module LsuV2(
   reg  [4:0]        slot_vectorLoop_rd;
   wire              io_rvv2lsu_0_ready_0 =
     slot_vectorLoop_subvector_curr != slot_vectorLoop_subvector_max;
-  wire              _vectorUpdatedSlot_indices_T_3 =
-    slot_indexParitions == 3'h2 & slot_vectorLoop_lmul_curr[0];
-  wire              _vectorUpdatedSlot_indices_T_15 = slot_indexParitions == 3'h4;
-  wire              _vectorUpdatedSlot_indices_T_8 =
-    _vectorUpdatedSlot_indices_T_15 & slot_vectorLoop_lmul_curr[1:0] == 2'h1;
-  wire              _vectorUpdatedSlot_indices_T_13 =
-    _vectorUpdatedSlot_indices_T_15 & slot_vectorLoop_lmul_curr[1:0] == 2'h2;
-  wire              _vectorUpdatedSlot_indices_T_18 =
-    _vectorUpdatedSlot_indices_T_15 & (&(slot_vectorLoop_lmul_curr[1:0]));
   wire              _writebackUpdatedSlot_result_baseAddr_T_1 = slot_op == 5'hD;
   wire              _writebackUpdatedSlot_result_baseAddr_T_10 = slot_op == 5'hE;
   wire              _writebackUpdatedSlot_result_baseAddr_T_2 = slot_op == 5'h11;
@@ -46944,23 +46703,6 @@ module LsuV2(
   wire              _scalarStoreComplete_T_59 = slot_op == 5'h10;
   wire              _scalarStoreComplete_T_62 = slot_op == 5'h13;
   wire              _scalarStoreComplete_T_63 = slot_op == 5'h14;
-  wire [1:0]        _vectorUpdatedSlot_updateAddrs_T_2 =
-    {_writebackUpdatedSlot_result_baseAddr_T_2,
-     _writebackUpdatedSlot_result_baseAddr_T_1};
-  wire              _writebackUpdatedSlot_result_baseAddr_T_17 = slot_elemWidth == 3'h0;
-  wire              _writebackUpdatedSlot_result_baseAddr_T_21 = slot_elemWidth == 3'h5;
-  wire              _writebackUpdatedSlot_result_baseAddr_T_25 = slot_elemWidth == 3'h6;
-  wire [1:0]        _vectorUpdatedSlot_updateAddrs_T_384 =
-    {_writebackUpdatedSlot_result_baseAddr_T_11,
-     _writebackUpdatedSlot_result_baseAddr_T_10};
-  wire [3:0]        _vectorUpdatedSlot_updateAddrs_T_768 =
-    {_scalarStoreComplete_T_63,
-     _scalarStoreComplete_T_62,
-     _scalarStoreComplete_T_59,
-     _scalarStoreComplete_T_58};
-  wire              _vectorUpdatedSlot_updateAddrs_T_770 = slot_sew == 3'h0;
-  wire              _vectorUpdatedSlot_updateAddrs_T_803 = slot_sew == 3'h1;
-  wire              _vectorUpdatedSlot_updateAddrs_T_868 = slot_sew == 3'h2;
   reg               faultReg_valid;
   reg               faultReg_bits_info_write;
   reg  [31:0]       faultReg_bits_info_addr;
@@ -47817,26 +47559,12 @@ module LsuV2(
   wire              wordAligned = targetAddress_bits[1:0] == 2'h0;
   wire              _alignedAddress_T_1 = slot_op == 5'h3;
   wire              _alignedAddress_T_2 = slot_op == 5'h5;
-  wire [2:0]        _size_T_3 = {_alignedAddress_T_2, _alignedAddress_T_1, ~(|slot_op)};
   wire              _alignedAddress_T_5 = slot_op == 5'h1;
   wire              _alignedAddress_T_6 = slot_op == 5'h4;
   wire              _alignedAddress_T_7 = slot_op == 5'h6;
-  wire [2:0]        _size_T_8 =
-    {_alignedAddress_T_7, _alignedAddress_T_6, _alignedAddress_T_5};
   wire              _alignedAddress_T_11 = slot_op == 5'h2;
   wire              _alignedAddress_T_12 = slot_op == 5'h7;
   wire              _alignedAddress_T_13 = slot_op == 5'hC;
-  wire [2:0]        _size_T_14 =
-    {_alignedAddress_T_13, _alignedAddress_T_12, _alignedAddress_T_11};
-  wire [7:0]        _size_T_25 =
-    {_scalarStoreComplete_T_63,
-     _scalarStoreComplete_T_62,
-     _writebackUpdatedSlot_result_baseAddr_T_11,
-     _writebackUpdatedSlot_result_baseAddr_T_2,
-     _scalarStoreComplete_T_59,
-     _scalarStoreComplete_T_58,
-     _writebackUpdatedSlot_result_baseAddr_T_10,
-     _writebackUpdatedSlot_result_baseAddr_T_1};
   wire [2:0]        _alignedAddress_T_3 =
     {_alignedAddress_T_2, _alignedAddress_T_1, ~(|slot_op)};
   wire              _alignedAddress_T_10 =
@@ -48004,8 +47732,8 @@ module LsuV2(
   wire [31:0]       io_rd_bits_data_halfSigned =
     {{16{slot_data_1[7]}}, slot_data_1, slot_data_0};
   wire [31:0]       io_rd_bits_data_byteSigned = {{24{slot_data_0[7]}}, slot_data_0};
-  wire [31:0]       _GEN_0 = {24'h0, slot_data_0};
-  wire [31:0]       _GEN_1 = {16'h0, slot_data_1, slot_data_0};
+  wire [31:0]       _GEN = {24'h0, slot_data_0};
+  wire [31:0]       _GEN_0 = {16'h0, slot_data_1, slot_data_0};
   wire [4:0]        io_rd_bits_addr_0 = faultReg_valid ? faultReg_bits_rd : slot_rd;
   wire              io_rd_flt_valid_0 =
     (faultReg_valid & ~(faultReg_valid ? faultReg_bits_store : slot_store)
@@ -48056,53 +47784,72 @@ module LsuV2(
          _io_lsu2rvv_0_bits_last_T_24,
          _io_lsu2rvv_0_bits_last_T_23,
          _io_lsu2rvv_0_bits_last_T_22});
-  wire              writebackFired = io_rd_valid_0 | io_rd_flt_valid_0 | lsu2RvvFire;
-  wire              vectorUpdate = io_rvv2lsu_0_ready_0 & io_rvv2lsu_0_valid;
+  wire              _nextSlot_unitStride_T_24 = _opQueue_io_dataOut_0_elemWidth == 3'h5;
+  wire              _nextSlot_elemMultiplier_T_4 = _opQueue_io_dataOut_0_sew == 3'h0;
+  wire              _nextSlot_elemMultiplier_T_2 =
+    _nextSlot_unitStride_T_24 & _nextSlot_elemMultiplier_T_4;
+  wire              _nextSlot_unitStride_T_25 = _opQueue_io_dataOut_0_elemWidth == 3'h6;
+  wire              _nextSlot_elemMultiplier_T_5 =
+    _nextSlot_unitStride_T_25 & _nextSlot_elemMultiplier_T_4;
+  wire              _nextSlot_result_indexParitions_T_1 =
+    _opQueue_io_dataOut_0_sew == 3'h1;
+  wire              _nextSlot_elemMultiplier_T_8 =
+    _nextSlot_unitStride_T_25 & _nextSlot_result_indexParitions_T_1;
+  wire [2:0]        _nextSlot_elemMultiplier_T_20 =
+    {1'h0, _nextSlot_elemMultiplier_T_2, 1'h0} | {_nextSlot_elemMultiplier_T_5, 2'h0};
+  wire [1:0]        _GEN_1 =
+    _nextSlot_elemMultiplier_T_20[1:0] | {_nextSlot_elemMultiplier_T_8, 1'h0};
+  wire [2:0]        nextSlot_elemMultiplier =
+    {_nextSlot_elemMultiplier_T_20[2],
+     _GEN_1[1],
+     _GEN_1[0]
+       | ~(_nextSlot_elemMultiplier_T_2 | _nextSlot_elemMultiplier_T_5
+           | _nextSlot_elemMultiplier_T_8)};
+  wire              _nextSlot_max_subvector_T_3 =
+    nextSlot_elemMultiplier == 3'h2 & $signed(_opQueue_io_dataOut_0_emul_data) > -3'sh1;
+  wire              _nextSlot_max_subvector_T_8 = nextSlot_elemMultiplier == 3'h4;
+  wire              _nextSlot_max_subvector_T_7 =
+    _nextSlot_max_subvector_T_8 & $signed(_opQueue_io_dataOut_0_emul_data) > -3'sh1;
+  wire              _nextSlot_max_subvector_T_11 =
+    _nextSlot_max_subvector_T_8 & (&_opQueue_io_dataOut_0_emul_data);
   wire [2:0]        _nextSlot_max_subvector_T_23 =
     {1'h0, _nextSlot_max_subvector_T_3, 1'h0} | {_nextSlot_max_subvector_T_7, 2'h0};
   wire [1:0]        _GEN_2 =
     _nextSlot_max_subvector_T_23[1:0] | {_nextSlot_max_subvector_T_11, 1'h0};
+  wire              _nextSlot_unitStride_T_33 = _opQueue_io_dataOut_0_elemWidth == 3'h0;
+  wire              _nextSlot_result_indexParitions_T_2 =
+    _nextSlot_unitStride_T_33 & _nextSlot_result_indexParitions_T_1;
+  wire              _nextSlot_result_indexParitions_T_7 =
+    _opQueue_io_dataOut_0_sew == 3'h2;
+  wire              _nextSlot_result_indexParitions_T_5 =
+    _nextSlot_unitStride_T_33 & _nextSlot_result_indexParitions_T_7;
+  wire              _nextSlot_result_indexParitions_T_8 =
+    _nextSlot_unitStride_T_24 & _nextSlot_result_indexParitions_T_7;
   wire [2:0]        _nextSlot_result_indexParitions_T_20 =
     {1'h0, _nextSlot_result_indexParitions_T_2, 1'h0}
     | {_nextSlot_result_indexParitions_T_5, 2'h0};
   wire [1:0]        _GEN_3 =
     _nextSlot_result_indexParitions_T_20[1:0]
     | {_nextSlot_result_indexParitions_T_8, 1'h0};
-  wire [1:0]        _nextSlot_T_18 = {_nextSlot_T_17, _nextSlot_T_16};
   wire [31:0]       _GEN_4 = {_opQueue_io_dataOut_0_data[30:0], 1'h0};
   wire [31:0]       _nextSlot_T_273 = _opQueue_io_dataOut_0_data * 32'h3;
   wire [31:0]       _GEN_5 = {_opQueue_io_dataOut_0_data[29:0], 2'h0};
   wire [31:0]       _nextSlot_T_152 = _opQueue_io_dataOut_0_data * 32'h5;
   wire [31:0]       _nextSlot_T_164 = _opQueue_io_dataOut_0_data * 32'h6;
   wire [31:0]       _nextSlot_T_176 = _opQueue_io_dataOut_0_data * 32'h7;
+  wire              _nextSlot_unitStride_T_16 = _opQueue_io_dataOut_0_sew == 3'h0;
+  wire              _nextSlot_unitStride_T_7 = _opQueue_io_dataOut_0_sew == 3'h1;
+  wire              _nextSlot_unitStride_T_8 = _opQueue_io_dataOut_0_sew == 3'h2;
   wire [2:0]        _nextSlot_unitStride_T_21 =
     {1'h0, {1'h0, _nextSlot_unitStride_T_16} | {_nextSlot_unitStride_T_7, 1'h0}}
     | {_nextSlot_unitStride_T_8, 2'h0};
   wire [2:0]        _nextSlot_unitStride_T_38 =
     {1'h0, {1'h0, _nextSlot_unitStride_T_33} | {_nextSlot_unitStride_T_24, 1'h0}}
     | {_nextSlot_unitStride_T_25, 2'h0};
-  wire [2:0]        nextSlot_unitStride =
-    (|{_nextSlot_unitStride_T_3,
-       _nextSlot_unitStride_T_2,
-       _nextSlot_unitStride_T_1,
-       _nextSlot_unitStride_T})
-      ? {_nextSlot_unitStride_T_21[2:1],
-         _nextSlot_unitStride_T_21[0]
-           | ~(_nextSlot_unitStride_T_16 | _nextSlot_unitStride_T_7
-               | _nextSlot_unitStride_T_8)}
-      : {_nextSlot_unitStride_T_38[2:1],
-         _nextSlot_unitStride_T_38[0]
-           | ~(_nextSlot_unitStride_T_33 | _nextSlot_unitStride_T_24
-               | _nextSlot_unitStride_T_25)};
-  wire [5:0]        _GEN_6 = {3'h0, nextSlot_unitStride};
   wire [6:0]        _nextSlot_result_vectorLoop_T_39 =
     7'h1
     << (_opQueue_io_dataOut_0_emul_data[2] ? 2'h0 : _opQueue_io_dataOut_0_emul_data[1:0]);
-  wire [31:0]       _GEN_7 = {slot_elemStride[27:0], 4'h0};
-  wire              _GEN_8 =
-    _writebackUpdatedSlot_result_baseAddr_T_17
-    | _writebackUpdatedSlot_result_baseAddr_T_21
-    | _writebackUpdatedSlot_result_baseAddr_T_25;
+  wire [31:0]       _GEN_6 = {slot_elemStride[27:0], 4'h0};
   wire [31:0]       _vectorUpdatedSlot_updateAddrs_T_423 = slot_elemStride * 32'h9;
   wire [31:0]       _vectorUpdatedSlot_updateAddrs_T_427 = slot_elemStride * 32'hA;
   wire [31:0]       _vectorUpdatedSlot_updateAddrs_T_431 = slot_elemStride * 32'hB;
@@ -48112,6 +47859,15 @@ module LsuV2(
   wire [31:0]       _vectorUpdatedSlot_updateAddrs_T_447 = slot_elemStride * 32'hF;
   wire [31:0]       _vectorUpdatedSlot_segmentBaseAddr_T_2 =
     slot_baseAddr + slot_segmentStride * {28'h0, slot_vectorLoop_segment_curr};
+  wire              _vectorUpdatedSlot_indices_T_3 =
+    slot_indexParitions == 3'h2 & slot_vectorLoop_lmul_curr[0];
+  wire              _vectorUpdatedSlot_indices_T_15 = slot_indexParitions == 3'h4;
+  wire              _vectorUpdatedSlot_indices_T_8 =
+    _vectorUpdatedSlot_indices_T_15 & slot_vectorLoop_lmul_curr[1:0] == 2'h1;
+  wire              _vectorUpdatedSlot_indices_T_13 =
+    _vectorUpdatedSlot_indices_T_15 & slot_vectorLoop_lmul_curr[1:0] == 2'h2;
+  wire              _vectorUpdatedSlot_indices_T_18 =
+    _vectorUpdatedSlot_indices_T_15 & (&(slot_vectorLoop_lmul_curr[1:0]));
   wire [63:0]       _vectorUpdatedSlot_indices_T_29 =
     _vectorUpdatedSlot_indices_T_3 ? io_rvv2lsu_0_bits_idx_bits_data[127:64] : 64'h0;
   wire [127:0]      vectorUpdatedSlot_indices =
@@ -48129,13 +47885,27 @@ module LsuV2(
        | _vectorUpdatedSlot_indices_T_13 | _vectorUpdatedSlot_indices_T_18
          ? 128'h0
          : io_rvv2lsu_0_bits_idx_bits_data);
-  wire [31:0]       _GEN_9 = {slot_elemStride[30:0], 1'h0};
+  wire [1:0]        _vectorUpdatedSlot_updateAddrs_T_2 =
+    {_writebackUpdatedSlot_result_baseAddr_T_2,
+     _writebackUpdatedSlot_result_baseAddr_T_1};
+  wire              _writebackUpdatedSlot_result_baseAddr_T_17 = slot_elemWidth == 3'h0;
+  wire [31:0]       _GEN_7 = {slot_elemStride[30:0], 1'h0};
   wire [31:0]       _vectorUpdatedSlot_updateAddrs_T_639 = slot_elemStride * 32'h3;
-  wire [31:0]       _GEN_10 = {slot_elemStride[29:0], 2'h0};
+  wire [31:0]       _GEN_8 = {slot_elemStride[29:0], 2'h0};
   wire [31:0]       _vectorUpdatedSlot_updateAddrs_T_518 = slot_elemStride * 32'h5;
   wire [31:0]       _vectorUpdatedSlot_updateAddrs_T_530 = slot_elemStride * 32'h6;
   wire [31:0]       _vectorUpdatedSlot_updateAddrs_T_542 = slot_elemStride * 32'h7;
-  wire [31:0]       _GEN_11 = {slot_elemStride[28:0], 3'h0};
+  wire [31:0]       _GEN_9 = {slot_elemStride[28:0], 3'h0};
+  wire              _writebackUpdatedSlot_result_baseAddr_T_21 = slot_elemWidth == 3'h5;
+  wire              _writebackUpdatedSlot_result_baseAddr_T_25 = slot_elemWidth == 3'h6;
+  wire [1:0]        _vectorUpdatedSlot_updateAddrs_T_384 =
+    {_writebackUpdatedSlot_result_baseAddr_T_11,
+     _writebackUpdatedSlot_result_baseAddr_T_10};
+  wire [3:0]        _vectorUpdatedSlot_updateAddrs_T_768 =
+    {_scalarStoreComplete_T_63,
+     _scalarStoreComplete_T_62,
+     _scalarStoreComplete_T_59,
+     _scalarStoreComplete_T_58};
   wire [31:0]       vectorUpdatedSlot_updateAddrs_indices16_0 =
     {16'h0, vectorUpdatedSlot_indices[15:0]};
   wire [31:0]       vectorUpdatedSlot_updateAddrs_indices16_1 =
@@ -48152,6 +47922,7 @@ module LsuV2(
     {16'h0, vectorUpdatedSlot_indices[111:96]};
   wire [31:0]       vectorUpdatedSlot_updateAddrs_indices16_7 =
     {16'h0, vectorUpdatedSlot_indices[127:112]};
+  wire              _vectorUpdatedSlot_updateAddrs_T_770 = slot_sew == 3'h0;
   wire [31:0]       _vectorUpdatedSlot_updateAddrs_T_881 =
     _vectorUpdatedSlot_segmentBaseAddr_T_2
     + ((_writebackUpdatedSlot_result_baseAddr_T_17
@@ -48240,6 +48011,8 @@ module LsuV2(
        | (_writebackUpdatedSlot_result_baseAddr_T_25
             ? vectorUpdatedSlot_indices[127:96]
             : 32'h0));
+  wire              _vectorUpdatedSlot_updateAddrs_T_803 = slot_sew == 3'h1;
+  wire              _vectorUpdatedSlot_updateAddrs_T_868 = slot_sew == 3'h2;
   wire              vectorUpdatedSlot_updateAddrs_defaultSel_3 =
     {_writebackUpdatedSlot_result_baseAddr_T_2,
      _writebackUpdatedSlot_result_baseAddr_T_1,
@@ -48249,15 +48022,39 @@ module LsuV2(
      _scalarStoreComplete_T_62,
      _scalarStoreComplete_T_59,
      _scalarStoreComplete_T_58} == 8'h0;
+  wire              _GEN_10 =
+    _writebackUpdatedSlot_result_baseAddr_T_17
+    | _writebackUpdatedSlot_result_baseAddr_T_21
+    | _writebackUpdatedSlot_result_baseAddr_T_25;
   wire              _flushCmd_T_6 =
     _ops_T & (|{_ops_T_3, _ops_T_2, flushCmd_result_fencei});
   wire              _flushCmd_T_7 = flushCmd_valid & io_flush_ready;
+  wire              _nextSlot_result_elemStride_T = _opQueue_io_dataOut_0_op == 5'hD;
+  wire              _nextSlot_T_16 = _opQueue_io_dataOut_0_op == 5'hE;
+  wire              _nextSlot_unitStride_T = _opQueue_io_dataOut_0_op == 5'hF;
+  wire              _nextSlot_unitStride_T_1 = _opQueue_io_dataOut_0_op == 5'h10;
+  wire              _nextSlot_result_elemStride_T_1 = _opQueue_io_dataOut_0_op == 5'h11;
+  wire              _nextSlot_T_17 = _opQueue_io_dataOut_0_op == 5'h12;
+  wire              _nextSlot_unitStride_T_2 = _opQueue_io_dataOut_0_op == 5'h13;
+  wire              _nextSlot_unitStride_T_3 = _opQueue_io_dataOut_0_op == 5'h14;
   wire [15:0]       nextSlot_active =
-    {15'h0, |_nextSlot_active_T_3} | ((|_nextSlot_active_T_8) ? 16'h3 : 16'h0)
-    | ((|_nextSlot_active_T_13) ? 16'hF : 16'h0);
-  wire [3:0][127:0] _GEN_12 =
+    {15'h0,
+     |{_opQueue_io_dataOut_0_op == 5'h5,
+       _opQueue_io_dataOut_0_op == 5'h3,
+       _opQueue_io_dataOut_0_op == 5'h0}}
+    | ((|{_opQueue_io_dataOut_0_op == 5'h6,
+          _opQueue_io_dataOut_0_op == 5'h4,
+          _opQueue_io_dataOut_0_op == 5'h1})
+         ? 16'h3
+         : 16'h0)
+    | ((|{_opQueue_io_dataOut_0_op == 5'hC,
+          _opQueue_io_dataOut_0_op == 5'h7,
+          _opQueue_io_dataOut_0_op == 5'h2})
+         ? 16'hF
+         : 16'h0);
+  wire [3:0][127:0] _GEN_11 =
     {{128'h0}, {io_ebus_dbus_rdata}, {io_dbus_rdata}, {io_ibus_rdata}};
-  wire [127:0]      readData = _GEN_12[readFired_bits_bus];
+  wire [127:0]      readData = _GEN_11[readFired_bits_bus];
   wire              vectorUpdatedSlot_shouldUpdate =
     (|{_writebackUpdatedSlot_result_baseAddr_T_11,
        _writebackUpdatedSlot_result_baseAddr_T_2,
@@ -48316,7 +48113,7 @@ module LsuV2(
          _scalarStoreComplete_T_58,
          _writebackUpdatedSlot_result_baseAddr_T_10,
          _writebackUpdatedSlot_result_baseAddr_T_1}) & io_rvv2lsu_0_bits_vregfile_valid;
-  wire [15:0][7:0]  _GEN_13 =
+  wire [15:0][7:0]  _GEN_12 =
     {{readData[127:120]},
      {readData[119:112]},
      {readData[111:104]},
@@ -48347,6 +48144,7 @@ module LsuV2(
     slot_vectorLoop_segment_curr == slot_vectorLoop_segment_max;
   wire              _io_active_T_21 =
     slot_vectorLoop_lmul_curr == slot_vectorLoop_lmul_max;
+  wire              writebackFired = io_rd_valid_0 | io_rd_flt_valid_0 | lsu2RvvFire;
   wire [3:0]        _writebackUpdatedSlot_vectorLoopNext_result_rd_T_2 =
     slot_vectorLoop_lmul_curr + 4'h1;
   wire [3:0]        writebackUpdatedSlot_vectorLoopNext_result_lmul_y =
@@ -48357,6 +48155,7 @@ module LsuV2(
       : slot_vectorLoop_lmul_curr;
   wire              writebackUpdatedSlot_finished =
     writebackUpdatedSlot_vectorLoopNext_lmul_curr == slot_vectorLoop_lmul_max;
+  wire              vectorUpdate = io_rvv2lsu_0_ready_0 & io_rvv2lsu_0_valid;
   wire              _slotNext_T_27 =
     ~(_io_active_T | slot_active_2 | slot_active_3 | slot_active_4 | slot_active_5
       | slot_active_6 | slot_active_7 | slot_active_8 | slot_active_9 | slot_active_10
@@ -48371,7 +48170,22 @@ module LsuV2(
        | slot_active_6 | slot_active_7 | slot_active_8 | slot_active_9 | slot_active_10
        | slot_active_11 | slot_active_12 | slot_active_13 | slot_active_14
        | slot_active_15);
-  wire              _GEN_14 = vectorUpdate | _slotNext_T_46 | ~writebackFired;
+  wire              _GEN_13 = vectorUpdate | _slotNext_T_46 | ~writebackFired;
+  wire [1:0]        _nextSlot_T_18 = {_nextSlot_T_17, _nextSlot_T_16};
+  wire [2:0]        nextSlot_unitStride =
+    (|{_nextSlot_unitStride_T_3,
+       _nextSlot_unitStride_T_2,
+       _nextSlot_unitStride_T_1,
+       _nextSlot_unitStride_T})
+      ? {_nextSlot_unitStride_T_21[2:1],
+         _nextSlot_unitStride_T_21[0]
+           | ~(_nextSlot_unitStride_T_16 | _nextSlot_unitStride_T_7
+               | _nextSlot_unitStride_T_8)}
+      : {_nextSlot_unitStride_T_38[2:1],
+         _nextSlot_unitStride_T_38[0]
+           | ~(_nextSlot_unitStride_T_33 | _nextSlot_unitStride_T_24
+               | _nextSlot_unitStride_T_25)};
+  wire [5:0]        _GEN_14 = {3'h0, nextSlot_unitStride};
   wire [4:0]        writebackUpdatedSlot_vectorLoopNext_rd =
     _io_active_T_18
       ? slot_vectorLoop_rdStart
@@ -48693,7 +48507,7 @@ module LsuV2(
         slot_data_3 <= _opQueue_io_dataOut_0_data[31:24];
         slot_elemStride <=
           (|{_nextSlot_result_elemStride_T_1, _nextSlot_result_elemStride_T})
-            ? {26'h0, _GEN_6 + {3'h0, _opQueue_io_dataOut_0_nfields} * _GEN_6}
+            ? {26'h0, _GEN_14 + {3'h0, _opQueue_io_dataOut_0_nfields} * _GEN_14}
             : _opQueue_io_dataOut_0_data;
         slot_segmentStride <= {29'h0, nextSlot_unitStride};
         slot_elemWidth <= _opQueue_io_dataOut_0_elemWidth;
@@ -48758,7 +48572,7 @@ module LsuV2(
         slot_vectorLoop_rd <= _opQueue_io_dataOut_0_rd;
       end
       else begin
-        if (_GEN_14) begin
+        if (_GEN_13) begin
         end
         else
           slot_rd <=
@@ -48779,22 +48593,22 @@ module LsuV2(
         else if (|{_writebackUpdatedSlot_result_baseAddr_T_11,
                    _writebackUpdatedSlot_result_baseAddr_T_10})
           slot_baseAddr <=
-            (_writebackUpdatedSlot_result_baseAddr_T_17 ? slot_baseAddr + _GEN_7 : 32'h0)
+            (_writebackUpdatedSlot_result_baseAddr_T_17 ? slot_baseAddr + _GEN_6 : 32'h0)
             | (_writebackUpdatedSlot_result_baseAddr_T_21
-                 ? slot_baseAddr + _GEN_11
+                 ? slot_baseAddr + _GEN_9
                  : 32'h0)
             | (_writebackUpdatedSlot_result_baseAddr_T_25
-                 ? slot_baseAddr + _GEN_10
+                 ? slot_baseAddr + _GEN_8
                  : 32'h0)
             | (_writebackUpdatedSlot_result_baseAddr_T_17
                | _writebackUpdatedSlot_result_baseAddr_T_21
                | _writebackUpdatedSlot_result_baseAddr_T_25
                  ? 32'h0
-                 : slot_baseAddr + _GEN_7);
+                 : slot_baseAddr + _GEN_6);
         if (vectorUpdate & vectorUpdatedSlot_newActiveBytes_0)
           slot_addrs_0 <=
-            ((|_vectorUpdatedSlot_updateAddrs_T_2) & _GEN_8
-             | (|_vectorUpdatedSlot_updateAddrs_T_384) & _GEN_8
+            ((|_vectorUpdatedSlot_updateAddrs_T_2) & _GEN_10
+             | (|_vectorUpdatedSlot_updateAddrs_T_384) & _GEN_10
                ? _vectorUpdatedSlot_segmentBaseAddr_T_2
                : 32'h0)
             | ((|_vectorUpdatedSlot_updateAddrs_T_768)
@@ -48844,7 +48658,7 @@ module LsuV2(
           slot_addrs_2 <=
             ((|_vectorUpdatedSlot_updateAddrs_T_2)
                ? (_writebackUpdatedSlot_result_baseAddr_T_17
-                    ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9
+                    ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7
                     : 32'h0)
                  | (_writebackUpdatedSlot_result_baseAddr_T_21
                       ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + slot_elemStride
@@ -48855,7 +48669,7 @@ module LsuV2(
                : 32'h0)
             | ((|_vectorUpdatedSlot_updateAddrs_T_384)
                  ? (_writebackUpdatedSlot_result_baseAddr_T_17
-                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9
+                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7
                       : 32'h0)
                    | (_writebackUpdatedSlot_result_baseAddr_T_21
                         ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + slot_elemStride
@@ -48918,10 +48732,10 @@ module LsuV2(
           slot_addrs_4 <=
             ((|_vectorUpdatedSlot_updateAddrs_T_2)
                ? (_writebackUpdatedSlot_result_baseAddr_T_17
-                    ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_10
+                    ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_8
                     : 32'h0)
                  | (_writebackUpdatedSlot_result_baseAddr_T_21
-                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9
+                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7
                       : 32'h0)
                  | (_writebackUpdatedSlot_result_baseAddr_T_25
                       ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + slot_elemStride
@@ -48929,10 +48743,10 @@ module LsuV2(
                : 32'h0)
             | ((|_vectorUpdatedSlot_updateAddrs_T_384)
                  ? (_writebackUpdatedSlot_result_baseAddr_T_17
-                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_10
+                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_8
                       : 32'h0)
                    | (_writebackUpdatedSlot_result_baseAddr_T_21
-                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9
+                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7
                         : 32'h0)
                    | (_writebackUpdatedSlot_result_baseAddr_T_25
                         ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + slot_elemStride
@@ -48958,7 +48772,7 @@ module LsuV2(
                       + _vectorUpdatedSlot_updateAddrs_T_518
                     : 32'h0)
                  | (_writebackUpdatedSlot_result_baseAddr_T_21
-                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9 + 32'h1
+                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7 + 32'h1
                       : 32'h0)
                  | (_writebackUpdatedSlot_result_baseAddr_T_25
                       ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + slot_elemStride + 32'h1
@@ -48970,7 +48784,7 @@ module LsuV2(
                         + _vectorUpdatedSlot_updateAddrs_T_518
                       : 32'h0)
                    | (_writebackUpdatedSlot_result_baseAddr_T_21
-                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9 + 32'h1
+                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7 + 32'h1
                         : 32'h0)
                    | (_writebackUpdatedSlot_result_baseAddr_T_25
                         ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + slot_elemStride + 32'h1
@@ -49072,24 +48886,24 @@ module LsuV2(
           slot_addrs_8 <=
             ((|_vectorUpdatedSlot_updateAddrs_T_2)
                ? (_writebackUpdatedSlot_result_baseAddr_T_17
-                    ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_11
+                    ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9
                     : 32'h0)
                  | (_writebackUpdatedSlot_result_baseAddr_T_21
-                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_10
+                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_8
                       : 32'h0)
                  | (_writebackUpdatedSlot_result_baseAddr_T_25
-                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9
+                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7
                       : 32'h0)
                : 32'h0)
             | ((|_vectorUpdatedSlot_updateAddrs_T_384)
                  ? (_writebackUpdatedSlot_result_baseAddr_T_17
-                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_11
+                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9
                       : 32'h0)
                    | (_writebackUpdatedSlot_result_baseAddr_T_21
-                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_10
+                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_8
                         : 32'h0)
                    | (_writebackUpdatedSlot_result_baseAddr_T_25
-                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9
+                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7
                         : 32'h0)
                  : 32'h0)
             | ((|_vectorUpdatedSlot_updateAddrs_T_768)
@@ -49121,10 +48935,10 @@ module LsuV2(
                       + _vectorUpdatedSlot_updateAddrs_T_423
                     : 32'h0)
                  | (_writebackUpdatedSlot_result_baseAddr_T_21
-                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_10 + 32'h1
+                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_8 + 32'h1
                       : 32'h0)
                  | (_writebackUpdatedSlot_result_baseAddr_T_25
-                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9 + 32'h1
+                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7 + 32'h1
                       : 32'h0)
                : 32'h0)
             | ((|_vectorUpdatedSlot_updateAddrs_T_384)
@@ -49133,10 +48947,10 @@ module LsuV2(
                         + _vectorUpdatedSlot_updateAddrs_T_423
                       : 32'h0)
                    | (_writebackUpdatedSlot_result_baseAddr_T_21
-                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_10 + 32'h1
+                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_8 + 32'h1
                         : 32'h0)
                    | (_writebackUpdatedSlot_result_baseAddr_T_25
-                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9 + 32'h1
+                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7 + 32'h1
                         : 32'h0)
                  : 32'h0)
             | ((|_vectorUpdatedSlot_updateAddrs_T_768)
@@ -49172,7 +48986,7 @@ module LsuV2(
                         + _vectorUpdatedSlot_updateAddrs_T_518
                       : 32'h0)
                  | (_writebackUpdatedSlot_result_baseAddr_T_25
-                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9 + 32'h2
+                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7 + 32'h2
                       : 32'h0)
                : 32'h0)
             | ((|_vectorUpdatedSlot_updateAddrs_T_384)
@@ -49185,7 +48999,7 @@ module LsuV2(
                           + _vectorUpdatedSlot_updateAddrs_T_518
                         : 32'h0)
                    | (_writebackUpdatedSlot_result_baseAddr_T_25
-                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9 + 32'h2
+                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7 + 32'h2
                         : 32'h0)
                  : 32'h0)
             | ((|_vectorUpdatedSlot_updateAddrs_T_768)
@@ -49221,7 +49035,7 @@ module LsuV2(
                         + _vectorUpdatedSlot_updateAddrs_T_518 + 32'h1
                       : 32'h0)
                  | (_writebackUpdatedSlot_result_baseAddr_T_25
-                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9 + 32'h3
+                      ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7 + 32'h3
                       : 32'h0)
                : 32'h0)
             | ((|_vectorUpdatedSlot_updateAddrs_T_384)
@@ -49234,7 +49048,7 @@ module LsuV2(
                           + _vectorUpdatedSlot_updateAddrs_T_518 + 32'h1
                         : 32'h0)
                    | (_writebackUpdatedSlot_result_baseAddr_T_25
-                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_9 + 32'h3
+                        ? _vectorUpdatedSlot_segmentBaseAddr_T_2 + _GEN_7 + 32'h3
                         : 32'h0)
                  : 32'h0)
             | ((|_vectorUpdatedSlot_updateAddrs_T_768)
@@ -49475,22 +49289,22 @@ module LsuV2(
               | ~(readFired_valid & loadUpdatedSlot_lineActive_0)) begin
           end
           else
-            slot_data_0 <= _GEN_13[slot_addrs_0[3:0]];
+            slot_data_0 <= _GEN_12[slot_addrs_0[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_1)) begin
           end
           else
-            slot_data_1 <= _GEN_13[slot_addrs_1[3:0]];
+            slot_data_1 <= _GEN_12[slot_addrs_1[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_2)) begin
           end
           else
-            slot_data_2 <= _GEN_13[slot_addrs_2[3:0]];
+            slot_data_2 <= _GEN_12[slot_addrs_2[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_3)) begin
           end
           else
-            slot_data_3 <= _GEN_13[slot_addrs_3[3:0]];
+            slot_data_3 <= _GEN_12[slot_addrs_3[3:0]];
         end
         if (vectorUpdate | _slotNext_T_46 | ~writebackFired
             | writebackUpdatedSlot_finished) begin
@@ -49655,69 +49469,69 @@ module LsuV2(
               | ~(readFired_valid & loadUpdatedSlot_lineActive_4)) begin
           end
           else
-            slot_data_4 <= _GEN_13[slot_addrs_4[3:0]];
+            slot_data_4 <= _GEN_12[slot_addrs_4[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_5)) begin
           end
           else
-            slot_data_5 <= _GEN_13[slot_addrs_5[3:0]];
+            slot_data_5 <= _GEN_12[slot_addrs_5[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_6)) begin
           end
           else
-            slot_data_6 <= _GEN_13[slot_addrs_6[3:0]];
+            slot_data_6 <= _GEN_12[slot_addrs_6[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_7)) begin
           end
           else
-            slot_data_7 <= _GEN_13[slot_addrs_7[3:0]];
+            slot_data_7 <= _GEN_12[slot_addrs_7[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_8)) begin
           end
           else
-            slot_data_8 <= _GEN_13[slot_addrs_8[3:0]];
+            slot_data_8 <= _GEN_12[slot_addrs_8[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_9)) begin
           end
           else
-            slot_data_9 <= _GEN_13[slot_addrs_9[3:0]];
+            slot_data_9 <= _GEN_12[slot_addrs_9[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_10)) begin
           end
           else
-            slot_data_10 <= _GEN_13[slot_addrs_10[3:0]];
+            slot_data_10 <= _GEN_12[slot_addrs_10[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_11)) begin
           end
           else
-            slot_data_11 <= _GEN_13[slot_addrs_11[3:0]];
+            slot_data_11 <= _GEN_12[slot_addrs_11[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_12)) begin
           end
           else
-            slot_data_12 <= _GEN_13[slot_addrs_12[3:0]];
+            slot_data_12 <= _GEN_12[slot_addrs_12[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_13)) begin
           end
           else
-            slot_data_13 <= _GEN_13[slot_addrs_13[3:0]];
+            slot_data_13 <= _GEN_12[slot_addrs_13[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_14)) begin
           end
           else
-            slot_data_14 <= _GEN_13[slot_addrs_14[3:0]];
+            slot_data_14 <= _GEN_12[slot_addrs_14[3:0]];
           if (~_slotNext_T_46 | slot_store
               | ~(readFired_valid & loadUpdatedSlot_lineActive_15)) begin
           end
           else
-            slot_data_15 <= _GEN_13[slot_addrs_15[3:0]];
+            slot_data_15 <= _GEN_12[slot_addrs_15[3:0]];
           if (_slotNext_T_46 | ~writebackFired) begin
           end
           else
             slot_vectorLoop_subvector_curr <=
               writebackUpdatedSlot_finished ? slot_vectorLoop_subvector_max : 3'h0;
         end
-        if (_GEN_14) begin
+        if (_GEN_13) begin
         end
         else begin
           slot_vectorLoop_segment_curr <=
@@ -49743,7 +49557,7 @@ module LsuV2(
                   _nextSlot_unitStride_T,
                   _nextSlot_T_16,
                   _nextSlot_result_elemStride_T})
-             : _GEN_14
+             : _GEN_13
                  ? slot_pendingWriteback
                  : writebackUpdatedSlot_vectorLoopNext_lmul_curr != slot_vectorLoop_lmul_max);
       faultReg_valid <= io_ebus_fault_valid ? io_ebus_fault_valid : ibusFault_valid;
@@ -49944,7 +49758,12 @@ module LsuV2(
   CircularBufferMulti_1 opQueue (
     .clock                  (clock),
     .reset                  (reset),
-    .io_enqValid            (opQueue_io_enqValid),
+    .io_enqValid
+      ({1'h0,
+        {1'h0, _alignedOps_aligner_out_0_valid} + {1'h0, _alignedOps_aligner_out_1_valid}}
+       + {1'h0,
+          {1'h0, _alignedOps_aligner_out_2_valid}
+            + {1'h0, _alignedOps_aligner_out_3_valid}}),
     .io_enqData_0_store     (_alignedOps_aligner_out_0_bits[118]),
     .io_enqData_0_rd        (_alignedOps_aligner_out_0_bits[117:113]),
     .io_enqData_0_op        (_alignedOps_aligner_out_0_bits[112:108]),
@@ -50055,8 +49874,8 @@ module LsuV2(
           : _ops_result_nfields_T_6
             & (|{_ops_result_nfields_T_8, _ops_result_nfields_T_7})
               ? {1'h0,
-                 {1'h0, _ops_result_emul_data_T_30} | {_ops_result_emul_data_T_14, 1'h0}
-                   | {2{&io_req_0_bits_nfields}}}
+                 {1'h0, io_req_0_bits_nfields == 3'h1}
+                   | {io_req_0_bits_nfields == 3'h3, 1'h0} | {2{&io_req_0_bits_nfields}}}
               : (|{io_req_0_bits_op == 5'h12,
                    _ops_result_nfields_T_8,
                    io_req_0_bits_op == 5'hE,
@@ -50070,7 +49889,8 @@ module LsuV2(
                          ? 3'h0
                          : io_rvvState_bits_lmul)
                   : io_rvvState_bits_lmul,
-        _ops_result_nfields_T_5 | _ops_result_nfields_T_11
+        _ops_result_nfields_T & (|{_ops_result_nfields_T_8, _ops_result_nfields_T_7})
+        | _ops_result_nfields_T_6 & (|{_ops_result_nfields_T_8, _ops_result_nfields_T_7})
           ? 3'h0
           : io_req_0_bits_nfields}),
     .in_1_valid
@@ -50092,8 +49912,8 @@ module LsuV2(
           : _ops_result_nfields_T_28
             & (|{_ops_result_nfields_T_30, _ops_result_nfields_T_29})
               ? {1'h0,
-                 {1'h0, _ops_result_emul_data_T_73} | {_ops_result_emul_data_T_57, 1'h0}
-                   | {2{&io_req_1_bits_nfields}}}
+                 {1'h0, io_req_1_bits_nfields == 3'h1}
+                   | {io_req_1_bits_nfields == 3'h3, 1'h0} | {2{&io_req_1_bits_nfields}}}
               : (|{io_req_1_bits_op == 5'h12,
                    _ops_result_nfields_T_30,
                    io_req_1_bits_op == 5'hE,
@@ -50107,7 +49927,9 @@ module LsuV2(
                          ? 3'h0
                          : io_rvvState_bits_lmul)
                   : io_rvvState_bits_lmul,
-        _ops_result_nfields_T_27 | _ops_result_nfields_T_33
+        _ops_result_nfields_T_22 & (|{_ops_result_nfields_T_30, _ops_result_nfields_T_29})
+        | _ops_result_nfields_T_28
+        & (|{_ops_result_nfields_T_30, _ops_result_nfields_T_29})
           ? 3'h0
           : io_req_1_bits_nfields}),
     .in_2_valid
@@ -50129,8 +49951,8 @@ module LsuV2(
           : _ops_result_nfields_T_50
             & (|{_ops_result_nfields_T_52, _ops_result_nfields_T_51})
               ? {1'h0,
-                 {1'h0, _ops_result_emul_data_T_116} | {_ops_result_emul_data_T_100, 1'h0}
-                   | {2{&io_req_2_bits_nfields}}}
+                 {1'h0, io_req_2_bits_nfields == 3'h1}
+                   | {io_req_2_bits_nfields == 3'h3, 1'h0} | {2{&io_req_2_bits_nfields}}}
               : (|{io_req_2_bits_op == 5'h12,
                    _ops_result_nfields_T_52,
                    io_req_2_bits_op == 5'hE,
@@ -50144,7 +49966,9 @@ module LsuV2(
                          ? 3'h0
                          : io_rvvState_bits_lmul)
                   : io_rvvState_bits_lmul,
-        _ops_result_nfields_T_49 | _ops_result_nfields_T_55
+        _ops_result_nfields_T_44 & (|{_ops_result_nfields_T_52, _ops_result_nfields_T_51})
+        | _ops_result_nfields_T_50
+        & (|{_ops_result_nfields_T_52, _ops_result_nfields_T_51})
           ? 3'h0
           : io_req_2_bits_nfields}),
     .in_3_valid
@@ -50166,8 +49990,8 @@ module LsuV2(
           : _ops_result_nfields_T_72
             & (|{_ops_result_nfields_T_74, _ops_result_nfields_T_73})
               ? {1'h0,
-                 {1'h0, _ops_result_emul_data_T_159} | {_ops_result_emul_data_T_143, 1'h0}
-                   | {2{&io_req_3_bits_nfields}}}
+                 {1'h0, io_req_3_bits_nfields == 3'h1}
+                   | {io_req_3_bits_nfields == 3'h3, 1'h0} | {2{&io_req_3_bits_nfields}}}
               : (|{io_req_3_bits_op == 5'h12,
                    _ops_result_nfields_T_74,
                    io_req_3_bits_op == 5'hE,
@@ -50181,7 +50005,9 @@ module LsuV2(
                          ? 3'h0
                          : io_rvvState_bits_lmul)
                   : io_rvvState_bits_lmul,
-        _ops_result_nfields_T_71 | _ops_result_nfields_T_77
+        _ops_result_nfields_T_66 & (|{_ops_result_nfields_T_74, _ops_result_nfields_T_73})
+        | _ops_result_nfields_T_72
+        & (|{_ops_result_nfields_T_74, _ops_result_nfields_T_73})
           ? 3'h0
           : io_req_3_bits_nfields}),
     .out_0_valid (_alignedOps_aligner_out_0_valid),
@@ -50203,24 +50029,20 @@ module LsuV2(
     slot_op == 5'hC | slot_op == 5'h2
       ? {slot_data_3, slot_data_2, slot_data_1, slot_data_0}
       : slot_op == 5'h4
-          ? _GEN_1
+          ? _GEN_0
           : slot_op == 5'h1
               ? io_rd_bits_data_halfSigned
-              : slot_op == 5'h3
-                  ? _GEN_0
-                  : (|slot_op) ? 32'h0 : io_rd_bits_data_byteSigned;
+              : slot_op == 5'h3 ? _GEN : (|slot_op) ? 32'h0 : io_rd_bits_data_byteSigned;
   assign io_rd_flt_valid = io_rd_flt_valid_0;
   assign io_rd_flt_bits_addr = io_rd_bits_addr_0;
   assign io_rd_flt_bits_data =
     slot_op == 5'hC | slot_op == 5'h2
       ? {slot_data_3, slot_data_2, slot_data_1, slot_data_0}
       : slot_op == 5'h4
-          ? _GEN_1
+          ? _GEN_0
           : slot_op == 5'h1
               ? io_rd_bits_data_halfSigned
-              : slot_op == 5'h3
-                  ? _GEN_0
-                  : (|slot_op) ? 32'h0 : io_rd_bits_data_byteSigned;
+              : slot_op == 5'h3 ? _GEN : (|slot_op) ? 32'h0 : io_rd_bits_data_byteSigned;
   assign io_ibus_valid = io_ibus_valid_0;
   assign io_ibus_addr = targetLineAddr;
   assign io_dbus_valid = io_dbus_valid_0;
@@ -50262,8 +50084,22 @@ module LsuV2(
          ? 32'h0
          : {targetAddress_bits[31:4], 4'h0});
   assign io_ebus_dbus_size =
-    {4'h0, |_size_T_3} | ((|_size_T_8) ? (targetAddress_bits[0] ? 5'h10 : 5'h2) : 5'h0)
-    | ((|_size_T_14) ? (wordAligned ? 5'h4 : 5'h10) : 5'h0) | {|_size_T_25, 4'h0}
+    {4'h0, |{_alignedAddress_T_2, _alignedAddress_T_1, ~(|slot_op)}}
+    | ((|{_alignedAddress_T_7, _alignedAddress_T_6, _alignedAddress_T_5})
+         ? (targetAddress_bits[0] ? 5'h10 : 5'h2)
+         : 5'h0)
+    | ((|{_alignedAddress_T_13, _alignedAddress_T_12, _alignedAddress_T_11})
+         ? (wordAligned ? 5'h4 : 5'h10)
+         : 5'h0)
+    | {|{_scalarStoreComplete_T_63,
+         _scalarStoreComplete_T_62,
+         _writebackUpdatedSlot_result_baseAddr_T_11,
+         _writebackUpdatedSlot_result_baseAddr_T_2,
+         _scalarStoreComplete_T_59,
+         _scalarStoreComplete_T_58,
+         _writebackUpdatedSlot_result_baseAddr_T_10,
+         _writebackUpdatedSlot_result_baseAddr_T_1},
+       4'h0}
     | {{_alignedAddress_T_2,
         _alignedAddress_T_1,
         ~(|slot_op),
@@ -52846,10 +52682,8 @@ module Alu(
                 io_req_valid,
   input  [4:0]  io_req_bits_addr,
                 io_req_bits_op,
-  input         io_rs1_valid,
   input  [31:0] io_rs1_data,
-  input         io_rs2_valid,
-  input  [31:0] io_rs2_data,
+                io_rs2_data,
   output        io_rd_valid,
   output [4:0]  io_rd_bits_addr,
   output [31:0] io_rd_bits_data
@@ -53172,10 +53006,8 @@ module Bru(
                 io_csr_out_mtvec,
   input         io_csr_out_interrupt,
   input  [31:0] io_csr_out_interrupt_cause,
-  input         io_rs1_valid,
-  input  [31:0] io_rs1_data,
-  input         io_rs2_valid,
-  input  [31:0] io_rs2_data,
+                io_rs1_data,
+                io_rs2_data,
   output        io_rd_valid,
   output [4:0]  io_rd_bits_addr,
   output [31:0] io_rd_bits_data,
@@ -53218,10 +53050,8 @@ module Bru(
   wire        pipeline0Taken =
     stateReg_bits_op == 4'hC | stateReg_bits_op == 4'hB | stateReg_bits_op != 4'hA
     & stateReg_bits_op == 4'h9 | interrupt_taken;
-  wire        _ignore_T_1 = stateReg_bits_op == 4'h1;
   wire        _ignore_T_4 = stateReg_bits_op == 4'hA;
   wire        usageFault = stateReg_valid & _ignore_T_2;
-  wire        _ignore_T_6 = stateReg_bits_op == 4'hC;
   wire [31:0] nextState_linkData = io_req_bits_pc + 32'h4;
   wire        _nextState_target_T = io_req_bits_op == 4'h1;
   wire        stateRegValid = io_req_valid | io_fault_manager_valid;
@@ -53324,7 +53154,7 @@ module Bru(
     io_fault_manager_valid ? io_fault_manager_bits_mtval : stateReg_bits_pcEx;
   assign io_csr_in_halt = stateReg_valid & _ignore_T_4 | usageFault;
   assign io_csr_in_fault = usageFault;
-  assign io_csr_in_wfi = stateReg_valid & _ignore_T_6;
+  assign io_csr_in_wfi = stateReg_valid & stateReg_bits_op == 4'hC;
   assign io_rd_valid = stateReg_valid & stateReg_bits_linkValid;
   assign io_rd_bits_addr = stateReg_bits_linkAddr;
   assign io_rd_bits_data = stateReg_bits_linkData;
@@ -53366,7 +53196,7 @@ module Bru(
                                   | pipeline0Taken));
   assign io_real_target =
     stateReg_bits_fwd
-      ? (_ignore_T_1 ? _io_real_target_T_1 : stateReg_bits_originalTarget)
+      ? (stateReg_bits_op == 4'h1 ? _io_real_target_T_1 : stateReg_bits_originalTarget)
       : stateReg_bits_target;
   assign io_interlock =
     stateReg_valid & (|{_ignore_T_7, _ignore_T_5, _ignore_T_4, _ignore_T_3, _ignore_T_2});
@@ -53381,10 +53211,8 @@ module Bru_1(
   input  [31:0] io_req_bits_pc,
                 io_req_bits_target,
   input  [4:0]  io_req_bits_link,
-  input         io_rs1_valid,
   input  [31:0] io_rs1_data,
-  input         io_rs2_valid,
-  input  [31:0] io_rs2_data,
+                io_rs2_data,
   output        io_rd_valid,
   output [4:0]  io_rd_bits_addr,
   output [31:0] io_rd_bits_data,
@@ -53400,11 +53228,6 @@ module Bru_1(
   reg         stateReg_bits_linkValid;
   reg  [4:0]  stateReg_bits_linkAddr;
   reg  [31:0] stateReg_bits_linkData;
-  wire        _ignore_T_2 = stateReg_bits_op == 4'h8;
-  wire        _ignore_T_3 = stateReg_bits_op == 4'h9;
-  wire        _ignore_T_4 = stateReg_bits_op == 4'hA;
-  wire        _ignore_T_5 = stateReg_bits_op == 4'hB;
-  wire        _ignore_T_6 = stateReg_bits_op == 4'hC;
   wire [31:0] nextState_linkData = io_req_bits_pc + 32'h4;
   wire        _nextState_target_T = io_req_bits_op == 4'h1;
   always @(posedge clock or posedge reset) begin
@@ -53487,7 +53310,7 @@ module Bru_1(
                             ? io_rs1_data != io_rs2_data != stateReg_bits_fwd
                             : stateReg_bits_op == 4'h2
                                 ? io_rs1_data == io_rs2_data != stateReg_bits_fwd
-                                : (stateReg_bits_op == 4'h1 | ~(|stateReg_bits_op))
+                                : (stateReg_bits_op == 4'h1 | stateReg_bits_op == 4'h0)
                                   & ~stateReg_bits_fwd));
   assign io_taken_value = stateReg_bits_target;
 endmodule
@@ -53659,22 +53482,14 @@ module Mlu(
   input         io_req_3_valid,
   input  [4:0]  io_req_3_bits_addr,
   input  [2:0]  io_req_3_bits_op,
-  input         io_rs1_0_valid,
   input  [31:0] io_rs1_0_data,
-  input         io_rs1_1_valid,
-  input  [31:0] io_rs1_1_data,
-  input         io_rs1_2_valid,
-  input  [31:0] io_rs1_2_data,
-  input         io_rs1_3_valid,
-  input  [31:0] io_rs1_3_data,
-  input         io_rs2_0_valid,
-  input  [31:0] io_rs2_0_data,
-  input         io_rs2_1_valid,
-  input  [31:0] io_rs2_1_data,
-  input         io_rs2_2_valid,
-  input  [31:0] io_rs2_2_data,
-  input         io_rs2_3_valid,
-  input  [31:0] io_rs2_3_data,
+                io_rs1_1_data,
+                io_rs1_2_data,
+                io_rs1_3_data,
+                io_rs2_0_data,
+                io_rs2_1_data,
+                io_rs2_2_data,
+                io_rs2_3_data,
   output        io_rd_valid,
   output [4:0]  io_rd_bits_addr,
   output [31:0] io_rd_bits_data
@@ -54533,7 +54348,6 @@ module FRegfile(
   input  [22:0] io_write_ports_1_data_mantissa,
   input  [7:0]  io_write_ports_1_data_exponent,
   input         io_write_ports_1_data_sign,
-                io_dm_write_valid,
   input  [31:0] io_scoreboard_set,
   output [31:0] io_scoreboard,
                 io_busPort_data_0,
@@ -54637,7 +54451,6 @@ module FRegfile(
   reg  [7:0]        fregfile_31_exponent;
   reg               fregfile_31_sign;
   reg  [31:0]       scoreboard;
-  reg               scoreboard_error;
   wire [31:0][22:0] _GEN =
     {{fregfile_31_mantissa},
      {fregfile_30_mantissa},
@@ -54737,9 +54550,6 @@ module FRegfile(
      {fregfile_2_sign},
      {fregfile_1_sign},
      {fregfile_0_sign}};
-  wire [31:0]       scoreboard_clr =
-    (io_write_ports_0_valid ? 32'h1 << io_write_ports_0_addr : 32'h0)
-    | (io_write_ports_1_valid ? 32'h1 << io_write_ports_1_addr : 32'h0);
   wire              valid_0 = io_write_ports_0_valid & io_write_ports_0_addr == 5'h0;
   wire              valid_0_1 = io_write_ports_0_valid & io_write_ports_0_addr == 5'h1;
   wire              valid_0_2 = io_write_ports_0_valid & io_write_ports_0_addr == 5'h2;
@@ -54871,7 +54681,6 @@ module FRegfile(
       fregfile_31_exponent <= 8'h0;
       fregfile_31_sign <= 1'h0;
       scoreboard <= 32'h0;
-      scoreboard_error <= 1'h0;
     end
     else begin
       if (valid_0 | io_write_ports_1_valid & io_write_ports_1_addr == 5'h0) begin
@@ -55130,22 +54939,24 @@ module FRegfile(
         fregfile_31_sign <=
           valid_0_31 ? io_write_ports_0_data_sign : io_write_ports_1_data_sign;
       end
-      scoreboard <= scoreboard & ~scoreboard_clr | io_scoreboard_set;
-      scoreboard_error <=
-        (scoreboard & scoreboard_clr) != scoreboard_clr & ~io_dm_write_valid;
+      scoreboard <=
+        scoreboard
+        & ~((io_write_ports_0_valid ? 32'h1 << io_write_ports_0_addr : 32'h0)
+            | (io_write_ports_1_valid ? 32'h1 << io_write_ports_1_addr : 32'h0))
+        | io_scoreboard_set;
     end
   end // always @(posedge, posedge)
   `ifdef ENABLE_INITIAL_REG_
     `ifdef FIRRTL_BEFORE_INITIAL
       `FIRRTL_BEFORE_INITIAL
     `endif // FIRRTL_BEFORE_INITIAL
-    logic [31:0] _RANDOM[0:33];
+    logic [31:0] _RANDOM[0:32];
     initial begin
       `ifdef INIT_RANDOM_PROLOG_
         `INIT_RANDOM_PROLOG_
       `endif // INIT_RANDOM_PROLOG_
       `ifdef RANDOMIZE_REG_INIT
-        for (logic [5:0] i = 6'h0; i < 6'h22; i += 6'h1) begin
+        for (logic [5:0] i = 6'h0; i < 6'h21; i += 6'h1) begin
           _RANDOM[i] = `RANDOM;
         end
         fregfile_0_mantissa = _RANDOM[6'h0][22:0];
@@ -55245,7 +55056,6 @@ module FRegfile(
         fregfile_31_exponent = _RANDOM[6'h1F][30:23];
         fregfile_31_sign = _RANDOM[6'h1F][31];
         scoreboard = _RANDOM[6'h20];
-        scoreboard_error = _RANDOM[6'h21][0];
       `endif // RANDOMIZE_REG_INIT
       if (reset) begin
         fregfile_0_mantissa = 23'h0;
@@ -55345,7 +55155,6 @@ module FRegfile(
         fregfile_31_exponent = 8'h0;
         fregfile_31_sign = 1'h0;
         scoreboard = 32'h0;
-        scoreboard_error = 1'h0;
       end
     end // initial
     `ifdef FIRRTL_AFTER_INITIAL
@@ -56070,21 +55879,13 @@ module SCore(
   wire [31:0]  _regfile_io_busPort_data_1;
   wire [31:0]  _regfile_io_busPort_data_2;
   wire [31:0]  _regfile_io_busPort_data_3;
-  wire         _regfile_io_readData_0_valid;
   wire [31:0]  _regfile_io_readData_0_data;
-  wire         _regfile_io_readData_1_valid;
   wire [31:0]  _regfile_io_readData_1_data;
-  wire         _regfile_io_readData_2_valid;
   wire [31:0]  _regfile_io_readData_2_data;
-  wire         _regfile_io_readData_3_valid;
   wire [31:0]  _regfile_io_readData_3_data;
-  wire         _regfile_io_readData_4_valid;
   wire [31:0]  _regfile_io_readData_4_data;
-  wire         _regfile_io_readData_5_valid;
   wire [31:0]  _regfile_io_readData_5_data;
-  wire         _regfile_io_readData_6_valid;
   wire [31:0]  _regfile_io_readData_6_data;
-  wire         _regfile_io_readData_7_valid;
   wire [31:0]  _regfile_io_readData_7_data;
   wire [31:0]  _regfile_io_scoreboard_regd;
   wire [31:0]  _regfile_io_scoreboard_comb;
@@ -56320,22 +56121,21 @@ module SCore(
     .io_busPort_data_3        (_regfile_io_busPort_data_3),
     .io_debugBusPort_idx      (io_dm_scalar_rs_idx),
     .io_debugBusPort_data     (io_dm_scalar_rs_data),
-    .io_debugWriteValid       (io_dm_scalar_rd_valid),
-    .io_readData_0_valid      (_regfile_io_readData_0_valid),
+    .io_readData_0_valid      (io_rvvcore_rs_0_valid),
     .io_readData_0_data       (_regfile_io_readData_0_data),
-    .io_readData_1_valid      (_regfile_io_readData_1_valid),
+    .io_readData_1_valid      (io_rvvcore_rs_1_valid),
     .io_readData_1_data       (_regfile_io_readData_1_data),
-    .io_readData_2_valid      (_regfile_io_readData_2_valid),
+    .io_readData_2_valid      (io_rvvcore_rs_2_valid),
     .io_readData_2_data       (_regfile_io_readData_2_data),
-    .io_readData_3_valid      (_regfile_io_readData_3_valid),
+    .io_readData_3_valid      (io_rvvcore_rs_3_valid),
     .io_readData_3_data       (_regfile_io_readData_3_data),
-    .io_readData_4_valid      (_regfile_io_readData_4_valid),
+    .io_readData_4_valid      (io_rvvcore_rs_4_valid),
     .io_readData_4_data       (_regfile_io_readData_4_data),
-    .io_readData_5_valid      (_regfile_io_readData_5_valid),
+    .io_readData_5_valid      (io_rvvcore_rs_5_valid),
     .io_readData_5_data       (_regfile_io_readData_5_data),
-    .io_readData_6_valid      (_regfile_io_readData_6_valid),
+    .io_readData_6_valid      (io_rvvcore_rs_6_valid),
     .io_readData_6_data       (_regfile_io_readData_6_data),
-    .io_readData_7_valid      (_regfile_io_readData_7_valid),
+    .io_readData_7_valid      (io_rvvcore_rs_7_valid),
     .io_readData_7_data       (_regfile_io_readData_7_data),
     .io_writeData_0_valid     (regfile_io_writeData_0_valid),
     .io_writeData_0_bits_addr (regfile_io_writeData_0_bits_addr),
@@ -56425,7 +56225,6 @@ module SCore(
     .io_req_bits_index          (_csrReqArbiter_io_out_bits_index),
     .io_req_bits_rs1            (_csrReqArbiter_io_out_bits_rs1),
     .io_req_bits_op             (_csrReqArbiter_io_out_bits_op),
-    .io_rs1_valid               (~csr_io_rs1_REG | _regfile_io_readData_0_valid),
     .io_rs1_data
       (csr_io_rs1_REG ? _regfile_io_readData_0_data : io_dm_csr_rs1),
     .io_rd_valid                (_csr_io_rd_valid),
@@ -56486,8 +56285,6 @@ module SCore(
     .io_timer_irq               (io_timer_irq)
   );
   DispatchV2 dispatch (
-    .clock                             (clock),
-    .reset                             (reset),
     .io_halted
       (_csr_io_halted | _csr_io_wfi | _csr_io_dm_debug_mode),
     .io_lsuActive                      (_lsu_io_active),
@@ -57049,9 +56846,7 @@ module SCore(
     .io_req_valid     (_dispatch_io_alu_0_valid),
     .io_req_bits_addr (_dispatch_io_alu_0_bits_addr),
     .io_req_bits_op   (_dispatch_io_alu_0_bits_op),
-    .io_rs1_valid     (_regfile_io_readData_0_valid),
     .io_rs1_data      (_regfile_io_readData_0_data),
-    .io_rs2_valid     (_regfile_io_readData_1_valid),
     .io_rs2_data      (_regfile_io_readData_1_data),
     .io_rd_valid      (_alu_0_io_rd_valid),
     .io_rd_bits_addr  (_alu_0_io_rd_bits_addr),
@@ -57063,9 +56858,7 @@ module SCore(
     .io_req_valid     (_dispatch_io_alu_1_valid),
     .io_req_bits_addr (_dispatch_io_alu_1_bits_addr),
     .io_req_bits_op   (_dispatch_io_alu_1_bits_op),
-    .io_rs1_valid     (_regfile_io_readData_2_valid),
     .io_rs1_data      (_regfile_io_readData_2_data),
-    .io_rs2_valid     (_regfile_io_readData_3_valid),
     .io_rs2_data      (_regfile_io_readData_3_data),
     .io_rd_valid      (_alu_1_io_rd_valid),
     .io_rd_bits_addr  (_alu_1_io_rd_bits_addr),
@@ -57077,9 +56870,7 @@ module SCore(
     .io_req_valid     (_dispatch_io_alu_2_valid),
     .io_req_bits_addr (_dispatch_io_alu_2_bits_addr),
     .io_req_bits_op   (_dispatch_io_alu_2_bits_op),
-    .io_rs1_valid     (_regfile_io_readData_4_valid),
     .io_rs1_data      (_regfile_io_readData_4_data),
-    .io_rs2_valid     (_regfile_io_readData_5_valid),
     .io_rs2_data      (_regfile_io_readData_5_data),
     .io_rd_valid      (_alu_2_io_rd_valid),
     .io_rd_bits_addr  (_alu_2_io_rd_bits_addr),
@@ -57091,9 +56882,7 @@ module SCore(
     .io_req_valid     (_dispatch_io_alu_3_valid),
     .io_req_bits_addr (_dispatch_io_alu_3_bits_addr),
     .io_req_bits_op   (_dispatch_io_alu_3_bits_op),
-    .io_rs1_valid     (_regfile_io_readData_6_valid),
     .io_rs1_data      (_regfile_io_readData_6_data),
-    .io_rs2_valid     (_regfile_io_readData_7_valid),
     .io_rs2_data      (_regfile_io_readData_7_data),
     .io_rd_valid      (_alu_3_io_rd_valid),
     .io_rd_bits_addr  (_alu_3_io_rd_bits_addr),
@@ -57122,9 +56911,7 @@ module SCore(
     .io_csr_out_mtvec             (_csr_io_bru_out_mtvec),
     .io_csr_out_interrupt         (_csr_io_bru_out_interrupt),
     .io_csr_out_interrupt_cause   (_csr_io_bru_out_interrupt_cause),
-    .io_rs1_valid                 (_regfile_io_readData_0_valid),
     .io_rs1_data                  (_regfile_io_readData_0_data),
-    .io_rs2_valid                 (_regfile_io_readData_1_valid),
     .io_rs2_data                  (_regfile_io_readData_1_data),
     .io_rd_valid                  (_bru_0_io_rd_valid),
     .io_rd_bits_addr              (_bru_0_io_rd_bits_addr),
@@ -57149,9 +56936,7 @@ module SCore(
     .io_req_bits_pc     (_dispatch_io_bru_1_bits_pc),
     .io_req_bits_target (_dispatch_io_bru_1_bits_target),
     .io_req_bits_link   (_dispatch_io_bru_1_bits_link),
-    .io_rs1_valid       (_regfile_io_readData_2_valid),
     .io_rs1_data        (_regfile_io_readData_2_data),
-    .io_rs2_valid       (_regfile_io_readData_3_valid),
     .io_rs2_data        (_regfile_io_readData_3_data),
     .io_rd_valid        (_bru_1_io_rd_valid),
     .io_rd_bits_addr    (_bru_1_io_rd_bits_addr),
@@ -57169,9 +56954,7 @@ module SCore(
     .io_req_bits_pc     (_dispatch_io_bru_2_bits_pc),
     .io_req_bits_target (_dispatch_io_bru_2_bits_target),
     .io_req_bits_link   (_dispatch_io_bru_2_bits_link),
-    .io_rs1_valid       (_regfile_io_readData_4_valid),
     .io_rs1_data        (_regfile_io_readData_4_data),
-    .io_rs2_valid       (_regfile_io_readData_5_valid),
     .io_rs2_data        (_regfile_io_readData_5_data),
     .io_rd_valid        (_bru_2_io_rd_valid),
     .io_rd_bits_addr    (_bru_2_io_rd_bits_addr),
@@ -57189,9 +56972,7 @@ module SCore(
     .io_req_bits_pc     (_dispatch_io_bru_3_bits_pc),
     .io_req_bits_target (_dispatch_io_bru_3_bits_target),
     .io_req_bits_link   (_dispatch_io_bru_3_bits_link),
-    .io_rs1_valid       (_regfile_io_readData_6_valid),
     .io_rs1_data        (_regfile_io_readData_6_data),
-    .io_rs2_valid       (_regfile_io_readData_7_valid),
     .io_rs2_data        (_regfile_io_readData_7_data),
     .io_rd_valid        (_bru_3_io_rd_valid),
     .io_rd_bits_addr    (_bru_3_io_rd_bits_addr),
@@ -57218,21 +56999,13 @@ module SCore(
     .io_req_3_valid     (_dispatch_io_mlu_3_valid),
     .io_req_3_bits_addr (_dispatch_io_mlu_3_bits_addr),
     .io_req_3_bits_op   (_dispatch_io_mlu_3_bits_op),
-    .io_rs1_0_valid     (_regfile_io_readData_0_valid),
     .io_rs1_0_data      (_regfile_io_readData_0_data),
-    .io_rs1_1_valid     (_regfile_io_readData_2_valid),
     .io_rs1_1_data      (_regfile_io_readData_2_data),
-    .io_rs1_2_valid     (_regfile_io_readData_4_valid),
     .io_rs1_2_data      (_regfile_io_readData_4_data),
-    .io_rs1_3_valid     (_regfile_io_readData_6_valid),
     .io_rs1_3_data      (_regfile_io_readData_6_data),
-    .io_rs2_0_valid     (_regfile_io_readData_1_valid),
     .io_rs2_0_data      (_regfile_io_readData_1_data),
-    .io_rs2_1_valid     (_regfile_io_readData_3_valid),
     .io_rs2_1_data      (_regfile_io_readData_3_data),
-    .io_rs2_2_valid     (_regfile_io_readData_5_valid),
     .io_rs2_2_data      (_regfile_io_readData_5_data),
-    .io_rs2_3_valid     (_regfile_io_readData_7_valid),
     .io_rs2_3_data      (_regfile_io_readData_7_data),
     .io_rd_valid        (_mlu_io_rd_valid),
     .io_rd_bits_addr    (_mlu_io_rd_bits_addr),
@@ -57357,7 +57130,6 @@ module SCore(
     .io_write_ports_1_data_mantissa (_floatCore_io_write_ports_1_data_mantissa),
     .io_write_ports_1_data_exponent (_floatCore_io_write_ports_1_data_exponent),
     .io_write_ports_1_data_sign     (_floatCore_io_write_ports_1_data_sign),
-    .io_dm_write_valid              (io_dm_float_rd_valid),
     .io_scoreboard_set
       (_dispatch_io_rdMark_flt_valid ? 32'h1 << _dispatch_io_rdMark_flt_addr : 32'h0),
     .io_scoreboard                  (_fRegfile_io_scoreboard),
@@ -57403,21 +57175,13 @@ module SCore(
   assign io_dbus_write = _lsu_io_dbus_write;
   assign io_dbus_addr = _lsu_io_dbus_addr;
   assign io_dbus_wdata = _lsu_io_dbus_wdata;
-  assign io_rvvcore_rs_0_valid = _regfile_io_readData_0_valid;
   assign io_rvvcore_rs_0_data = _regfile_io_readData_0_data;
-  assign io_rvvcore_rs_1_valid = _regfile_io_readData_1_valid;
   assign io_rvvcore_rs_1_data = _regfile_io_readData_1_data;
-  assign io_rvvcore_rs_2_valid = _regfile_io_readData_2_valid;
   assign io_rvvcore_rs_2_data = _regfile_io_readData_2_data;
-  assign io_rvvcore_rs_3_valid = _regfile_io_readData_3_valid;
   assign io_rvvcore_rs_3_data = _regfile_io_readData_3_data;
-  assign io_rvvcore_rs_4_valid = _regfile_io_readData_4_valid;
   assign io_rvvcore_rs_4_data = _regfile_io_readData_4_data;
-  assign io_rvvcore_rs_5_valid = _regfile_io_readData_5_valid;
   assign io_rvvcore_rs_5_data = _regfile_io_readData_5_data;
-  assign io_rvvcore_rs_6_valid = _regfile_io_readData_6_valid;
   assign io_rvvcore_rs_6_data = _regfile_io_readData_6_data;
-  assign io_rvvcore_rs_7_valid = _regfile_io_readData_7_valid;
   assign io_rvvcore_rs_7_data = _regfile_io_readData_7_data;
   assign io_rvvcore_frs_0 =
     {_fRegfile_io_read_ports_0_data_sign,
@@ -58858,9 +58622,7 @@ module SRAM(
 endmodule
 
 module FabricArbiter(
-  input          clock,
-                 reset,
-                 io_source_0_readDataAddr_valid,
+  input          io_source_0_readDataAddr_valid,
   input  [31:0]  io_source_0_readDataAddr_bits,
   output [127:0] io_source_0_readData_bits,
   input          io_source_0_writeDataAddr_valid,
@@ -59390,15 +59152,11 @@ module FabricMux(
   wire        portSelected_0 = selected_valid & _io_fabricBusy_T & ~io_periBusy_0;
   wire        _io_fabricBusy_T_2 = selected_bits == 2'h1;
   wire        portSelected_1 = selected_valid & _io_fabricBusy_T_2 & ~io_periBusy_1;
-  wire        _io_fabricBusy_T_4 = selected_bits == 2'h2;
-  wire        _portSelected_T_7 = selected_valid & _io_fabricBusy_T_4;
-  wire        _io_fabricBusy_T_1 = selected_valid & _io_fabricBusy_T;
-  wire        _io_fabricBusy_T_3 = selected_valid & _io_fabricBusy_T_2;
+  wire        _portSelected_T_7 = selected_valid & selected_bits == 2'h2;
   wire        io_ports_0_readDataAddr_valid_0 =
     portSelected_0 & io_source_readDataAddr_valid;
   wire        io_ports_1_readDataAddr_valid_0 =
     portSelected_1 & io_source_readDataAddr_valid;
-  wire        _lastReadSelected_T_19 = _portSelected_T_7 & io_source_readDataAddr_valid;
   reg         lastReadSelected_valid;
   reg  [1:0]  lastReadSelected_bits;
   wire        _io_source_readData_T_1 =
@@ -59407,6 +59165,7 @@ module FabricMux(
     lastReadSelected_valid & lastReadSelected_bits == 2'h1;
   wire        _io_source_readData_T_5 =
     lastReadSelected_valid & lastReadSelected_bits == 2'h2;
+  wire        _lastReadSelected_T_19 = _portSelected_T_7 & io_source_readDataAddr_valid;
   always @(posedge clock or posedge reset) begin
     if (reset) begin
       lastReadSelected_valid <= 1'h0;
@@ -59453,7 +59212,8 @@ module FabricMux(
   assign io_source_writeResp =
     portSelected_0 | portSelected_1 | _portSelected_T_7 & io_ports_2_writeResp;
   assign io_fabricBusy =
-    _io_fabricBusy_T_1 & io_periBusy_0 | _io_fabricBusy_T_3 & io_periBusy_1;
+    selected_valid & _io_fabricBusy_T & io_periBusy_0 | selected_valid
+    & _io_fabricBusy_T_2 & io_periBusy_1;
   assign io_ports_0_readDataAddr_valid = io_ports_0_readDataAddr_valid_0;
   assign io_ports_0_readDataAddr_bits =
     portSelected_0 ? io_source_readDataAddr_bits : 32'h0;
@@ -60064,8 +59824,7 @@ endmodule
 module Queue3_AxiReadData(
   input          clock,
                  reset,
-  output         io_enq_ready,
-  input          io_enq_valid,
+                 io_enq_valid,
   input  [127:0] io_enq_bits_data,
   input  [5:0]   io_enq_bits_id,
   input  [1:0]   io_enq_bits_resp,
@@ -60079,14 +59838,15 @@ module Queue3_AxiReadData(
   output [1:0]   io_count
 );
 
+  wire         io_enq_ready;
   wire [136:0] _ram_ext_R0_data;
   reg  [1:0]   enq_ptr_value;
   reg  [1:0]   deq_ptr_value;
   reg          maybe_full;
   wire         ptr_match = enq_ptr_value == deq_ptr_value;
   wire         empty = ptr_match & ~maybe_full;
-  wire         full = ptr_match & maybe_full;
-  wire         do_enq = ~full & io_enq_valid;
+  wire         do_enq = io_enq_ready & io_enq_valid;
+  assign io_enq_ready = ~(ptr_match & maybe_full);
   wire [1:0]   _ptr_diff_T = enq_ptr_value - deq_ptr_value;
   wire         do_deq = io_deq_ready & ~empty;
   always @(posedge clock or posedge reset) begin
@@ -60139,7 +59899,6 @@ module Queue3_AxiReadData(
     .W0_clk  (clock),
     .W0_data ({io_enq_bits_data, io_enq_bits_id, io_enq_bits_resp, io_enq_bits_last})
   );
-  assign io_enq_ready = ~full;
   assign io_deq_valid = ~empty;
   assign io_deq_bits_data = _ram_ext_R0_data[136:9];
   assign io_deq_bits_id = _ram_ext_R0_data[8:3];
@@ -60205,7 +59964,6 @@ module AxiSlave(
                  io_periBusy
 );
 
-  wire        _readDataQueue_io_enq_ready;
   wire [1:0]  _readDataQueue_io_count;
   wire        _io_axi_write_resp_q_io_enq_ready;
   wire        _writeData_q_io_deq_valid;
@@ -60270,14 +60028,6 @@ module AxiSlave(
   wire        maybeIssueRead = readActive & _maybeIssueRead_T[1];
   wire        issueRead = maybeIssueRead & ~io_periBusy;
   wire        lastRead = readsIssued == {1'h0, _axiAddrCmd_q_io_deq_bits_addr_len};
-  wire        _addrNext_T = _axiAddrCmd_q_io_deq_bits_addr_burst == 2'h0;
-  wire        _addrNext_T_2 = _axiAddrCmd_q_io_deq_bits_addr_burst == 2'h1;
-  wire        _addrNext_T_7 = _axiAddrCmd_q_io_deq_bits_addr_burst == 2'h2;
-  wire        validBurst =
-    _axiAddrCmd_q_io_deq_valid & (_addrNext_T | _addrNext_T_2 | _addrNext_T_7);
-  wire        _addrNext_T_1 = validBurst & _addrNext_T;
-  wire        _addrNext_T_3 = validBurst & _addrNext_T_2;
-  wire        _addrNext_T_8 = validBurst & _addrNext_T_7;
   wire        axiAddrCmd_q_io_deq_ready =
     writeActive ? writeResponse_valid : readActive & issueRead & lastRead;
   wire [31:0] cmdAddrBase =
@@ -60290,7 +60040,15 @@ module AxiSlave(
        _axiAddrCmd_q_io_deq_bits_addr_size < 3'h3,
        _axiAddrCmd_q_io_deq_bits_addr_size < 3'h2,
        _axiAddrCmd_q_io_deq_bits_addr_size == 3'h0};
+  wire        _addrNext_T = _axiAddrCmd_q_io_deq_bits_addr_burst == 2'h0;
+  wire        _addrNext_T_2 = _axiAddrCmd_q_io_deq_bits_addr_burst == 2'h1;
+  wire        _addrNext_T_7 = _axiAddrCmd_q_io_deq_bits_addr_burst == 2'h2;
+  wire        validBurst =
+    _axiAddrCmd_q_io_deq_valid & (_addrNext_T | _addrNext_T_2 | _addrNext_T_7);
+  wire        _addrNext_T_1 = validBurst & _addrNext_T;
+  wire        _addrNext_T_3 = validBurst & _addrNext_T_2;
   wire [31:0] _GEN = {24'h0, 8'h1 << _axiAddrCmd_q_io_deq_bits_addr_size};
+  wire        _addrNext_T_8 = validBurst & _addrNext_T_7;
   wire [31:0] _addrNext_newAddr_T_1 = cmdAddr + _GEN;
   always @(posedge clock or posedge reset) begin
     if (reset) begin
@@ -60503,7 +60261,6 @@ module AxiSlave(
   Queue3_AxiReadData readDataQueue (
     .clock            (clock),
     .reset            (reset),
-    .io_enq_ready     (_readDataQueue_io_enq_ready),
     .io_enq_valid     (readIssued_valid),
     .io_enq_bits_data (io_fabric_readData_bits),
     .io_enq_bits_id   (readIssued_bits_id),
@@ -61970,8 +61727,6 @@ module rvv_coreAxi(
     .io_sram_mask_15               (_itcmWrapper_io_sram_mask_15)
   );
   FabricArbiter itcmArbiter (
-    .clock                           (_rst_sync_clk_o),
-    .reset                           (_global_reset_T_2),
     .io_source_0_readDataAddr_valid  (_core_io_ibus_valid & inItcm),
     .io_source_0_readDataAddr_bits   (_core_io_ibus_addr),
     .io_source_0_readData_bits       (_itcmArbiter_io_source_0_readData_bits),
@@ -62139,8 +61894,6 @@ module rvv_coreAxi(
     .io_sram_mask_15               (_dtcmWrapper_io_sram_mask_15)
   );
   FabricArbiter dtcmArbiter (
-    .clock                           (_rst_sync_clk_o),
-    .reset                           (_global_reset_T_2),
     .io_source_0_readDataAddr_valid  (_core_io_dbus_valid & ~_core_io_dbus_write),
     .io_source_0_readDataAddr_bits   (_core_io_dbus_addr),
     .io_source_0_readData_bits       (_dtcmArbiter_io_source_0_readData_bits),
@@ -78367,3854 +78120,6 @@ module CoralNPUChiselSubsystem(
   assign io_ddr_mem_axi_read_addr_bits_cache = 4'h0;
   assign io_ddr_mem_axi_read_addr_bits_qos = 4'h0;
   assign io_ddr_mem_axi_read_addr_bits_region = 4'h0;
-endmodule
-
-
-// ----- 8< ----- FILE "verification/cover/layers-CoralNPUChiselSubsystem-Verification_Cover.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-`ifndef layers_CoralNPUChiselSubsystem_Verification_Cover
-`define layers_CoralNPUChiselSubsystem_Verification_Cover
-`endif // layers_CoralNPUChiselSubsystem_Verification_Cover
-
-// ----- 8< ----- FILE "verification/assume/layers-CoralNPUChiselSubsystem-Verification_Assume.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-`ifndef layers_CoralNPUChiselSubsystem_Verification_Assume
-`define layers_CoralNPUChiselSubsystem_Verification_Assume
-`endif // layers_CoralNPUChiselSubsystem_Verification_Assume
-
-// ----- 8< ----- FILE "verification/assert/layers-CoralNPUChiselSubsystem-Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-`ifndef layers_CoralNPUChiselSubsystem_Verification_Assert
-`define layers_CoralNPUChiselSubsystem_Verification_Assert
-bind FifoX FifoX_Verification_Assert verification_Assert (
-  .reset  (reset),
-  .mcount (mcount),
-  ._GEN   (4'h8),
-  .clock  (clock)
-);
-bind Regfile Regfile_Verification_Assert verification_Assert (
-  ._GEN             (valid_1),
-  ._GEN_0           (valid_2),
-  ._GEN_1           (_valid_T),
-  ._GEN_2           (_valid_T_8),
-  ._GEN_3           (valid_5),
-  ._GEN_4           (valid_3),
-  .reset            (reset),
-  ._GEN_5           (1'h1),
-  ._GEN_6           (valid_1_1),
-  ._GEN_7           (valid_2_1),
-  ._GEN_8           (_valid_T_12),
-  ._GEN_9           (_valid_T_20),
-  ._GEN_10          (valid_5_1),
-  ._GEN_11          (valid_3_1),
-  ._GEN_12          (valid_1_2),
-  ._GEN_13          (valid_2_2),
-  ._GEN_14          (_valid_T_24),
-  ._GEN_15          (_valid_T_32),
-  ._GEN_16          (valid_5_2),
-  ._GEN_17          (valid_3_2),
-  ._GEN_18          (valid_1_3),
-  ._GEN_19          (valid_2_3),
-  ._GEN_20          (_valid_T_36),
-  ._GEN_21          (_valid_T_44),
-  ._GEN_22          (valid_5_3),
-  ._GEN_23          (valid_3_3),
-  ._GEN_24          (valid_1_4),
-  ._GEN_25          (valid_2_4),
-  ._GEN_26          (_valid_T_48),
-  ._GEN_27          (_valid_T_56),
-  ._GEN_28          (valid_5_4),
-  ._GEN_29          (valid_3_4),
-  ._GEN_30          (valid_1_5),
-  ._GEN_31          (valid_2_5),
-  ._GEN_32          (_valid_T_60),
-  ._GEN_33          (_valid_T_68),
-  ._GEN_34          (valid_5_5),
-  ._GEN_35          (valid_3_5),
-  ._GEN_36          (valid_1_6),
-  ._GEN_37          (valid_2_6),
-  ._GEN_38          (_valid_T_72),
-  ._GEN_39          (_valid_T_80),
-  ._GEN_40          (valid_5_6),
-  ._GEN_41          (valid_3_6),
-  ._GEN_42          (valid_1_7),
-  ._GEN_43          (valid_2_7),
-  ._GEN_44          (_valid_T_84),
-  ._GEN_45          (_valid_T_92),
-  ._GEN_46          (valid_5_7),
-  ._GEN_47          (valid_3_7),
-  ._GEN_48          (valid_1_8),
-  ._GEN_49          (valid_2_8),
-  ._GEN_50          (_valid_T_96),
-  ._GEN_51          (_valid_T_104),
-  ._GEN_52          (valid_5_8),
-  ._GEN_53          (valid_3_8),
-  ._GEN_54          (valid_1_9),
-  ._GEN_55          (valid_2_9),
-  ._GEN_56          (_valid_T_108),
-  ._GEN_57          (_valid_T_116),
-  ._GEN_58          (valid_5_9),
-  ._GEN_59          (valid_3_9),
-  ._GEN_60          (valid_1_10),
-  ._GEN_61          (valid_2_10),
-  ._GEN_62          (_valid_T_120),
-  ._GEN_63          (_valid_T_128),
-  ._GEN_64          (valid_5_10),
-  ._GEN_65          (valid_3_10),
-  ._GEN_66          (valid_1_11),
-  ._GEN_67          (valid_2_11),
-  ._GEN_68          (_valid_T_132),
-  ._GEN_69          (_valid_T_140),
-  ._GEN_70          (valid_5_11),
-  ._GEN_71          (valid_3_11),
-  ._GEN_72          (valid_1_12),
-  ._GEN_73          (valid_2_12),
-  ._GEN_74          (_valid_T_144),
-  ._GEN_75          (_valid_T_152),
-  ._GEN_76          (valid_5_12),
-  ._GEN_77          (valid_3_12),
-  ._GEN_78          (valid_1_13),
-  ._GEN_79          (valid_2_13),
-  ._GEN_80          (_valid_T_156),
-  ._GEN_81          (_valid_T_164),
-  ._GEN_82          (valid_5_13),
-  ._GEN_83          (valid_3_13),
-  ._GEN_84          (valid_1_14),
-  ._GEN_85          (valid_2_14),
-  ._GEN_86          (_valid_T_168),
-  ._GEN_87          (_valid_T_176),
-  ._GEN_88          (valid_5_14),
-  ._GEN_89          (valid_3_14),
-  ._GEN_90          (valid_1_15),
-  ._GEN_91          (valid_2_15),
-  ._GEN_92          (_valid_T_180),
-  ._GEN_93          (_valid_T_188),
-  ._GEN_94          (valid_5_15),
-  ._GEN_95          (valid_3_15),
-  ._GEN_96          (valid_1_16),
-  ._GEN_97          (valid_2_16),
-  ._GEN_98          (_valid_T_192),
-  ._GEN_99          (_valid_T_200),
-  ._GEN_100         (valid_5_16),
-  ._GEN_101         (valid_3_16),
-  ._GEN_102         (valid_1_17),
-  ._GEN_103         (valid_2_17),
-  ._GEN_104         (_valid_T_204),
-  ._GEN_105         (_valid_T_212),
-  ._GEN_106         (valid_5_17),
-  ._GEN_107         (valid_3_17),
-  ._GEN_108         (valid_1_18),
-  ._GEN_109         (valid_2_18),
-  ._GEN_110         (_valid_T_216),
-  ._GEN_111         (_valid_T_224),
-  ._GEN_112         (valid_5_18),
-  ._GEN_113         (valid_3_18),
-  ._GEN_114         (valid_1_19),
-  ._GEN_115         (valid_2_19),
-  ._GEN_116         (_valid_T_228),
-  ._GEN_117         (_valid_T_236),
-  ._GEN_118         (valid_5_19),
-  ._GEN_119         (valid_3_19),
-  ._GEN_120         (valid_1_20),
-  ._GEN_121         (valid_2_20),
-  ._GEN_122         (_valid_T_240),
-  ._GEN_123         (_valid_T_248),
-  ._GEN_124         (valid_5_20),
-  ._GEN_125         (valid_3_20),
-  ._GEN_126         (valid_1_21),
-  ._GEN_127         (valid_2_21),
-  ._GEN_128         (_valid_T_252),
-  ._GEN_129         (_valid_T_260),
-  ._GEN_130         (valid_5_21),
-  ._GEN_131         (valid_3_21),
-  ._GEN_132         (valid_1_22),
-  ._GEN_133         (valid_2_22),
-  ._GEN_134         (_valid_T_264),
-  ._GEN_135         (_valid_T_272),
-  ._GEN_136         (valid_5_22),
-  ._GEN_137         (valid_3_22),
-  ._GEN_138         (valid_1_23),
-  ._GEN_139         (valid_2_23),
-  ._GEN_140         (_valid_T_276),
-  ._GEN_141         (_valid_T_284),
-  ._GEN_142         (valid_5_23),
-  ._GEN_143         (valid_3_23),
-  ._GEN_144         (valid_1_24),
-  ._GEN_145         (valid_2_24),
-  ._GEN_146         (_valid_T_288),
-  ._GEN_147         (_valid_T_296),
-  ._GEN_148         (valid_5_24),
-  ._GEN_149         (valid_3_24),
-  ._GEN_150         (valid_1_25),
-  ._GEN_151         (valid_2_25),
-  ._GEN_152         (_valid_T_300),
-  ._GEN_153         (_valid_T_308),
-  ._GEN_154         (valid_5_25),
-  ._GEN_155         (valid_3_25),
-  ._GEN_156         (valid_1_26),
-  ._GEN_157         (valid_2_26),
-  ._GEN_158         (_valid_T_312),
-  ._GEN_159         (_valid_T_320),
-  ._GEN_160         (valid_5_26),
-  ._GEN_161         (valid_3_26),
-  ._GEN_162         (valid_1_27),
-  ._GEN_163         (valid_2_27),
-  ._GEN_164         (_valid_T_324),
-  ._GEN_165         (_valid_T_332),
-  ._GEN_166         (valid_5_27),
-  ._GEN_167         (valid_3_27),
-  ._GEN_168         (valid_1_28),
-  ._GEN_169         (valid_2_28),
-  ._GEN_170         (_valid_T_336),
-  ._GEN_171         (_valid_T_344),
-  ._GEN_172         (valid_5_28),
-  ._GEN_173         (valid_3_28),
-  ._GEN_174         (valid_1_29),
-  ._GEN_175         (valid_2_29),
-  ._GEN_176         (_valid_T_348),
-  ._GEN_177         (_valid_T_356),
-  ._GEN_178         (valid_5_29),
-  ._GEN_179         (valid_3_29),
-  ._GEN_180         (valid_1_30),
-  ._GEN_181         (valid_2_30),
-  ._GEN_182         (_valid_T_360),
-  ._GEN_183         (_valid_T_368),
-  ._GEN_184         (valid_5_30),
-  ._GEN_185         (valid_3_30),
-  .write_fail       (write_fail),
-  .write_fail_1     (write_fail_1),
-  .write_fail_2     (write_fail_2),
-  .write_fail_3     (write_fail_3),
-  .write_fail_4     (write_fail_4),
-  .write_fail_5     (write_fail_5),
-  .write_fail_6     (write_fail_6),
-  .write_fail_7     (write_fail_7),
-  .write_fail_8     (write_fail_8),
-  .write_fail_9     (write_fail_9),
-  .write_fail_10    (write_fail_10),
-  .write_fail_11    (write_fail_11),
-  .write_fail_12    (write_fail_12),
-  .write_fail_13    (write_fail_13),
-  .write_fail_14    (write_fail_14),
-  .scoreboard_error (scoreboard_error),
-  .clock            (clock)
-);
-bind FetchControl FetchControl_Verification_Assert verification_Assert (
-  .predecode_firstJumpOH_2 (predecode_firstJumpOH_enc[2]),
-  .predecode_firstJumpOH_3 (predecode_firstJumpOH_enc[3]),
-  .predecode_firstJumpOH_0 (predecode_firstJumpOH_enc[0]),
-  .predecode_firstJumpOH_1 (predecode_firstJumpOH_enc[1]),
-  .reset                   (reset),
-  ._GEN                    (1'h1),
-  .clock                   (clock)
-);
-bind CircularBufferMulti CircularBufferMulti_Verification_Assert verification_Assert (
-  .io_nEnqueued (nEnqueued),
-  .io_enqValid  (io_enqValid),
-  .io_deqReady  (io_deqReady),
-  .reset        (reset),
-  ._GEN         (4'h8),
-  .clock        (clock)
-);
-bind InstructionBuffer InstructionBuffer_Verification_Assert verification_Assert (
-  ._GEN   (_nReady_T),
-  ._GEN_0 (_nReady_T_1),
-  ._GEN_1 (_nReady_T_2),
-  ._GEN_2 (_nReady_T_3),
-  .reset  (reset),
-  .clock  (clock)
-);
-bind Csr Csr_Verification_Assert verification_Assert (
-  .csr_address  (req_bits_index),
-  ._GEN         (fflagsEn),
-  ._GEN_0       (frmEn),
-  ._GEN_1       (fcsrEn),
-  ._GEN_2       (vstartEn),
-  ._GEN_3       (vxsatEn),
-  ._GEN_4       (vxrmEn),
-  ._GEN_5       (mstatusEn),
-  ._GEN_6       (misaEn),
-  ._GEN_7       (mieEn),
-  ._GEN_8       (mtvecEn),
-  ._GEN_9       (mscratchEn),
-  ._GEN_10      (mepcEn),
-  ._GEN_11      (mcauseEn),
-  ._GEN_12      (mtvalEn),
-  ._GEN_13      (mipEn),
-  ._GEN_14      (tdata1En),
-  ._GEN_15      (tdata2En),
-  ._GEN_16      (tinfoEn),
-  ._GEN_17      (dcsrEn),
-  ._GEN_18      (dpcEn),
-  ._GEN_19      (dscratch0En),
-  ._GEN_20      (dscratch1En),
-  ._GEN_21      (mcontext0En),
-  ._GEN_22      (mcontext1En),
-  ._GEN_23      (mcontext2En),
-  ._GEN_24      (mcontext3En),
-  ._GEN_25      (mcontext4En),
-  ._GEN_26      (mcontext5En),
-  ._GEN_27      (mcontext6En),
-  ._GEN_28      (mcontext7En),
-  ._GEN_29      (mpcEn),
-  ._GEN_30      (mspEn),
-  ._GEN_31      (mcycleEn),
-  ._GEN_32      (minstretEn),
-  ._GEN_33      (mcyclehEn),
-  ._GEN_34      (minstrethEn),
-  ._GEN_35      (vlEn),
-  ._GEN_36      (vtypeEn),
-  ._GEN_37      (vlenbEn),
-  ._GEN_38      (mvendoridEn),
-  ._GEN_39      (kscm0En),
-  ._GEN_40      (kscm1En),
-  ._GEN_41      (kscm2En),
-  ._GEN_42      (kscm3En),
-  ._GEN_43      (kscm4En),
-  .req_valid    (req_valid),
-  .reset        (reset),
-  .io_halted    (halted),
-  .io_wfi       (wfi),
-  .io_fault     (fault),
-  ._GEN_44      (1'h1),
-  .io_rs1_valid (io_rs1_valid),
-  .clock        (clock)
-);
-bind DispatchV2 DispatchV2_Verification_Assert verification_Assert (
-  .decodedInsts_0_sub      (decodedInsts_0_sub),
-  ._GEN                    (_alu_T_160),
-  ._GEN_0                  (_alu_T_158),
-  ._GEN_1                  (_alu_T_163),
-  ._GEN_2                  (_alu_T_164),
-  ._GEN_3                  (_alu_T_161),
-  ._GEN_4                  (_alu_T_162),
-  ._GEN_5                  (_alu_T_166),
-  ._GEN_6                  (_alu_T_167),
-  ._GEN_7                  (_alu_T_165),
-  .decodedInsts_0_orn      (decodedInsts_0_orn),
-  .decodedInsts_0_xnor     (decodedInsts_0_xnor),
-  .decodedInsts_0_lui      (decodedInsts_0_lui),
-  .decodedInsts_0_andn     (decodedInsts_0_andn),
-  .decodedInsts_0_ctz      (decodedInsts_0_ctz),
-  .decodedInsts_0_cpop     (decodedInsts_0_cpop),
-  .decodedInsts_0_clz      (decodedInsts_0_clz),
-  .decodedInsts_0_min      (decodedInsts_0_min),
-  .decodedInsts_0_minu     (decodedInsts_0_minu),
-  .decodedInsts_0_max      (decodedInsts_0_max),
-  .decodedInsts_0_maxu     (decodedInsts_0_maxu),
-  .decodedInsts_0_rol      (decodedInsts_0_rol),
-  .decodedInsts_0_ror      (decodedInsts_0_ror),
-  .decodedInsts_0_sextb    (decodedInsts_0_sextb),
-  .decodedInsts_0_sexth    (decodedInsts_0_sexth),
-  .decodedInsts_0_zexth    (decodedInsts_0_zexth),
-  .decodedInsts_0_rori     (decodedInsts_0_rori),
-  .decodedInsts_0_orcb     (decodedInsts_0_orcb),
-  .decodedInsts_0_rev8     (decodedInsts_0_rev8),
-  .reset                   (reset),
-  ._GEN_8                  (1'h1),
-  .decodedInsts_0_jalr     (decodedInsts_0_jalr),
-  .decodedInsts_0_beq      (decodedInsts_0_beq),
-  .decodedInsts_0_jal      (decodedInsts_0_jal),
-  .decodedInsts_0_blt      (decodedInsts_0_blt),
-  .decodedInsts_0_bge      (decodedInsts_0_bge),
-  .decodedInsts_0_bne      (decodedInsts_0_bne),
-  .decodedInsts_0_bgeu     (decodedInsts_0_bgeu),
-  .decodedInsts_0_ebreak   (decodedInsts_0_ebreak),
-  .decodedInsts_0_bltu     (decodedInsts_0_bltu),
-  .decodedInsts_0_mret     (decodedInsts_0_mret),
-  .decodedInsts_0_wfi      (decodedInsts_0_wfi),
-  .decodedInsts_0_ecall    (decodedInsts_0_ecall),
-  .decodedInsts_0_mpause   (decodedInsts_0_mpause),
-  .decodedInsts_0_mulhsu   (decodedInsts_0_mulhsu),
-  .decodedInsts_0_mulhu    (decodedInsts_0_mulhu),
-  .decodedInsts_0_mul      (decodedInsts_0_mul),
-  .decodedInsts_0_mulh     (decodedInsts_0_mulh),
-  .decodedInsts_0_rem      (decodedInsts_0_rem),
-  .decodedInsts_0_remu     (decodedInsts_0_remu),
-  .decodedInsts_0_div      (decodedInsts_0_div),
-  .decodedInsts_0_divu     (decodedInsts_0_divu),
-  .decodedInsts_0_lbu      (decodedInsts_0_lbu),
-  .decodedInsts_0_lhu      (decodedInsts_0_lhu),
-  .decodedInsts_0_lw       (decodedInsts_0_lw),
-  .decodedInsts_0_lb       (decodedInsts_0_lb),
-  .decodedInsts_0_lh       (decodedInsts_0_lh),
-  .decodedInsts_0_fencei   (decodedInsts_0_fencei),
-  .decodedInsts_0_sw       (decodedInsts_0_sw),
-  .decodedInsts_0_sb       (decodedInsts_0_sb),
-  .decodedInsts_0_sh       (decodedInsts_0_sh),
-  ._GEN_9                  (_lsu_T_142),
-  ._GEN_10                 (_lsu_T_143),
-  ._GEN_11                 (_lsu_T_141),
-  .decodedInsts_0_flushat  (decodedInsts_0_flushat),
-  .decodedInsts_0_flushall (decodedInsts_0_flushall),
-  ._GEN_12                 (_lsu_T_145),
-  ._GEN_13                 (_lsu_T_146),
-  ._GEN_14                 (_lsu_T_144),
-  ._GEN_15                 (_lsu_T_148),
-  ._GEN_16                 (_lsu_T_149),
-  ._GEN_17                 (_lsu_T_147),
-  .decodedInsts_0_csrrs    (decodedInsts_0_csrrs),
-  .decodedInsts_0_csrrc    (decodedInsts_0_csrrc),
-  .decodedInsts_0_csrrw    (decodedInsts_0_csrrw),
-  .decodedInsts_1_sub      (decodedInsts_1_sub),
-  ._GEN_18                 (_alu_T_378),
-  ._GEN_19                 (_alu_T_376),
-  ._GEN_20                 (_alu_T_381),
-  ._GEN_21                 (_alu_T_382),
-  ._GEN_22                 (_alu_T_379),
-  ._GEN_23                 (_alu_T_380),
-  ._GEN_24                 (_alu_T_384),
-  ._GEN_25                 (_alu_T_385),
-  ._GEN_26                 (_alu_T_383),
-  .decodedInsts_1_orn      (decodedInsts_1_orn),
-  .decodedInsts_1_xnor     (decodedInsts_1_xnor),
-  .decodedInsts_1_lui      (decodedInsts_1_lui),
-  .decodedInsts_1_andn     (decodedInsts_1_andn),
-  .decodedInsts_1_ctz      (decodedInsts_1_ctz),
-  .decodedInsts_1_cpop     (decodedInsts_1_cpop),
-  .decodedInsts_1_clz      (decodedInsts_1_clz),
-  .decodedInsts_1_min      (decodedInsts_1_min),
-  .decodedInsts_1_minu     (decodedInsts_1_minu),
-  .decodedInsts_1_max      (decodedInsts_1_max),
-  .decodedInsts_1_maxu     (decodedInsts_1_maxu),
-  .decodedInsts_1_rol      (decodedInsts_1_rol),
-  .decodedInsts_1_ror      (decodedInsts_1_ror),
-  .decodedInsts_1_sextb    (decodedInsts_1_sextb),
-  .decodedInsts_1_sexth    (decodedInsts_1_sexth),
-  .decodedInsts_1_zexth    (decodedInsts_1_zexth),
-  .decodedInsts_1_rori     (decodedInsts_1_rori),
-  .decodedInsts_1_orcb     (decodedInsts_1_orcb),
-  .decodedInsts_1_rev8     (decodedInsts_1_rev8),
-  .decodedInsts_1_jalr     (decodedInsts_1_jalr),
-  .decodedInsts_1_beq      (decodedInsts_1_beq),
-  .decodedInsts_1_jal      (decodedInsts_1_jal),
-  .decodedInsts_1_blt      (decodedInsts_1_blt),
-  .decodedInsts_1_bge      (decodedInsts_1_bge),
-  .decodedInsts_1_bne      (decodedInsts_1_bne),
-  .decodedInsts_1_bgeu     (decodedInsts_1_bgeu),
-  .decodedInsts_1_bltu     (decodedInsts_1_bltu),
-  .decodedInsts_1_mulhsu   (decodedInsts_1_mulhsu),
-  .decodedInsts_1_mulhu    (decodedInsts_1_mulhu),
-  .decodedInsts_1_mul      (decodedInsts_1_mul),
-  .decodedInsts_1_mulh     (decodedInsts_1_mulh),
-  .decodedInsts_1_lbu      (decodedInsts_1_lbu),
-  .decodedInsts_1_lhu      (decodedInsts_1_lhu),
-  .decodedInsts_1_lw       (decodedInsts_1_lw),
-  .decodedInsts_1_lb       (decodedInsts_1_lb),
-  .decodedInsts_1_lh       (decodedInsts_1_lh),
-  .decodedInsts_1_sw       (decodedInsts_1_sw),
-  .decodedInsts_1_sb       (decodedInsts_1_sb),
-  .decodedInsts_1_sh       (decodedInsts_1_sh),
-  ._GEN_27                 (_lsu_T_318),
-  ._GEN_28                 (_lsu_T_319),
-  ._GEN_29                 (_lsu_T_317),
-  ._GEN_30                 (_lsu_T_321),
-  ._GEN_31                 (_lsu_T_322),
-  ._GEN_32                 (_lsu_T_320),
-  ._GEN_33                 (_lsu_T_315),
-  ._GEN_34                 (_lsu_T_316),
-  .decodedInsts_2_sub      (decodedInsts_2_sub),
-  ._GEN_35                 (_alu_T_596),
-  ._GEN_36                 (_alu_T_594),
-  ._GEN_37                 (_alu_T_599),
-  ._GEN_38                 (_alu_T_600),
-  ._GEN_39                 (_alu_T_597),
-  ._GEN_40                 (_alu_T_598),
-  ._GEN_41                 (_alu_T_602),
-  ._GEN_42                 (_alu_T_603),
-  ._GEN_43                 (_alu_T_601),
-  .decodedInsts_2_orn      (decodedInsts_2_orn),
-  .decodedInsts_2_xnor     (decodedInsts_2_xnor),
-  .decodedInsts_2_lui      (decodedInsts_2_lui),
-  .decodedInsts_2_andn     (decodedInsts_2_andn),
-  .decodedInsts_2_ctz      (decodedInsts_2_ctz),
-  .decodedInsts_2_cpop     (decodedInsts_2_cpop),
-  .decodedInsts_2_clz      (decodedInsts_2_clz),
-  .decodedInsts_2_min      (decodedInsts_2_min),
-  .decodedInsts_2_minu     (decodedInsts_2_minu),
-  .decodedInsts_2_max      (decodedInsts_2_max),
-  .decodedInsts_2_maxu     (decodedInsts_2_maxu),
-  .decodedInsts_2_rol      (decodedInsts_2_rol),
-  .decodedInsts_2_ror      (decodedInsts_2_ror),
-  .decodedInsts_2_sextb    (decodedInsts_2_sextb),
-  .decodedInsts_2_sexth    (decodedInsts_2_sexth),
-  .decodedInsts_2_zexth    (decodedInsts_2_zexth),
-  .decodedInsts_2_rori     (decodedInsts_2_rori),
-  .decodedInsts_2_orcb     (decodedInsts_2_orcb),
-  .decodedInsts_2_rev8     (decodedInsts_2_rev8),
-  .decodedInsts_2_jalr     (decodedInsts_2_jalr),
-  .decodedInsts_2_beq      (decodedInsts_2_beq),
-  .decodedInsts_2_jal      (decodedInsts_2_jal),
-  .decodedInsts_2_blt      (decodedInsts_2_blt),
-  .decodedInsts_2_bge      (decodedInsts_2_bge),
-  .decodedInsts_2_bne      (decodedInsts_2_bne),
-  .decodedInsts_2_bgeu     (decodedInsts_2_bgeu),
-  .decodedInsts_2_bltu     (decodedInsts_2_bltu),
-  .decodedInsts_2_mulhsu   (decodedInsts_2_mulhsu),
-  .decodedInsts_2_mulhu    (decodedInsts_2_mulhu),
-  .decodedInsts_2_mul      (decodedInsts_2_mul),
-  .decodedInsts_2_mulh     (decodedInsts_2_mulh),
-  .decodedInsts_2_lbu      (decodedInsts_2_lbu),
-  .decodedInsts_2_lhu      (decodedInsts_2_lhu),
-  .decodedInsts_2_lw       (decodedInsts_2_lw),
-  .decodedInsts_2_lb       (decodedInsts_2_lb),
-  .decodedInsts_2_lh       (decodedInsts_2_lh),
-  .decodedInsts_2_sw       (decodedInsts_2_sw),
-  .decodedInsts_2_sb       (decodedInsts_2_sb),
-  .decodedInsts_2_sh       (decodedInsts_2_sh),
-  ._GEN_44                 (_lsu_T_491),
-  ._GEN_45                 (_lsu_T_492),
-  ._GEN_46                 (_lsu_T_490),
-  ._GEN_47                 (_lsu_T_494),
-  ._GEN_48                 (_lsu_T_495),
-  ._GEN_49                 (_lsu_T_493),
-  ._GEN_50                 (_lsu_T_488),
-  ._GEN_51                 (_lsu_T_489),
-  .decodedInsts_3_sub      (decodedInsts_3_sub),
-  ._GEN_52                 (_alu_T_814),
-  ._GEN_53                 (_alu_T_812),
-  ._GEN_54                 (_alu_T_817),
-  ._GEN_55                 (_alu_T_818),
-  ._GEN_56                 (_alu_T_815),
-  ._GEN_57                 (_alu_T_816),
-  ._GEN_58                 (_alu_T_820),
-  ._GEN_59                 (_alu_T_821),
-  ._GEN_60                 (_alu_T_819),
-  .decodedInsts_3_orn      (decodedInsts_3_orn),
-  .decodedInsts_3_xnor     (decodedInsts_3_xnor),
-  .decodedInsts_3_lui      (decodedInsts_3_lui),
-  .decodedInsts_3_andn     (decodedInsts_3_andn),
-  .decodedInsts_3_ctz      (decodedInsts_3_ctz),
-  .decodedInsts_3_cpop     (decodedInsts_3_cpop),
-  .decodedInsts_3_clz      (decodedInsts_3_clz),
-  .decodedInsts_3_min      (decodedInsts_3_min),
-  .decodedInsts_3_minu     (decodedInsts_3_minu),
-  .decodedInsts_3_max      (decodedInsts_3_max),
-  .decodedInsts_3_maxu     (decodedInsts_3_maxu),
-  .decodedInsts_3_rol      (decodedInsts_3_rol),
-  .decodedInsts_3_ror      (decodedInsts_3_ror),
-  .decodedInsts_3_sextb    (decodedInsts_3_sextb),
-  .decodedInsts_3_sexth    (decodedInsts_3_sexth),
-  .decodedInsts_3_zexth    (decodedInsts_3_zexth),
-  .decodedInsts_3_rori     (decodedInsts_3_rori),
-  .decodedInsts_3_orcb     (decodedInsts_3_orcb),
-  .decodedInsts_3_rev8     (decodedInsts_3_rev8),
-  .decodedInsts_3_jalr     (decodedInsts_3_jalr),
-  .decodedInsts_3_beq      (decodedInsts_3_beq),
-  .decodedInsts_3_jal      (decodedInsts_3_jal),
-  .decodedInsts_3_blt      (decodedInsts_3_blt),
-  .decodedInsts_3_bge      (decodedInsts_3_bge),
-  .decodedInsts_3_bne      (decodedInsts_3_bne),
-  .decodedInsts_3_bgeu     (decodedInsts_3_bgeu),
-  .decodedInsts_3_bltu     (decodedInsts_3_bltu),
-  .decodedInsts_3_mulhsu   (decodedInsts_3_mulhsu),
-  .decodedInsts_3_mulhu    (decodedInsts_3_mulhu),
-  .decodedInsts_3_mul      (decodedInsts_3_mul),
-  .decodedInsts_3_mulh     (decodedInsts_3_mulh),
-  .decodedInsts_3_lbu      (decodedInsts_3_lbu),
-  .decodedInsts_3_lhu      (decodedInsts_3_lhu),
-  .decodedInsts_3_lw       (decodedInsts_3_lw),
-  .decodedInsts_3_lb       (decodedInsts_3_lb),
-  .decodedInsts_3_lh       (decodedInsts_3_lh),
-  .decodedInsts_3_sw       (decodedInsts_3_sw),
-  .decodedInsts_3_sb       (decodedInsts_3_sb),
-  .decodedInsts_3_sh       (decodedInsts_3_sh),
-  ._GEN_61                 (_lsu_T_664),
-  ._GEN_62                 (_lsu_T_665),
-  ._GEN_63                 (_lsu_T_663),
-  ._GEN_64                 (_lsu_T_667),
-  ._GEN_65                 (_lsu_T_668),
-  ._GEN_66                 (_lsu_T_666),
-  ._GEN_67                 (_lsu_T_661),
-  ._GEN_68                 (_lsu_T_662),
-  .clock                   (clock)
-);
-bind CircularBufferMulti_1 CircularBufferMulti_1_Verification_Assert verification_Assert (
-  .io_nEnqueued (nEnqueued),
-  .io_enqValid  (io_enqValid),
-  .io_deqReady  (io_deqReady),
-  .reset        (reset),
-  ._GEN         (3'h4),
-  .clock        (clock)
-);
-bind LsuV2 LsuV2_Verification_Assert verification_Assert (
-  ._GEN                           (_ops_emul_data_T_20),
-  ._GEN_0                         (_ops_emul_data_T_25),
-  ._GEN_1                         (_ops_emul_data_T_2),
-  ._GEN_2                         (_ops_emul_data_T_11),
-  .reset                          (reset),
-  ._GEN_3                         (1'h1),
-  .io_req_0_bits_nfields          (io_req_0_bits_nfields),
-  ._GEN_4                         (_ops_result_emul_data_T_14),
-  ._GEN_5                         (&io_req_0_bits_nfields),
-  ._GEN_6                         (_ops_result_emul_data_T_30),
-  ._GEN_7                         (_ops_result_nfields_T_5),
-  ._GEN_8                         (_ops_result_nfields_T_11),
-  ._GEN_9                         (_ops_emul_data_T_65),
-  ._GEN_10                        (_ops_emul_data_T_70),
-  ._GEN_11                        (_ops_emul_data_T_47),
-  ._GEN_12                        (_ops_emul_data_T_56),
-  .io_req_1_bits_nfields          (io_req_1_bits_nfields),
-  ._GEN_13                        (_ops_result_emul_data_T_57),
-  ._GEN_14                        (&io_req_1_bits_nfields),
-  ._GEN_15                        (_ops_result_emul_data_T_73),
-  ._GEN_16                        (_ops_result_nfields_T_27),
-  ._GEN_17                        (_ops_result_nfields_T_33),
-  ._GEN_18                        (_ops_emul_data_T_110),
-  ._GEN_19                        (_ops_emul_data_T_115),
-  ._GEN_20                        (_ops_emul_data_T_92),
-  ._GEN_21                        (_ops_emul_data_T_101),
-  .io_req_2_bits_nfields          (io_req_2_bits_nfields),
-  ._GEN_22                        (_ops_result_emul_data_T_100),
-  ._GEN_23                        (&io_req_2_bits_nfields),
-  ._GEN_24                        (_ops_result_emul_data_T_116),
-  ._GEN_25                        (_ops_result_nfields_T_49),
-  ._GEN_26                        (_ops_result_nfields_T_55),
-  ._GEN_27                        (_ops_emul_data_T_155),
-  ._GEN_28                        (_ops_emul_data_T_160),
-  ._GEN_29                        (_ops_emul_data_T_137),
-  ._GEN_30                        (_ops_emul_data_T_146),
-  .io_req_3_bits_nfields          (io_req_3_bits_nfields),
-  ._GEN_31                        (_ops_result_emul_data_T_143),
-  ._GEN_32                        (&io_req_3_bits_nfields),
-  ._GEN_33                        (_ops_result_emul_data_T_159),
-  ._GEN_34                        (_ops_result_nfields_T_71),
-  ._GEN_35                        (_ops_result_nfields_T_77),
-  .opQueue_io_enqValid            (opQueue_io_enqValid),
-  .opQueue_io_nSpace              (_opQueue_io_nSpace),
-  ._GEN_36                        (_nextSlot_elemMultiplier_T_5),
-  ._GEN_37                        (_nextSlot_elemMultiplier_T_8),
-  ._GEN_38                        (_nextSlot_elemMultiplier_T_2),
-  ._GEN_39                        (_nextSlot_max_subvector_T_7),
-  ._GEN_40                        (_nextSlot_max_subvector_T_11),
-  ._GEN_41                        (_nextSlot_max_subvector_T_3),
-  ._GEN_42                        (_nextSlot_result_indexParitions_T_5),
-  ._GEN_43                        (_nextSlot_result_indexParitions_T_8),
-  ._GEN_44                        (_nextSlot_result_indexParitions_T_2),
-  ._nextSlot_active_WIRE_3_5      (_nextSlot_T_17),
-  ._nextSlot_active_WIRE_3_4      (_nextSlot_result_elemStride_T_1),
-  ._nextSlot_active_WIRE_3_7      (_nextSlot_unitStride_T_3),
-  ._nextSlot_active_WIRE_3_6      (_nextSlot_unitStride_T_2),
-  ._nextSlot_active_WIRE_3_1      (_nextSlot_T_16),
-  ._nextSlot_active_WIRE_3_0      (_nextSlot_result_elemStride_T),
-  ._nextSlot_active_WIRE_3_3      (_nextSlot_unitStride_T_1),
-  ._nextSlot_active_WIRE_3_2      (_nextSlot_unitStride_T),
-  ._GEN_45                        (|_nextSlot_active_T_13),
-  ._GEN_46                        (|_nextSlot_active_T_3),
-  ._GEN_47                        (|_nextSlot_active_T_8),
-  ._GEN_48                        (_nextSlot_unitStride_T_24),
-  ._GEN_49                        (_nextSlot_unitStride_T_25),
-  ._GEN_50                        (_nextSlot_unitStride_T_33),
-  ._GEN_51                        (_nextSlot_unitStride_T_7),
-  ._GEN_52                        (_nextSlot_unitStride_T_8),
-  ._GEN_53                        (_nextSlot_unitStride_T_16),
-  ._GEN_54                        (_vectorUpdatedSlot_indices_T_13),
-  ._GEN_55                        (_vectorUpdatedSlot_indices_T_18),
-  ._GEN_56                        (_vectorUpdatedSlot_indices_T_3),
-  ._GEN_57                        (_vectorUpdatedSlot_indices_T_8),
-  ._GEN_58                        (_writebackUpdatedSlot_result_baseAddr_T_21),
-  ._GEN_59                        (_writebackUpdatedSlot_result_baseAddr_T_25),
-  ._GEN_60                        (_writebackUpdatedSlot_result_baseAddr_T_17),
-  ._GEN_61                        (_vectorUpdatedSlot_updateAddrs_T_803),
-  ._GEN_62                        (_vectorUpdatedSlot_updateAddrs_T_868),
-  ._GEN_63                        (_vectorUpdatedSlot_updateAddrs_T_770),
-  ._GEN_64                        (|_vectorUpdatedSlot_updateAddrs_T_384),
-  ._GEN_65                        (|_vectorUpdatedSlot_updateAddrs_T_768),
-  ._GEN_66                        (|_vectorUpdatedSlot_updateAddrs_T_2),
-  .lineActive_0                   (lineActive_0),
-  .lineActive_1                   (lineActive_1),
-  .wactive_1                      (|selectionMatrix_1),
-  .wactive_0                      (|valueSet_1),
-  .lineActive_2                   (lineActive_2),
-  .lineActive_3                   (lineActive_3),
-  .wactive_3                      (|selectionMatrix_3),
-  .wactive_2                      (|selectionMatrix_2),
-  .lineActive_4                   (lineActive_4),
-  .lineActive_5                   (lineActive_5),
-  .wactive_5                      (|selectionMatrix_5),
-  .wactive_4                      (|selectionMatrix_4),
-  .lineActive_6                   (lineActive_6),
-  .lineActive_7                   (lineActive_7),
-  .wactive_7                      (|selectionMatrix_7),
-  .wactive_6                      (|selectionMatrix_6),
-  .lineActive_8                   (lineActive_8),
-  .lineActive_9                   (lineActive_9),
-  .wactive_9                      (|selectionMatrix_9),
-  .wactive_8                      (|selectionMatrix_8),
-  .lineActive_10                  (lineActive_10),
-  .lineActive_11                  (lineActive_11),
-  .wactive_11                     (|selectionMatrix_11),
-  .wactive_10                     (|selectionMatrix_10),
-  .lineActive_12                  (lineActive_12),
-  .lineActive_13                  (lineActive_13),
-  .wactive_13                     (|selectionMatrix_13),
-  .wactive_12                     (|selectionMatrix_12),
-  .lineActive_14                  (lineActive_14),
-  .lineActive_15                  (lineActive_15),
-  .wactive_15                     (|selectionMatrix_15),
-  .wactive_14                     (|selectionMatrix_14),
-  ._GEN_67                        (|_size_T_14),
-  ._GEN_68                        (|_size_T_25),
-  ._GEN_69                        (|_size_T_3),
-  ._GEN_70                        (|_size_T_8),
-  ._GEN_71                        (_alignedAddress_T_10),
-  ._GEN_72                        (_alignedAddress_T_16),
-  ._GEN_73                        (|_alignedAddress_T_3),
-  .io_dbus_valid                  (io_dbus_valid_0),
-  ._GEN_74                        (ebusFired),
-  ._GEN_75                        (ibusFired),
-  .io_rd_flt_valid                (io_rd_flt_valid_0),
-  ._GEN_76                        (lsu2RvvFire),
-  .io_rd_valid                    (io_rd_valid_0),
-  .slot_vectorLoop_subvector_curr (slot_vectorLoop_subvector_curr),
-  .slot_vectorLoop_subvector_max  (slot_vectorLoop_subvector_max),
-  ._GEN_77                        (vectorUpdate),
-  ._GEN_78                        (_io_active_T),
-  .slot_active_2                  (slot_active_2),
-  .slot_active_3                  (slot_active_3),
-  .slot_active_4                  (slot_active_4),
-  .slot_active_5                  (slot_active_5),
-  .slot_active_6                  (slot_active_6),
-  .slot_active_7                  (slot_active_7),
-  .slot_active_8                  (slot_active_8),
-  .slot_active_9                  (slot_active_9),
-  .slot_active_10                 (slot_active_10),
-  .slot_active_11                 (slot_active_11),
-  .slot_active_12                 (slot_active_12),
-  .slot_active_13                 (slot_active_13),
-  .slot_active_14                 (slot_active_14),
-  .slot_active_15                 (slot_active_15),
-  .slot_pendingWriteback          (slot_pendingWriteback),
-  .faultReg_valid                 (faultReg_valid),
-  ._GEN_79                        (writebackFired),
-  .clock                          (clock)
-);
-bind CircularBufferMulti_2 CircularBufferMulti_2_Verification_Assert verification_Assert (
-  .io_nEnqueued (nEnqueued),
-  .io_enqValid  (io_enqValid),
-  .io_deqReady  (io_deqReady),
-  .reset        (reset),
-  ._GEN         (4'h8),
-  .clock        (clock)
-);
-bind RetirementBuffer RetirementBuffer_Verification_Assert verification_Assert (
-  ._GEN   (instFires_1),
-  ._GEN_0 (instFires_0),
-  ._GEN_1 (instFires_2),
-  ._GEN_2 (instFires_3),
-  .reset  (reset),
-  .clock  (clock)
-);
-bind Alu Alu_Verification_Assert verification_Assert (
-  .io_rs1_valid    (io_rs1_valid),
-  ._GEN            (op == 5'hA),
-  .valid           (valid),
-  .reset           (reset),
-  .io_rs2_valid    (io_rs2_valid),
-  ._rs1Only_WIRE_5 (op == 5'h15),
-  ._rs1Only_WIRE_4 (op == 5'h16),
-  ._rs1Only_WIRE_7 (op == 5'h1A),
-  ._rs1Only_WIRE_6 (op == 5'h19),
-  ._rs1Only_WIRE_1 (op == 5'hF),
-  ._rs1Only_WIRE_0 (op == 5'hE),
-  ._rs1Only_WIRE_3 (op == 5'h1B),
-  ._rs1Only_WIRE_2 (op == 5'h10),
-  .clock           (clock)
-);
-bind Bru Bru_Verification_Assert verification_Assert (
-  .io_rs1_valid   (io_rs1_valid),
-  .stateReg_valid (stateReg_valid),
-  ._ignore_WIRE_5 (_ignore_T_5),
-  ._ignore_WIRE_4 (_ignore_T_4),
-  ._ignore_WIRE_7 (_ignore_T_7),
-  ._ignore_WIRE_6 (_ignore_T_6),
-  ._ignore_WIRE_1 (_ignore_T_1),
-  ._ignore_WIRE_0 (~(|stateReg_bits_op)),
-  ._ignore_WIRE_3 (_ignore_T_3),
-  ._ignore_WIRE_2 (_ignore_T_2),
-  .reset          (reset),
-  .io_rs2_valid   (io_rs2_valid),
-  .clock          (clock)
-);
-bind Bru_1 Bru_1_Verification_Assert verification_Assert (
-  ._GEN           (_ignore_T_6),
-  ._GEN_0         (_ignore_T_5),
-  ._GEN_1         (_ignore_T_3),
-  ._GEN_2         (_ignore_T_2),
-  ._GEN_3         (_ignore_T_4),
-  .reset          (reset),
-  .io_rs1_valid   (io_rs1_valid),
-  .stateReg_valid (stateReg_valid),
-  ._ignore_WIRE_5 (_ignore_T_5),
-  ._ignore_WIRE_4 (_ignore_T_4),
-  ._ignore_WIRE_7 (stateReg_bits_op == 4'hD),
-  ._ignore_WIRE_6 (_ignore_T_6),
-  ._ignore_WIRE_1 (stateReg_bits_op == 4'h1),
-  ._ignore_WIRE_0 (~(|stateReg_bits_op)),
-  ._ignore_WIRE_3 (_ignore_T_3),
-  ._ignore_WIRE_2 (_ignore_T_2),
-  .io_rs2_valid   (io_rs2_valid),
-  .clock          (clock)
-);
-bind Mlu Mlu_Verification_Assert verification_Assert (
-  .io_rs1_0_valid             (io_rs1_0_valid),
-  .stage2Input_q_io_deq_valid (_stage2Input_q_io_deq_valid),
-  ._GEN                       (_stage2Input_q_io_deq_bits_sel[0]),
-  .reset                      (reset),
-  .io_rs2_0_valid             (io_rs2_0_valid),
-  .io_rs1_1_valid             (io_rs1_1_valid),
-  ._GEN_0                     (_stage2Input_q_io_deq_bits_sel[1]),
-  .io_rs2_1_valid             (io_rs2_1_valid),
-  .io_rs1_2_valid             (io_rs1_2_valid),
-  ._GEN_1                     (_stage2Input_q_io_deq_bits_sel[2]),
-  .io_rs2_2_valid             (io_rs2_2_valid),
-  .io_rs1_3_valid             (io_rs1_3_valid),
-  ._GEN_2                     (_stage2Input_q_io_deq_bits_sel[3]),
-  .io_rs2_3_valid             (io_rs2_3_valid),
-  .clock                      (clock)
-);
-bind FRegfile FRegfile_Verification_Assert verification_Assert (
-  .reset            (reset),
-  .scoreboard_error (scoreboard_error),
-  .clock            (clock)
-);
-bind SCore SCore_Verification_Assert verification_Assert (
-  .csr_io_rd_valid       (_csr_io_rd_valid),
-  .alu_0_io_rd_valid     (_alu_0_io_rd_valid),
-  .bru_0_io_rd_valid     (_bru_0_io_rd_valid),
-  .io_rvvcore_rd_0_valid (io_rvvcore_rd_0_valid),
-  .reset                 (reset),
-  ._GEN                  (1'h1),
-  .alu_1_io_rd_valid     (_alu_1_io_rd_valid),
-  .bru_1_io_rd_valid     (_bru_1_io_rd_valid),
-  .io_rvvcore_rd_1_valid (io_rvvcore_rd_1_valid),
-  .alu_2_io_rd_valid     (_alu_2_io_rd_valid),
-  .bru_2_io_rd_valid     (_bru_2_io_rd_valid),
-  .io_rvvcore_rd_2_valid (io_rvvcore_rd_2_valid),
-  .alu_3_io_rd_valid     (_alu_3_io_rd_valid),
-  .bru_3_io_rd_valid     (_bru_3_io_rd_valid),
-  .io_rvvcore_rd_3_valid (io_rvvcore_rd_3_valid),
-  .clock                 (clock)
-);
-bind SRAM SRAM_Verification_Assert verification_Assert (
-  .io_fabric_writeDataAddr_valid (io_fabric_writeDataAddr_valid),
-  .io_fabric_readDataAddr_valid  (io_fabric_readDataAddr_valid),
-  .reset                         (reset),
-  ._GEN                          (1'h1),
-  .clock                         (clock)
-);
-bind FabricArbiter FabricArbiter_Verification_Assert verification_Assert (
-  .io_source_1_readDataAddr_valid  (io_source_1_readDataAddr_valid),
-  .io_source_1_writeDataAddr_valid (io_source_1_writeDataAddr_valid),
-  .io_source_0_readDataAddr_valid  (io_source_0_readDataAddr_valid),
-  .io_source_0_writeDataAddr_valid (io_source_0_writeDataAddr_valid),
-  .io_source_2_readDataAddr_valid  (io_source_2_readDataAddr_valid),
-  .io_source_2_writeDataAddr_valid (io_source_2_writeDataAddr_valid),
-  .reset                           (reset),
-  .clock                           (clock)
-);
-bind IBus2Axi IBus2Axi_Verification_Assert verification_Assert (
-  .io_axi_data_valid (io_axi_data_valid),
-  .reset             (reset),
-  .sraddrActive      (sraddrActive),
-  .clock             (clock)
-);
-bind SRAM_1 SRAM_1_Verification_Assert verification_Assert (
-  .io_fabric_writeDataAddr_valid (io_fabric_writeDataAddr_valid),
-  .io_fabric_readDataAddr_valid  (io_fabric_readDataAddr_valid),
-  .reset                         (reset),
-  ._GEN                          (1'h1),
-  .clock                         (clock)
-);
-bind FabricMux FabricMux_Verification_Assert verification_Assert (
-  .io_source_readDataAddr_valid  (io_source_readDataAddr_valid),
-  .io_source_writeDataAddr_valid (io_source_writeDataAddr_valid),
-  .reset                         (reset),
-  ._GEN                          (1'h1),
-  ._GEN_0                        (portSelected_1),
-  ._GEN_1                        (_portSelected_T_7),
-  ._GEN_2                        (portSelected_0),
-  ._GEN_3                        (selected_valid),
-  ._GEN_4                        (_io_fabricBusy_T_4),
-  ._GEN_5                        (_io_fabricBusy_T_3),
-  ._GEN_6                        (_io_fabricBusy_T_1),
-  ._GEN_7                        (portSelected_1),
-  ._GEN_8                        (_portSelected_T_7),
-  ._GEN_9                        (portSelected_0),
-  ._GEN_10                       (io_ports_1_readDataAddr_valid_0),
-  ._GEN_11                       (_lastReadSelected_T_19),
-  ._GEN_12                       (io_ports_0_readDataAddr_valid_0),
-  ._GEN_13                       (_io_source_readData_T_3),
-  ._GEN_14                       (_io_source_readData_T_5),
-  ._GEN_15                       (_io_source_readData_T_1),
-  .clock                         (clock)
-);
-bind AxiSlave AxiSlave_Verification_Assert verification_Assert (
-  .readIssued_valid           (readIssued_valid),
-  .reset                      (reset),
-  .readDataQueue_io_enq_ready (_readDataQueue_io_enq_ready),
-  ._GEN                       (_addrNext_T_3),
-  ._GEN_0                     (_addrNext_T_8),
-  ._GEN_1                     (_addrNext_T_1),
-  ._GEN_2                     (1'h1),
-  .clock                      (clock)
-);
-bind DBus2AxiV2 DBus2AxiV2_Verification_Assert verification_Assert (
-  .io_dbus_size  (io_dbus_size),
-  ._GEN          (1'h1),
-  .io_dbus_valid (io_dbus_valid),
-  .reset         (reset),
-  .clock         (clock)
-);
-`endif // layers_CoralNPUChiselSubsystem_Verification_Assert
-
-// ----- 8< ----- FILE "verification/assert/FifoX_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module FifoX_Verification_Assert(
-  input       reset,
-  input [3:0] mcount,
-              _GEN,
-  input       clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset & mcount > _GEN) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at FifoX.scala:158\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/Regfile_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module Regfile_Verification_Assert(
-  input _GEN,
-        _GEN_0,
-        _GEN_1,
-        _GEN_2,
-        _GEN_3,
-        _GEN_4,
-        reset,
-        _GEN_5,
-        _GEN_6,
-        _GEN_7,
-        _GEN_8,
-        _GEN_9,
-        _GEN_10,
-        _GEN_11,
-        _GEN_12,
-        _GEN_13,
-        _GEN_14,
-        _GEN_15,
-        _GEN_16,
-        _GEN_17,
-        _GEN_18,
-        _GEN_19,
-        _GEN_20,
-        _GEN_21,
-        _GEN_22,
-        _GEN_23,
-        _GEN_24,
-        _GEN_25,
-        _GEN_26,
-        _GEN_27,
-        _GEN_28,
-        _GEN_29,
-        _GEN_30,
-        _GEN_31,
-        _GEN_32,
-        _GEN_33,
-        _GEN_34,
-        _GEN_35,
-        _GEN_36,
-        _GEN_37,
-        _GEN_38,
-        _GEN_39,
-        _GEN_40,
-        _GEN_41,
-        _GEN_42,
-        _GEN_43,
-        _GEN_44,
-        _GEN_45,
-        _GEN_46,
-        _GEN_47,
-        _GEN_48,
-        _GEN_49,
-        _GEN_50,
-        _GEN_51,
-        _GEN_52,
-        _GEN_53,
-        _GEN_54,
-        _GEN_55,
-        _GEN_56,
-        _GEN_57,
-        _GEN_58,
-        _GEN_59,
-        _GEN_60,
-        _GEN_61,
-        _GEN_62,
-        _GEN_63,
-        _GEN_64,
-        _GEN_65,
-        _GEN_66,
-        _GEN_67,
-        _GEN_68,
-        _GEN_69,
-        _GEN_70,
-        _GEN_71,
-        _GEN_72,
-        _GEN_73,
-        _GEN_74,
-        _GEN_75,
-        _GEN_76,
-        _GEN_77,
-        _GEN_78,
-        _GEN_79,
-        _GEN_80,
-        _GEN_81,
-        _GEN_82,
-        _GEN_83,
-        _GEN_84,
-        _GEN_85,
-        _GEN_86,
-        _GEN_87,
-        _GEN_88,
-        _GEN_89,
-        _GEN_90,
-        _GEN_91,
-        _GEN_92,
-        _GEN_93,
-        _GEN_94,
-        _GEN_95,
-        _GEN_96,
-        _GEN_97,
-        _GEN_98,
-        _GEN_99,
-        _GEN_100,
-        _GEN_101,
-        _GEN_102,
-        _GEN_103,
-        _GEN_104,
-        _GEN_105,
-        _GEN_106,
-        _GEN_107,
-        _GEN_108,
-        _GEN_109,
-        _GEN_110,
-        _GEN_111,
-        _GEN_112,
-        _GEN_113,
-        _GEN_114,
-        _GEN_115,
-        _GEN_116,
-        _GEN_117,
-        _GEN_118,
-        _GEN_119,
-        _GEN_120,
-        _GEN_121,
-        _GEN_122,
-        _GEN_123,
-        _GEN_124,
-        _GEN_125,
-        _GEN_126,
-        _GEN_127,
-        _GEN_128,
-        _GEN_129,
-        _GEN_130,
-        _GEN_131,
-        _GEN_132,
-        _GEN_133,
-        _GEN_134,
-        _GEN_135,
-        _GEN_136,
-        _GEN_137,
-        _GEN_138,
-        _GEN_139,
-        _GEN_140,
-        _GEN_141,
-        _GEN_142,
-        _GEN_143,
-        _GEN_144,
-        _GEN_145,
-        _GEN_146,
-        _GEN_147,
-        _GEN_148,
-        _GEN_149,
-        _GEN_150,
-        _GEN_151,
-        _GEN_152,
-        _GEN_153,
-        _GEN_154,
-        _GEN_155,
-        _GEN_156,
-        _GEN_157,
-        _GEN_158,
-        _GEN_159,
-        _GEN_160,
-        _GEN_161,
-        _GEN_162,
-        _GEN_163,
-        _GEN_164,
-        _GEN_165,
-        _GEN_166,
-        _GEN_167,
-        _GEN_168,
-        _GEN_169,
-        _GEN_170,
-        _GEN_171,
-        _GEN_172,
-        _GEN_173,
-        _GEN_174,
-        _GEN_175,
-        _GEN_176,
-        _GEN_177,
-        _GEN_178,
-        _GEN_179,
-        _GEN_180,
-        _GEN_181,
-        _GEN_182,
-        _GEN_183,
-        _GEN_184,
-        _GEN_185,
-        write_fail,
-        write_fail_1,
-        write_fail_2,
-        write_fail_3,
-        write_fail_4,
-        write_fail_5,
-        write_fail_6,
-        write_fail_7,
-        write_fail_8,
-        write_fail_9,
-        write_fail_10,
-        write_fail_11,
-        write_fail_12,
-        write_fail_13,
-        write_fail_14,
-        scoreboard_error,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    wire [2:0] _GEN_186 = {2'h0, _GEN_5};
-    always @(posedge clock) begin
-      if (~reset & {1'h0, {1'h0, _GEN_1} + {1'h0, _GEN} + {1'h0, _GEN_0}}
-          + {1'h0, {1'h0, _GEN_4} + {1'h0, _GEN_2} + {1'h0, _GEN_3}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_8} + {1'h0, _GEN_6} + {1'h0, _GEN_7}}
-          + {1'h0, {1'h0, _GEN_11} + {1'h0, _GEN_9} + {1'h0, _GEN_10}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_14} + {1'h0, _GEN_12} + {1'h0, _GEN_13}}
-          + {1'h0, {1'h0, _GEN_17} + {1'h0, _GEN_15} + {1'h0, _GEN_16}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_20} + {1'h0, _GEN_18} + {1'h0, _GEN_19}}
-          + {1'h0, {1'h0, _GEN_23} + {1'h0, _GEN_21} + {1'h0, _GEN_22}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_26} + {1'h0, _GEN_24} + {1'h0, _GEN_25}}
-          + {1'h0, {1'h0, _GEN_29} + {1'h0, _GEN_27} + {1'h0, _GEN_28}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_32} + {1'h0, _GEN_30} + {1'h0, _GEN_31}}
-          + {1'h0, {1'h0, _GEN_35} + {1'h0, _GEN_33} + {1'h0, _GEN_34}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_38} + {1'h0, _GEN_36} + {1'h0, _GEN_37}}
-          + {1'h0, {1'h0, _GEN_41} + {1'h0, _GEN_39} + {1'h0, _GEN_40}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_44} + {1'h0, _GEN_42} + {1'h0, _GEN_43}}
-          + {1'h0, {1'h0, _GEN_47} + {1'h0, _GEN_45} + {1'h0, _GEN_46}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_50} + {1'h0, _GEN_48} + {1'h0, _GEN_49}}
-          + {1'h0, {1'h0, _GEN_53} + {1'h0, _GEN_51} + {1'h0, _GEN_52}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_56} + {1'h0, _GEN_54} + {1'h0, _GEN_55}}
-          + {1'h0, {1'h0, _GEN_59} + {1'h0, _GEN_57} + {1'h0, _GEN_58}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_62} + {1'h0, _GEN_60} + {1'h0, _GEN_61}}
-          + {1'h0, {1'h0, _GEN_65} + {1'h0, _GEN_63} + {1'h0, _GEN_64}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_68} + {1'h0, _GEN_66} + {1'h0, _GEN_67}}
-          + {1'h0, {1'h0, _GEN_71} + {1'h0, _GEN_69} + {1'h0, _GEN_70}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_74} + {1'h0, _GEN_72} + {1'h0, _GEN_73}}
-          + {1'h0, {1'h0, _GEN_77} + {1'h0, _GEN_75} + {1'h0, _GEN_76}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_80} + {1'h0, _GEN_78} + {1'h0, _GEN_79}}
-          + {1'h0, {1'h0, _GEN_83} + {1'h0, _GEN_81} + {1'h0, _GEN_82}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_86} + {1'h0, _GEN_84} + {1'h0, _GEN_85}}
-          + {1'h0, {1'h0, _GEN_89} + {1'h0, _GEN_87} + {1'h0, _GEN_88}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_92} + {1'h0, _GEN_90} + {1'h0, _GEN_91}}
-          + {1'h0, {1'h0, _GEN_95} + {1'h0, _GEN_93} + {1'h0, _GEN_94}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_98} + {1'h0, _GEN_96} + {1'h0, _GEN_97}}
-          + {1'h0,
-             {1'h0, _GEN_101} + {1'h0, _GEN_99} + {1'h0, _GEN_100}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_104} + {1'h0, _GEN_102} + {1'h0, _GEN_103}}
-          + {1'h0,
-             {1'h0, _GEN_107} + {1'h0, _GEN_105} + {1'h0, _GEN_106}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_110} + {1'h0, _GEN_108} + {1'h0, _GEN_109}}
-          + {1'h0,
-             {1'h0, _GEN_113} + {1'h0, _GEN_111} + {1'h0, _GEN_112}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_116} + {1'h0, _GEN_114} + {1'h0, _GEN_115}}
-          + {1'h0,
-             {1'h0, _GEN_119} + {1'h0, _GEN_117} + {1'h0, _GEN_118}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_122} + {1'h0, _GEN_120} + {1'h0, _GEN_121}}
-          + {1'h0,
-             {1'h0, _GEN_125} + {1'h0, _GEN_123} + {1'h0, _GEN_124}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_128} + {1'h0, _GEN_126} + {1'h0, _GEN_127}}
-          + {1'h0,
-             {1'h0, _GEN_131} + {1'h0, _GEN_129} + {1'h0, _GEN_130}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_134} + {1'h0, _GEN_132} + {1'h0, _GEN_133}}
-          + {1'h0,
-             {1'h0, _GEN_137} + {1'h0, _GEN_135} + {1'h0, _GEN_136}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_140} + {1'h0, _GEN_138} + {1'h0, _GEN_139}}
-          + {1'h0,
-             {1'h0, _GEN_143} + {1'h0, _GEN_141} + {1'h0, _GEN_142}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_146} + {1'h0, _GEN_144} + {1'h0, _GEN_145}}
-          + {1'h0,
-             {1'h0, _GEN_149} + {1'h0, _GEN_147} + {1'h0, _GEN_148}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_152} + {1'h0, _GEN_150} + {1'h0, _GEN_151}}
-          + {1'h0,
-             {1'h0, _GEN_155} + {1'h0, _GEN_153} + {1'h0, _GEN_154}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_158} + {1'h0, _GEN_156} + {1'h0, _GEN_157}}
-          + {1'h0,
-             {1'h0, _GEN_161} + {1'h0, _GEN_159} + {1'h0, _GEN_160}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_164} + {1'h0, _GEN_162} + {1'h0, _GEN_163}}
-          + {1'h0,
-             {1'h0, _GEN_167} + {1'h0, _GEN_165} + {1'h0, _GEN_166}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_170} + {1'h0, _GEN_168} + {1'h0, _GEN_169}}
-          + {1'h0,
-             {1'h0, _GEN_173} + {1'h0, _GEN_171} + {1'h0, _GEN_172}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_176} + {1'h0, _GEN_174} + {1'h0, _GEN_175}}
-          + {1'h0,
-             {1'h0, _GEN_179} + {1'h0, _GEN_177} + {1'h0, _GEN_178}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_182} + {1'h0, _GEN_180} + {1'h0, _GEN_181}}
-          + {1'h0,
-             {1'h0, _GEN_185} + {1'h0, _GEN_183} + {1'h0, _GEN_184}} > _GEN_186) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:146\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_1) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_2) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_3) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_4) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_5) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_6) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_7) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_8) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_9) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_10) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_11) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_12) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_13) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & write_fail_14) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:228\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & scoreboard_error) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Regfile.scala:235\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/FetchControl_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module FetchControl_Verification_Assert(
-  input predecode_firstJumpOH_2,
-        predecode_firstJumpOH_3,
-        predecode_firstJumpOH_0,
-        predecode_firstJumpOH_1,
-        reset,
-        _GEN,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset
-          & {1'h0, {1'h0, predecode_firstJumpOH_0} + {1'h0, predecode_firstJumpOH_1}}
-          + {1'h0,
-             {1'h0, predecode_firstJumpOH_2}
-               + {1'h0, predecode_firstJumpOH_3}} > {2'h0, _GEN}) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/CircularBufferMulti_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module CircularBufferMulti_Verification_Assert(
-  input [3:0] io_nEnqueued,
-  input [2:0] io_enqValid,
-              io_deqReady,
-  input       reset,
-  input [3:0] _GEN,
-  input       clock
-);
-
-  `ifndef SYNTHESIS
-    wire [4:0] _GEN_0 = {1'h0, io_nEnqueued};
-    wire [4:0] _GEN_1 = {2'h0, io_enqValid};
-    always @(posedge clock) begin
-      if (~reset & {1'h0, _GEN_0 + _GEN_1} - {3'h0, io_deqReady} > {2'h0, _GEN}) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at CircularBufferMulti.scala:43\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_1 > {1'h0, _GEN} - _GEN_0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at CircularBufferMulti.scala:44\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, io_deqReady} > io_nEnqueued) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at CircularBufferMulti.scala:46\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/InstructionBuffer_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module InstructionBuffer_Verification_Assert(
-  input _GEN,
-        _GEN_0,
-        _GEN_1,
-        _GEN_2,
-        reset,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset & (~_GEN & _GEN_0 | ~_GEN_0 & _GEN_1 | ~_GEN_1 & _GEN_2)) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: OneHotInOrder - Instructions not dispatched in order.\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/Csr_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module Csr_Verification_Assert(
-  input [11:0] csr_address,
-  input        _GEN,
-               _GEN_0,
-               _GEN_1,
-               _GEN_2,
-               _GEN_3,
-               _GEN_4,
-               _GEN_5,
-               _GEN_6,
-               _GEN_7,
-               _GEN_8,
-               _GEN_9,
-               _GEN_10,
-               _GEN_11,
-               _GEN_12,
-               _GEN_13,
-               _GEN_14,
-               _GEN_15,
-               _GEN_16,
-               _GEN_17,
-               _GEN_18,
-               _GEN_19,
-               _GEN_20,
-               _GEN_21,
-               _GEN_22,
-               _GEN_23,
-               _GEN_24,
-               _GEN_25,
-               _GEN_26,
-               _GEN_27,
-               _GEN_28,
-               _GEN_29,
-               _GEN_30,
-               _GEN_31,
-               _GEN_32,
-               _GEN_33,
-               _GEN_34,
-               _GEN_35,
-               _GEN_36,
-               _GEN_37,
-               _GEN_38,
-               _GEN_39,
-               _GEN_40,
-               _GEN_41,
-               _GEN_42,
-               _GEN_43,
-               req_valid,
-               reset,
-               io_halted,
-               io_wfi,
-               io_fault,
-               _GEN_44,
-               io_rs1_valid,
-               clock
-);
-
-  `ifndef SYNTHESIS
-    wire tselectEn = csr_address == 12'h7A0;
-    wire marchidEn = csr_address == 12'hF12;
-    wire mimpidEn = csr_address == 12'hF13;
-    wire mhartidEn = csr_address == 12'hF14;
-    wire kisaEn = csr_address == 12'hFC0;
-    always @(posedge clock) begin
-      if (~reset & req_valid
-          & ~(csr_address == 12'h0 | _GEN | _GEN_0 | _GEN_1 | _GEN_2 | _GEN_3 | _GEN_4
-              | _GEN_5 | _GEN_6 | _GEN_7 | _GEN_8 | _GEN_9 | _GEN_10 | _GEN_11 | _GEN_12
-              | _GEN_13 | tselectEn | _GEN_14 | _GEN_15 | _GEN_16 | _GEN_17 | _GEN_18
-              | _GEN_19 | _GEN_20 | _GEN_21 | _GEN_22 | _GEN_23 | _GEN_24 | _GEN_25
-              | _GEN_26 | _GEN_27 | _GEN_28 | _GEN_29 | _GEN_30 | _GEN_31 | _GEN_32
-              | _GEN_33 | _GEN_34 | _GEN_35 | _GEN_36 | _GEN_37 | _GEN_38 | marchidEn
-              | mimpidEn | mhartidEn | kisaEn | _GEN_39 | _GEN_40 | _GEN_41 | _GEN_42
-              | _GEN_43)) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Csr.scala:317\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & io_fault & ~io_halted & ~io_wfi) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Csr.scala:391\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0,
-               {1'h0, {1'h0, _GEN} + {1'h0, _GEN_0} + {1'h0, _GEN_1}}
-                 + {1'h0, {1'h0, _GEN_5} + {1'h0, _GEN_6} + {1'h0, _GEN_7}}}
-                + {1'h0,
-                   {1'h0, {1'h0, _GEN_13} + {1'h0, _GEN_8} + {1'h0, _GEN_9}}
-                     + {1'h0, {1'h0, _GEN_10} + {1'h0, _GEN_11} + {1'h0, _GEN_12}}}}
-               + {1'h0,
-                  {1'h0,
-                   {1'h0, {1'h0, _GEN_21} + {1'h0, _GEN_22} + {1'h0, _GEN_23}}
-                     + {1'h0, {1'h0, _GEN_24} + {1'h0, _GEN_25} + {1'h0, _GEN_26}}}
-                    + {1'h0,
-                       {1'h0, {1'h0, _GEN_27} + {1'h0, _GEN_28} + {1'h0, _GEN_29}}
-                         + {1'h0, {1'h0, _GEN_30} + {1'h0, _GEN_31}}
-                         + {1'h0, {1'h0, _GEN_33} + {1'h0, _GEN_32}}}}}
-          + {1'h0,
-             {1'h0,
-              {1'h0,
-               {1'h0, {1'h0, _GEN_34} + {1'h0, _GEN_38} + {1'h0, marchidEn}}
-                 + {1'h0, {1'h0, mimpidEn} + {1'h0, mhartidEn} + {1'h0, kisaEn}}}
-                + {1'h0,
-                   {1'h0, {1'h0, _GEN_39} + {1'h0, _GEN_40} + {1'h0, _GEN_41}}
-                     + {1'h0, {1'h0, _GEN_42} + {1'h0, _GEN_43} + {1'h0, _GEN_2}}}}
-               + {1'h0,
-                  {1'h0,
-                   {1'h0, {1'h0, _GEN_35} + {1'h0, _GEN_36} + {1'h0, _GEN_4}}
-                     + {1'h0, {1'h0, _GEN_3} + {1'h0, _GEN_37} + {1'h0, tselectEn}}}
-                    + {1'h0,
-                       {1'h0, {1'h0, _GEN_14} + {1'h0, _GEN_15} + {1'h0, _GEN_16}}
-                         + {1'h0, {1'h0, _GEN_17} + {1'h0, _GEN_18}}
-                         + {1'h0,
-                            {1'h0, _GEN_19} + {1'h0, _GEN_20}}}}} > {5'h0, _GEN_44}) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & req_valid & ~io_rs1_valid) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Csr.scala:634\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/DispatchV2_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module DispatchV2_Verification_Assert(
-  input decodedInsts_0_sub,
-        _GEN,
-        _GEN_0,
-        _GEN_1,
-        _GEN_2,
-        _GEN_3,
-        _GEN_4,
-        _GEN_5,
-        _GEN_6,
-        _GEN_7,
-        decodedInsts_0_orn,
-        decodedInsts_0_xnor,
-        decodedInsts_0_lui,
-        decodedInsts_0_andn,
-        decodedInsts_0_ctz,
-        decodedInsts_0_cpop,
-        decodedInsts_0_clz,
-        decodedInsts_0_min,
-        decodedInsts_0_minu,
-        decodedInsts_0_max,
-        decodedInsts_0_maxu,
-        decodedInsts_0_rol,
-        decodedInsts_0_ror,
-        decodedInsts_0_sextb,
-        decodedInsts_0_sexth,
-        decodedInsts_0_zexth,
-        decodedInsts_0_rori,
-        decodedInsts_0_orcb,
-        decodedInsts_0_rev8,
-        reset,
-        _GEN_8,
-        decodedInsts_0_jalr,
-        decodedInsts_0_beq,
-        decodedInsts_0_jal,
-        decodedInsts_0_blt,
-        decodedInsts_0_bge,
-        decodedInsts_0_bne,
-        decodedInsts_0_bgeu,
-        decodedInsts_0_ebreak,
-        decodedInsts_0_bltu,
-        decodedInsts_0_mret,
-        decodedInsts_0_wfi,
-        decodedInsts_0_ecall,
-        decodedInsts_0_mpause,
-        decodedInsts_0_mulhsu,
-        decodedInsts_0_mulhu,
-        decodedInsts_0_mul,
-        decodedInsts_0_mulh,
-        decodedInsts_0_rem,
-        decodedInsts_0_remu,
-        decodedInsts_0_div,
-        decodedInsts_0_divu,
-        decodedInsts_0_lbu,
-        decodedInsts_0_lhu,
-        decodedInsts_0_lw,
-        decodedInsts_0_lb,
-        decodedInsts_0_lh,
-        decodedInsts_0_fencei,
-        decodedInsts_0_sw,
-        decodedInsts_0_sb,
-        decodedInsts_0_sh,
-        _GEN_9,
-        _GEN_10,
-        _GEN_11,
-        decodedInsts_0_flushat,
-        decodedInsts_0_flushall,
-        _GEN_12,
-        _GEN_13,
-        _GEN_14,
-        _GEN_15,
-        _GEN_16,
-        _GEN_17,
-        decodedInsts_0_csrrs,
-        decodedInsts_0_csrrc,
-        decodedInsts_0_csrrw,
-        decodedInsts_1_sub,
-        _GEN_18,
-        _GEN_19,
-        _GEN_20,
-        _GEN_21,
-        _GEN_22,
-        _GEN_23,
-        _GEN_24,
-        _GEN_25,
-        _GEN_26,
-        decodedInsts_1_orn,
-        decodedInsts_1_xnor,
-        decodedInsts_1_lui,
-        decodedInsts_1_andn,
-        decodedInsts_1_ctz,
-        decodedInsts_1_cpop,
-        decodedInsts_1_clz,
-        decodedInsts_1_min,
-        decodedInsts_1_minu,
-        decodedInsts_1_max,
-        decodedInsts_1_maxu,
-        decodedInsts_1_rol,
-        decodedInsts_1_ror,
-        decodedInsts_1_sextb,
-        decodedInsts_1_sexth,
-        decodedInsts_1_zexth,
-        decodedInsts_1_rori,
-        decodedInsts_1_orcb,
-        decodedInsts_1_rev8,
-        decodedInsts_1_jalr,
-        decodedInsts_1_beq,
-        decodedInsts_1_jal,
-        decodedInsts_1_blt,
-        decodedInsts_1_bge,
-        decodedInsts_1_bne,
-        decodedInsts_1_bgeu,
-        decodedInsts_1_bltu,
-        decodedInsts_1_mulhsu,
-        decodedInsts_1_mulhu,
-        decodedInsts_1_mul,
-        decodedInsts_1_mulh,
-        decodedInsts_1_lbu,
-        decodedInsts_1_lhu,
-        decodedInsts_1_lw,
-        decodedInsts_1_lb,
-        decodedInsts_1_lh,
-        decodedInsts_1_sw,
-        decodedInsts_1_sb,
-        decodedInsts_1_sh,
-        _GEN_27,
-        _GEN_28,
-        _GEN_29,
-        _GEN_30,
-        _GEN_31,
-        _GEN_32,
-        _GEN_33,
-        _GEN_34,
-        decodedInsts_2_sub,
-        _GEN_35,
-        _GEN_36,
-        _GEN_37,
-        _GEN_38,
-        _GEN_39,
-        _GEN_40,
-        _GEN_41,
-        _GEN_42,
-        _GEN_43,
-        decodedInsts_2_orn,
-        decodedInsts_2_xnor,
-        decodedInsts_2_lui,
-        decodedInsts_2_andn,
-        decodedInsts_2_ctz,
-        decodedInsts_2_cpop,
-        decodedInsts_2_clz,
-        decodedInsts_2_min,
-        decodedInsts_2_minu,
-        decodedInsts_2_max,
-        decodedInsts_2_maxu,
-        decodedInsts_2_rol,
-        decodedInsts_2_ror,
-        decodedInsts_2_sextb,
-        decodedInsts_2_sexth,
-        decodedInsts_2_zexth,
-        decodedInsts_2_rori,
-        decodedInsts_2_orcb,
-        decodedInsts_2_rev8,
-        decodedInsts_2_jalr,
-        decodedInsts_2_beq,
-        decodedInsts_2_jal,
-        decodedInsts_2_blt,
-        decodedInsts_2_bge,
-        decodedInsts_2_bne,
-        decodedInsts_2_bgeu,
-        decodedInsts_2_bltu,
-        decodedInsts_2_mulhsu,
-        decodedInsts_2_mulhu,
-        decodedInsts_2_mul,
-        decodedInsts_2_mulh,
-        decodedInsts_2_lbu,
-        decodedInsts_2_lhu,
-        decodedInsts_2_lw,
-        decodedInsts_2_lb,
-        decodedInsts_2_lh,
-        decodedInsts_2_sw,
-        decodedInsts_2_sb,
-        decodedInsts_2_sh,
-        _GEN_44,
-        _GEN_45,
-        _GEN_46,
-        _GEN_47,
-        _GEN_48,
-        _GEN_49,
-        _GEN_50,
-        _GEN_51,
-        decodedInsts_3_sub,
-        _GEN_52,
-        _GEN_53,
-        _GEN_54,
-        _GEN_55,
-        _GEN_56,
-        _GEN_57,
-        _GEN_58,
-        _GEN_59,
-        _GEN_60,
-        decodedInsts_3_orn,
-        decodedInsts_3_xnor,
-        decodedInsts_3_lui,
-        decodedInsts_3_andn,
-        decodedInsts_3_ctz,
-        decodedInsts_3_cpop,
-        decodedInsts_3_clz,
-        decodedInsts_3_min,
-        decodedInsts_3_minu,
-        decodedInsts_3_max,
-        decodedInsts_3_maxu,
-        decodedInsts_3_rol,
-        decodedInsts_3_ror,
-        decodedInsts_3_sextb,
-        decodedInsts_3_sexth,
-        decodedInsts_3_zexth,
-        decodedInsts_3_rori,
-        decodedInsts_3_orcb,
-        decodedInsts_3_rev8,
-        decodedInsts_3_jalr,
-        decodedInsts_3_beq,
-        decodedInsts_3_jal,
-        decodedInsts_3_blt,
-        decodedInsts_3_bge,
-        decodedInsts_3_bne,
-        decodedInsts_3_bgeu,
-        decodedInsts_3_bltu,
-        decodedInsts_3_mulhsu,
-        decodedInsts_3_mulhu,
-        decodedInsts_3_mul,
-        decodedInsts_3_mulh,
-        decodedInsts_3_lbu,
-        decodedInsts_3_lhu,
-        decodedInsts_3_lw,
-        decodedInsts_3_lb,
-        decodedInsts_3_lh,
-        decodedInsts_3_sw,
-        decodedInsts_3_sb,
-        decodedInsts_3_sh,
-        _GEN_61,
-        _GEN_62,
-        _GEN_63,
-        _GEN_64,
-        _GEN_65,
-        _GEN_66,
-        _GEN_67,
-        _GEN_68,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    wire [4:0] _GEN_69 = {4'h0, _GEN_8};
-    wire [1:0] _GEN_70 = {1'h0, decodedInsts_0_wfi};
-    wire [3:0] _GEN_71 = {3'h0, _GEN_8};
-    wire [2:0] _GEN_72 = {2'h0, _GEN_8};
-    always @(posedge clock) begin
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, {1'h0, _GEN_0} + {1'h0, decodedInsts_0_sub} + {1'h0, _GEN}}
-                + {1'h0, {1'h0, _GEN_3} + {1'h0, _GEN_4}}
-                + {1'h0, {1'h0, _GEN_1} + {1'h0, _GEN_2}}}
-               + {1'h0,
-                  {1'h0, {1'h0, _GEN_7} + {1'h0, _GEN_5} + {1'h0, _GEN_6}}
-                    + {1'h0, {1'h0, decodedInsts_0_lui} + {1'h0, decodedInsts_0_andn}}
-                    + {1'h0, {1'h0, decodedInsts_0_orn} + {1'h0, decodedInsts_0_xnor}}}}
-          + {1'h0,
-             {1'h0,
-              {1'h0,
-               {1'h0, decodedInsts_0_clz} + {1'h0, decodedInsts_0_ctz}
-                 + {1'h0, decodedInsts_0_cpop}}
-                + {1'h0, {1'h0, decodedInsts_0_max} + {1'h0, decodedInsts_0_maxu}}
-                + {1'h0, {1'h0, decodedInsts_0_min} + {1'h0, decodedInsts_0_minu}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_0_sextb} + {1'h0, decodedInsts_0_sexth}}
-                    + {1'h0, {1'h0, decodedInsts_0_rol} + {1'h0, decodedInsts_0_ror}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_0_orcb} + {1'h0, decodedInsts_0_rev8}}
-                    + {1'h0,
-                       {1'h0, decodedInsts_0_zexth}
-                         + {1'h0, decodedInsts_0_rori}}}} > _GEN_69) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, decodedInsts_0_jal} + {1'h0, decodedInsts_0_jalr}
-                + {1'h0, decodedInsts_0_beq}}
-               + {1'h0,
-                  {1'h0, decodedInsts_0_bne} + {1'h0, decodedInsts_0_blt}
-                    + {1'h0, decodedInsts_0_bge}}}
-          + {1'h0,
-             {1'h0,
-              {1'h0, decodedInsts_0_bltu} + {1'h0, decodedInsts_0_bgeu}
-                + {1'h0, decodedInsts_0_ebreak}}
-               + {1'h0, {1'h0, decodedInsts_0_ecall} + {1'h0, decodedInsts_0_mpause}}
-               + {1'h0, {1'h0, decodedInsts_0_mret} + _GEN_70}} > _GEN_71) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, decodedInsts_0_mul} + {1'h0, decodedInsts_0_mulh}}
-          + {1'h0,
-             {1'h0, decodedInsts_0_mulhsu}
-               + {1'h0, decodedInsts_0_mulhu}} > _GEN_72) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, decodedInsts_0_div} + {1'h0, decodedInsts_0_divu}}
-          + {1'h0,
-             {1'h0, decodedInsts_0_rem} + {1'h0, decodedInsts_0_remu}} > _GEN_72) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, {1'h0, decodedInsts_0_lb} + {1'h0, decodedInsts_0_lh}}
-                + {1'h0,
-                   {1'h0, decodedInsts_0_lw} + {1'h0, decodedInsts_0_lbu}
-                     + {1'h0, decodedInsts_0_lhu}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_0_sb} + {1'h0, decodedInsts_0_sh}}
-                    + {1'h0,
-                       {1'h0, decodedInsts_0_sw} + _GEN_70
-                         + {1'h0, decodedInsts_0_fencei}}}}
-          + {1'h0,
-             {1'h0,
-              {1'h0, {1'h0, decodedInsts_0_flushat} + {1'h0, decodedInsts_0_flushall}}
-                + {1'h0, {1'h0, _GEN_11} + {1'h0, _GEN_9} + {1'h0, _GEN_10}}}
-               + {1'h0,
-                  {1'h0, {1'h0, _GEN_14} + {1'h0, _GEN_12} + {1'h0, _GEN_13}}
-                    + {1'h0,
-                       {1'h0, _GEN_17} + {1'h0, _GEN_15}
-                         + {1'h0, _GEN_16}}}} > _GEN_69) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, decodedInsts_0_csrrw} + {1'h0, decodedInsts_0_csrrs}
-          + {1'h0, decodedInsts_0_csrrc} > {1'h0, _GEN_8}) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, {1'h0, _GEN_19} + {1'h0, decodedInsts_1_sub} + {1'h0, _GEN_18}}
-                + {1'h0, {1'h0, _GEN_22} + {1'h0, _GEN_23}}
-                + {1'h0, {1'h0, _GEN_20} + {1'h0, _GEN_21}}}
-               + {1'h0,
-                  {1'h0, {1'h0, _GEN_26} + {1'h0, _GEN_24} + {1'h0, _GEN_25}}
-                    + {1'h0, {1'h0, decodedInsts_1_lui} + {1'h0, decodedInsts_1_andn}}
-                    + {1'h0, {1'h0, decodedInsts_1_orn} + {1'h0, decodedInsts_1_xnor}}}}
-          + {1'h0,
-             {1'h0,
-              {1'h0,
-               {1'h0, decodedInsts_1_clz} + {1'h0, decodedInsts_1_ctz}
-                 + {1'h0, decodedInsts_1_cpop}}
-                + {1'h0, {1'h0, decodedInsts_1_max} + {1'h0, decodedInsts_1_maxu}}
-                + {1'h0, {1'h0, decodedInsts_1_min} + {1'h0, decodedInsts_1_minu}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_1_sextb} + {1'h0, decodedInsts_1_sexth}}
-                    + {1'h0, {1'h0, decodedInsts_1_rol} + {1'h0, decodedInsts_1_ror}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_1_orcb} + {1'h0, decodedInsts_1_rev8}}
-                    + {1'h0,
-                       {1'h0, decodedInsts_1_zexth}
-                         + {1'h0, decodedInsts_1_rori}}}} > _GEN_69) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, decodedInsts_1_jal} + {1'h0, decodedInsts_1_jalr}
-                + {1'h0, decodedInsts_1_beq}}
-               + {1'h0,
-                  {1'h0, decodedInsts_1_bne} + {1'h0, decodedInsts_1_blt}
-                    + {1'h0, decodedInsts_1_bge}}}
-          + {2'h0,
-             {1'h0, decodedInsts_1_bgeu} + {1'h0, decodedInsts_1_bltu}} > _GEN_71) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, decodedInsts_1_mul} + {1'h0, decodedInsts_1_mulh}}
-          + {1'h0,
-             {1'h0, decodedInsts_1_mulhsu}
-               + {1'h0, decodedInsts_1_mulhu}} > _GEN_72) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, {1'h0, decodedInsts_1_lb} + {1'h0, decodedInsts_1_lh}}
-                + {1'h0,
-                   {1'h0, decodedInsts_1_lw} + {1'h0, decodedInsts_1_lbu}
-                     + {1'h0, decodedInsts_1_lhu}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_1_sb} + {1'h0, decodedInsts_1_sh}}
-                    + {2'h0, decodedInsts_1_sw}}}
-          + {1'h0,
-             {2'h0, {1'h0, _GEN_33} + {1'h0, _GEN_34}}
-               + {1'h0,
-                  {1'h0, {1'h0, _GEN_29} + {1'h0, _GEN_27} + {1'h0, _GEN_28}}
-                    + {1'h0,
-                       {1'h0, _GEN_32} + {1'h0, _GEN_30}
-                         + {1'h0, _GEN_31}}}} > _GEN_69) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, {1'h0, _GEN_36} + {1'h0, decodedInsts_2_sub} + {1'h0, _GEN_35}}
-                + {1'h0, {1'h0, _GEN_39} + {1'h0, _GEN_40}}
-                + {1'h0, {1'h0, _GEN_37} + {1'h0, _GEN_38}}}
-               + {1'h0,
-                  {1'h0, {1'h0, _GEN_43} + {1'h0, _GEN_41} + {1'h0, _GEN_42}}
-                    + {1'h0, {1'h0, decodedInsts_2_lui} + {1'h0, decodedInsts_2_andn}}
-                    + {1'h0, {1'h0, decodedInsts_2_orn} + {1'h0, decodedInsts_2_xnor}}}}
-          + {1'h0,
-             {1'h0,
-              {1'h0,
-               {1'h0, decodedInsts_2_clz} + {1'h0, decodedInsts_2_ctz}
-                 + {1'h0, decodedInsts_2_cpop}}
-                + {1'h0, {1'h0, decodedInsts_2_max} + {1'h0, decodedInsts_2_maxu}}
-                + {1'h0, {1'h0, decodedInsts_2_min} + {1'h0, decodedInsts_2_minu}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_2_sextb} + {1'h0, decodedInsts_2_sexth}}
-                    + {1'h0, {1'h0, decodedInsts_2_rol} + {1'h0, decodedInsts_2_ror}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_2_orcb} + {1'h0, decodedInsts_2_rev8}}
-                    + {1'h0,
-                       {1'h0, decodedInsts_2_zexth}
-                         + {1'h0, decodedInsts_2_rori}}}} > _GEN_69) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, decodedInsts_2_jal} + {1'h0, decodedInsts_2_jalr}
-                + {1'h0, decodedInsts_2_beq}}
-               + {1'h0,
-                  {1'h0, decodedInsts_2_bne} + {1'h0, decodedInsts_2_blt}
-                    + {1'h0, decodedInsts_2_bge}}}
-          + {2'h0,
-             {1'h0, decodedInsts_2_bgeu} + {1'h0, decodedInsts_2_bltu}} > _GEN_71) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, decodedInsts_2_mul} + {1'h0, decodedInsts_2_mulh}}
-          + {1'h0,
-             {1'h0, decodedInsts_2_mulhsu}
-               + {1'h0, decodedInsts_2_mulhu}} > _GEN_72) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, {1'h0, decodedInsts_2_lb} + {1'h0, decodedInsts_2_lh}}
-                + {1'h0,
-                   {1'h0, decodedInsts_2_lw} + {1'h0, decodedInsts_2_lbu}
-                     + {1'h0, decodedInsts_2_lhu}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_2_sb} + {1'h0, decodedInsts_2_sh}}
-                    + {2'h0, decodedInsts_2_sw}}}
-          + {1'h0,
-             {2'h0, {1'h0, _GEN_50} + {1'h0, _GEN_51}}
-               + {1'h0,
-                  {1'h0, {1'h0, _GEN_46} + {1'h0, _GEN_44} + {1'h0, _GEN_45}}
-                    + {1'h0,
-                       {1'h0, _GEN_49} + {1'h0, _GEN_47}
-                         + {1'h0, _GEN_48}}}} > _GEN_69) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, {1'h0, _GEN_53} + {1'h0, decodedInsts_3_sub} + {1'h0, _GEN_52}}
-                + {1'h0, {1'h0, _GEN_56} + {1'h0, _GEN_57}}
-                + {1'h0, {1'h0, _GEN_54} + {1'h0, _GEN_55}}}
-               + {1'h0,
-                  {1'h0, {1'h0, _GEN_60} + {1'h0, _GEN_58} + {1'h0, _GEN_59}}
-                    + {1'h0, {1'h0, decodedInsts_3_lui} + {1'h0, decodedInsts_3_andn}}
-                    + {1'h0, {1'h0, decodedInsts_3_orn} + {1'h0, decodedInsts_3_xnor}}}}
-          + {1'h0,
-             {1'h0,
-              {1'h0,
-               {1'h0, decodedInsts_3_clz} + {1'h0, decodedInsts_3_ctz}
-                 + {1'h0, decodedInsts_3_cpop}}
-                + {1'h0, {1'h0, decodedInsts_3_max} + {1'h0, decodedInsts_3_maxu}}
-                + {1'h0, {1'h0, decodedInsts_3_min} + {1'h0, decodedInsts_3_minu}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_3_sextb} + {1'h0, decodedInsts_3_sexth}}
-                    + {1'h0, {1'h0, decodedInsts_3_rol} + {1'h0, decodedInsts_3_ror}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_3_orcb} + {1'h0, decodedInsts_3_rev8}}
-                    + {1'h0,
-                       {1'h0, decodedInsts_3_zexth}
-                         + {1'h0, decodedInsts_3_rori}}}} > _GEN_69) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, decodedInsts_3_jal} + {1'h0, decodedInsts_3_jalr}
-                + {1'h0, decodedInsts_3_beq}}
-               + {1'h0,
-                  {1'h0, decodedInsts_3_bne} + {1'h0, decodedInsts_3_blt}
-                    + {1'h0, decodedInsts_3_bge}}}
-          + {2'h0,
-             {1'h0, decodedInsts_3_bgeu} + {1'h0, decodedInsts_3_bltu}} > _GEN_71) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, decodedInsts_3_mul} + {1'h0, decodedInsts_3_mulh}}
-          + {1'h0,
-             {1'h0, decodedInsts_3_mulhsu}
-               + {1'h0, decodedInsts_3_mulhu}} > _GEN_72) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0,
-              {1'h0, {1'h0, decodedInsts_3_lb} + {1'h0, decodedInsts_3_lh}}
-                + {1'h0,
-                   {1'h0, decodedInsts_3_lw} + {1'h0, decodedInsts_3_lbu}
-                     + {1'h0, decodedInsts_3_lhu}}}
-               + {1'h0,
-                  {1'h0, {1'h0, decodedInsts_3_sb} + {1'h0, decodedInsts_3_sh}}
-                    + {2'h0, decodedInsts_3_sw}}}
-          + {1'h0,
-             {2'h0, {1'h0, _GEN_67} + {1'h0, _GEN_68}}
-               + {1'h0,
-                  {1'h0, {1'h0, _GEN_63} + {1'h0, _GEN_61} + {1'h0, _GEN_62}}
-                    + {1'h0,
-                       {1'h0, _GEN_66} + {1'h0, _GEN_64}
-                         + {1'h0, _GEN_65}}}} > _GEN_69) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/CircularBufferMulti_1_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module CircularBufferMulti_1_Verification_Assert(
-  input [2:0] io_nEnqueued,
-              io_enqValid,
-              io_deqReady,
-  input       reset,
-  input [2:0] _GEN,
-  input       clock
-);
-
-  `ifndef SYNTHESIS
-    wire [3:0] _GEN_0 = {1'h0, io_nEnqueued};
-    wire [3:0] _GEN_1 = {1'h0, io_enqValid};
-    always @(posedge clock) begin
-      if (~reset & {1'h0, _GEN_0 + _GEN_1} - {2'h0, io_deqReady} > {2'h0, _GEN}) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at CircularBufferMulti.scala:43\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_1 > {1'h0, _GEN} - _GEN_0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at CircularBufferMulti.scala:44\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & io_deqReady > io_nEnqueued) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at CircularBufferMulti.scala:46\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/LsuV2_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module LsuV2_Verification_Assert(
-  input       _GEN,
-              _GEN_0,
-              _GEN_1,
-              _GEN_2,
-              reset,
-              _GEN_3,
-  input [2:0] io_req_0_bits_nfields,
-  input       _GEN_4,
-              _GEN_5,
-              _GEN_6,
-              _GEN_7,
-              _GEN_8,
-              _GEN_9,
-              _GEN_10,
-              _GEN_11,
-              _GEN_12,
-  input [2:0] io_req_1_bits_nfields,
-  input       _GEN_13,
-              _GEN_14,
-              _GEN_15,
-              _GEN_16,
-              _GEN_17,
-              _GEN_18,
-              _GEN_19,
-              _GEN_20,
-              _GEN_21,
-  input [2:0] io_req_2_bits_nfields,
-  input       _GEN_22,
-              _GEN_23,
-              _GEN_24,
-              _GEN_25,
-              _GEN_26,
-              _GEN_27,
-              _GEN_28,
-              _GEN_29,
-              _GEN_30,
-  input [2:0] io_req_3_bits_nfields,
-  input       _GEN_31,
-              _GEN_32,
-              _GEN_33,
-              _GEN_34,
-              _GEN_35,
-  input [2:0] opQueue_io_enqValid,
-              opQueue_io_nSpace,
-  input       _GEN_36,
-              _GEN_37,
-              _GEN_38,
-              _GEN_39,
-              _GEN_40,
-              _GEN_41,
-              _GEN_42,
-              _GEN_43,
-              _GEN_44,
-              _nextSlot_active_WIRE_3_5,
-              _nextSlot_active_WIRE_3_4,
-              _nextSlot_active_WIRE_3_7,
-              _nextSlot_active_WIRE_3_6,
-              _nextSlot_active_WIRE_3_1,
-              _nextSlot_active_WIRE_3_0,
-              _nextSlot_active_WIRE_3_3,
-              _nextSlot_active_WIRE_3_2,
-              _GEN_45,
-              _GEN_46,
-              _GEN_47,
-              _GEN_48,
-              _GEN_49,
-              _GEN_50,
-              _GEN_51,
-              _GEN_52,
-              _GEN_53,
-              _GEN_54,
-              _GEN_55,
-              _GEN_56,
-              _GEN_57,
-              _GEN_58,
-              _GEN_59,
-              _GEN_60,
-              _GEN_61,
-              _GEN_62,
-              _GEN_63,
-              _GEN_64,
-              _GEN_65,
-              _GEN_66,
-              lineActive_0,
-              lineActive_1,
-              wactive_1,
-              wactive_0,
-              lineActive_2,
-              lineActive_3,
-              wactive_3,
-              wactive_2,
-              lineActive_4,
-              lineActive_5,
-              wactive_5,
-              wactive_4,
-              lineActive_6,
-              lineActive_7,
-              wactive_7,
-              wactive_6,
-              lineActive_8,
-              lineActive_9,
-              wactive_9,
-              wactive_8,
-              lineActive_10,
-              lineActive_11,
-              wactive_11,
-              wactive_10,
-              lineActive_12,
-              lineActive_13,
-              wactive_13,
-              wactive_12,
-              lineActive_14,
-              lineActive_15,
-              wactive_15,
-              wactive_14,
-              _GEN_67,
-              _GEN_68,
-              _GEN_69,
-              _GEN_70,
-              _GEN_71,
-              _GEN_72,
-              _GEN_73,
-              io_dbus_valid,
-              _GEN_74,
-              _GEN_75,
-              io_rd_flt_valid,
-              _GEN_76,
-              io_rd_valid,
-  input [2:0] slot_vectorLoop_subvector_curr,
-              slot_vectorLoop_subvector_max,
-  input       _GEN_77,
-              _GEN_78,
-              slot_active_2,
-              slot_active_3,
-              slot_active_4,
-              slot_active_5,
-              slot_active_6,
-              slot_active_7,
-              slot_active_8,
-              slot_active_9,
-              slot_active_10,
-              slot_active_11,
-              slot_active_12,
-              slot_active_13,
-              slot_active_14,
-              slot_active_15,
-              slot_pendingWriteback,
-              faultReg_valid,
-              _GEN_79,
-              clock
-);
-
-  `ifndef SYNTHESIS
-    wire [2:0] _GEN_80 = {2'h0, _GEN_3};
-    wire [1:0] _GEN_81 = {1'h0, _GEN_3};
-    wire [1:0] _GEN_82 = {1'h0, _GEN_48};
-    wire [1:0] _GEN_83 = {1'h0, _GEN_49};
-    wire [1:0] _GEN_84 = {1'h0, _GEN_50};
-    wire [1:0] _GEN_85 = {1'h0, _GEN_58};
-    wire [1:0] _GEN_86 = {1'h0, _GEN_59};
-    wire [1:0] _GEN_87 = {1'h0, _GEN_60};
-    always @(posedge clock) begin
-      if (~reset & {1'h0, {1'h0, _GEN_1} + {1'h0, _GEN_2}}
-          + {1'h0, {1'h0, _GEN} + {1'h0, _GEN_0}} > _GEN_80) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, io_req_0_bits_nfields == 3'h0} + {1'h0, _GEN_6}}
-          + {1'h0, {1'h0, _GEN_4} + {1'h0, _GEN_5}} > _GEN_80) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_7} + {1'h0, _GEN_8} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_11} + {1'h0, _GEN_12}}
-          + {1'h0, {1'h0, _GEN_9} + {1'h0, _GEN_10}} > _GEN_80) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, io_req_1_bits_nfields == 3'h0} + {1'h0, _GEN_15}}
-          + {1'h0, {1'h0, _GEN_13} + {1'h0, _GEN_14}} > _GEN_80) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_16} + {1'h0, _GEN_17} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_20} + {1'h0, _GEN_21}}
-          + {1'h0, {1'h0, _GEN_18} + {1'h0, _GEN_19}} > _GEN_80) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, io_req_2_bits_nfields == 3'h0} + {1'h0, _GEN_24}}
-          + {1'h0, {1'h0, _GEN_22} + {1'h0, _GEN_23}} > _GEN_80) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_25} + {1'h0, _GEN_26} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_29} + {1'h0, _GEN_30}}
-          + {1'h0, {1'h0, _GEN_27} + {1'h0, _GEN_28}} > _GEN_80) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, io_req_3_bits_nfields == 3'h0} + {1'h0, _GEN_33}}
-          + {1'h0, {1'h0, _GEN_31} + {1'h0, _GEN_32}} > _GEN_80) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_34} + {1'h0, _GEN_35} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & opQueue_io_enqValid > opQueue_io_nSpace) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Lsu.scala:874\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_38} + {1'h0, _GEN_36} + {1'h0, _GEN_37} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_41} + {1'h0, _GEN_39} + {1'h0, _GEN_40} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_44} + {1'h0, _GEN_42} + {1'h0, _GEN_43} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_46} + {1'h0, _GEN_47}}
-          + {1'h0,
-             {1'h0, _GEN_45}
-               + {1'h0,
-                  |{_nextSlot_active_WIRE_3_7,
-                    _nextSlot_active_WIRE_3_6,
-                    _nextSlot_active_WIRE_3_5,
-                    _nextSlot_active_WIRE_3_4,
-                    _nextSlot_active_WIRE_3_3,
-                    _nextSlot_active_WIRE_3_2,
-                    _nextSlot_active_WIRE_3_1,
-                    _nextSlot_active_WIRE_3_0}}} > _GEN_80) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_84 + _GEN_82 + _GEN_83 > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_53} + {1'h0, _GEN_51} + {1'h0, _GEN_52} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_84 + _GEN_82 + _GEN_83 > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_56} + {1'h0, _GEN_57}}
-          + {1'h0, {1'h0, _GEN_54} + {1'h0, _GEN_55}} > _GEN_80) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_87 + _GEN_85 + _GEN_86 > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_87 + _GEN_85 + _GEN_86 > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_87 + _GEN_85 + _GEN_86 > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_63} + {1'h0, _GEN_61} + {1'h0, _GEN_62} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_66} + {1'h0, _GEN_64} + {1'h0, _GEN_65} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & (|({1'h0,
-                {1'h0,
-                 {1'h0,
-                  {1'h0, wactive_0 & ~lineActive_0} + {1'h0, wactive_1 & ~lineActive_1}}
-                   + {1'h0,
-                      {1'h0, wactive_2 & ~lineActive_2}
-                        + {1'h0, wactive_3 & ~lineActive_3}}}
-                  + {1'h0,
-                     {1'h0,
-                      {1'h0, wactive_4 & ~lineActive_4}
-                        + {1'h0, wactive_5 & ~lineActive_5}}
-                       + {1'h0,
-                          {1'h0, wactive_6 & ~lineActive_6}
-                            + {1'h0, wactive_7 & ~lineActive_7}}}}
-               + {1'h0,
-                  {1'h0,
-                   {1'h0,
-                    {1'h0, wactive_8 & ~lineActive_8} + {1'h0, wactive_9 & ~lineActive_9}}
-                     + {1'h0,
-                        {1'h0, wactive_10 & ~lineActive_10}
-                          + {1'h0, wactive_11 & ~lineActive_11}}}
-                    + {1'h0,
-                       {1'h0,
-                        {1'h0, wactive_12 & ~lineActive_12}
-                          + {1'h0, wactive_13 & ~lineActive_13}}
-                         + {1'h0,
-                            {1'h0, wactive_14 & ~lineActive_14}
-                              + {1'h0, wactive_15 & ~lineActive_15}}}}))) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at ScatterGather.scala:94\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, {1'h0, _GEN_69} + {1'h0, _GEN_70}}
-          + {1'h0, {1'h0, _GEN_67} + {1'h0, _GEN_68}} > _GEN_80) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_73} + {1'h0, _GEN_71} + {1'h0, _GEN_72} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_75} + {1'h0, io_dbus_valid}
-          + {1'h0, _GEN_74} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Lsu.scala:958\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, io_rd_valid} + {1'h0, io_rd_flt_valid}
-          + {1'h0, _GEN_76} > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Lsu.scala:1051\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_87 + _GEN_85 + _GEN_86 > _GEN_81) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & ~(~_GEN_77
-              | slot_vectorLoop_subvector_curr != slot_vectorLoop_subvector_max)) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Lsu.scala:1063\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & ~(~_GEN_79 | slot_vectorLoop_subvector_curr == slot_vectorLoop_subvector_max
-              & ~(_GEN_78 | slot_active_2 | slot_active_3 | slot_active_4 | slot_active_5
-                  | slot_active_6 | slot_active_7 | slot_active_8 | slot_active_9
-                  | slot_active_10 | slot_active_11 | slot_active_12 | slot_active_13
-                  | slot_active_14 | slot_active_15) & slot_pendingWriteback
-              | faultReg_valid)) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Lsu.scala:1064\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/CircularBufferMulti_2_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module CircularBufferMulti_2_Verification_Assert(
-  input [3:0] io_nEnqueued,
-              io_enqValid,
-              io_deqReady,
-  input       reset,
-  input [3:0] _GEN,
-  input       clock
-);
-
-  `ifndef SYNTHESIS
-    wire [4:0] _GEN_0 = {1'h0, io_nEnqueued};
-    wire [4:0] _GEN_1 = {1'h0, io_enqValid};
-    always @(posedge clock) begin
-      if (~reset & {1'h0, _GEN_0 + _GEN_1} - {2'h0, io_deqReady} > {2'h0, _GEN}) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at CircularBufferMulti.scala:43\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_1 > {1'h0, _GEN} - _GEN_0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at CircularBufferMulti.scala:44\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & io_deqReady > io_nEnqueued) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at CircularBufferMulti.scala:46\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/RetirementBuffer_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module RetirementBuffer_Verification_Assert(
-  input _GEN,
-        _GEN_0,
-        _GEN_1,
-        _GEN_2,
-        reset,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    wire seenFalseV_1 = ~_GEN_0 | ~_GEN;
-    wire seenFalseV_2 = seenFalseV_1 | ~_GEN_1;
-    always @(posedge clock) begin
-      if (~reset
-          & (seenFalseV_1 & _GEN | seenFalseV_2 & _GEN_1 | (seenFalseV_2 | ~_GEN_2)
-             & _GEN_2)) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at RetirementBuffer.scala:85\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/Alu_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module Alu_Verification_Assert(
-  input io_rs1_valid,
-        _GEN,
-        valid,
-        reset,
-        io_rs2_valid,
-        _rs1Only_WIRE_5,
-        _rs1Only_WIRE_4,
-        _rs1Only_WIRE_7,
-        _rs1Only_WIRE_6,
-        _rs1Only_WIRE_1,
-        _rs1Only_WIRE_0,
-        _rs1Only_WIRE_3,
-        _rs1Only_WIRE_2,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset & valid & ~io_rs1_valid & ~_GEN) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Alu.scala:159\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & valid & ~io_rs2_valid
-          & {_rs1Only_WIRE_7,
-             _rs1Only_WIRE_6,
-             _rs1Only_WIRE_5,
-             _rs1Only_WIRE_4,
-             _rs1Only_WIRE_3,
-             _rs1Only_WIRE_2,
-             _rs1Only_WIRE_1,
-             _rs1Only_WIRE_0} == 8'h0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Alu.scala:160\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/Bru_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module Bru_Verification_Assert(
-  input io_rs1_valid,
-        stateReg_valid,
-        _ignore_WIRE_5,
-        _ignore_WIRE_4,
-        _ignore_WIRE_7,
-        _ignore_WIRE_6,
-        _ignore_WIRE_1,
-        _ignore_WIRE_0,
-        _ignore_WIRE_3,
-        _ignore_WIRE_2,
-        reset,
-        io_rs2_valid,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset
-          & {~(stateReg_valid & ~io_rs1_valid),
-             _ignore_WIRE_7,
-             _ignore_WIRE_6,
-             _ignore_WIRE_5,
-             _ignore_WIRE_4,
-             _ignore_WIRE_3,
-             _ignore_WIRE_2,
-             _ignore_WIRE_1,
-             _ignore_WIRE_0} == 9'h0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Bru.scala:283\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {~(stateReg_valid & ~io_rs2_valid),
-             _ignore_WIRE_7,
-             _ignore_WIRE_6,
-             _ignore_WIRE_5,
-             _ignore_WIRE_4,
-             _ignore_WIRE_3,
-             _ignore_WIRE_2,
-             _ignore_WIRE_1,
-             _ignore_WIRE_0} == 9'h0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Bru.scala:284\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/Bru_1_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module Bru_1_Verification_Assert(
-  input _GEN,
-        _GEN_0,
-        _GEN_1,
-        _GEN_2,
-        _GEN_3,
-        reset,
-        io_rs1_valid,
-        stateReg_valid,
-        _ignore_WIRE_5,
-        _ignore_WIRE_4,
-        _ignore_WIRE_7,
-        _ignore_WIRE_6,
-        _ignore_WIRE_1,
-        _ignore_WIRE_0,
-        _ignore_WIRE_3,
-        _ignore_WIRE_2,
-        io_rs2_valid,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset & (|{_GEN, _GEN_0, _GEN_3, _GEN_1, _GEN_2})) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Bru.scala:165\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {~(stateReg_valid & ~io_rs1_valid),
-             _ignore_WIRE_7,
-             _ignore_WIRE_6,
-             _ignore_WIRE_5,
-             _ignore_WIRE_4,
-             _ignore_WIRE_3,
-             _ignore_WIRE_2,
-             _ignore_WIRE_1,
-             _ignore_WIRE_0} == 9'h0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Bru.scala:283\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {~(stateReg_valid & ~io_rs2_valid),
-             _ignore_WIRE_7,
-             _ignore_WIRE_6,
-             _ignore_WIRE_5,
-             _ignore_WIRE_4,
-             _ignore_WIRE_3,
-             _ignore_WIRE_2,
-             _ignore_WIRE_1,
-             _ignore_WIRE_0} == 9'h0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Bru.scala:284\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/Mlu_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module Mlu_Verification_Assert(
-  input io_rs1_0_valid,
-        stage2Input_q_io_deq_valid,
-        _GEN,
-        reset,
-        io_rs2_0_valid,
-        io_rs1_1_valid,
-        _GEN_0,
-        io_rs2_1_valid,
-        io_rs1_2_valid,
-        _GEN_1,
-        io_rs2_2_valid,
-        io_rs1_3_valid,
-        _GEN_2,
-        io_rs2_3_valid,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    wire _GEN_3 = stage2Input_q_io_deq_valid & _GEN;
-    wire _GEN_4 = stage2Input_q_io_deq_valid & _GEN_0;
-    wire _GEN_5 = stage2Input_q_io_deq_valid & _GEN_1;
-    wire _GEN_6 = stage2Input_q_io_deq_valid & _GEN_2;
-    always @(posedge clock) begin
-      if (~reset & _GEN_3 & ~io_rs1_0_valid) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Mlu.scala:122\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_3 & ~io_rs2_0_valid) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Mlu.scala:123\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_4 & ~io_rs1_1_valid) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Mlu.scala:122\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_4 & ~io_rs2_1_valid) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Mlu.scala:123\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_5 & ~io_rs1_2_valid) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Mlu.scala:122\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_5 & ~io_rs2_2_valid) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Mlu.scala:123\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_6 & ~io_rs1_3_valid) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Mlu.scala:122\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & _GEN_6 & ~io_rs2_3_valid) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Mlu.scala:123\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/FRegfile_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module FRegfile_Verification_Assert(
-  input reset,
-        scoreboard_error,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset & scoreboard_error) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at FRegfile.scala:47\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/SCore_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module SCore_Verification_Assert(
-  input csr_io_rd_valid,
-        alu_0_io_rd_valid,
-        bru_0_io_rd_valid,
-        io_rvvcore_rd_0_valid,
-        reset,
-        _GEN,
-        alu_1_io_rd_valid,
-        bru_1_io_rd_valid,
-        io_rvvcore_rd_1_valid,
-        alu_2_io_rd_valid,
-        bru_2_io_rd_valid,
-        io_rvvcore_rd_2_valid,
-        alu_3_io_rd_valid,
-        bru_3_io_rd_valid,
-        io_rvvcore_rd_3_valid,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    wire [3:0] _GEN_0 = {3'h0, _GEN};
-    always @(posedge clock) begin
-      if (~reset
-          & {1'h0,
-             {1'h0, {1'h0, csr_io_rd_valid} + {1'h0, alu_0_io_rd_valid}}
-               + {2'h0, bru_0_io_rd_valid}}
-          + {3'h0, io_rvvcore_rd_0_valid} > _GEN_0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at SCore.scala:303\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0, {1'h0, alu_1_io_rd_valid} + {1'h0, bru_1_io_rd_valid}}
-               + {2'h0, io_rvvcore_rd_1_valid}} > _GEN_0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at SCore.scala:303\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0, {1'h0, alu_2_io_rd_valid} + {1'h0, bru_2_io_rd_valid}}
-               + {2'h0, io_rvvcore_rd_2_valid}} > _GEN_0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at SCore.scala:303\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset
-          & {1'h0,
-             {1'h0, {1'h0, alu_3_io_rd_valid} + {1'h0, bru_3_io_rd_valid}}
-               + {2'h0, io_rvvcore_rd_3_valid}} > _GEN_0) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at SCore.scala:303\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/SRAM_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module SRAM_Verification_Assert(
-  input io_fabric_writeDataAddr_valid,
-        io_fabric_readDataAddr_valid,
-        reset,
-        _GEN,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset & {1'h0, io_fabric_writeDataAddr_valid}
-          + {1'h0, io_fabric_readDataAddr_valid} > {1'h0, _GEN}) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/FabricArbiter_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module FabricArbiter_Verification_Assert(
-  input io_source_1_readDataAddr_valid,
-        io_source_1_writeDataAddr_valid,
-        io_source_0_readDataAddr_valid,
-        io_source_0_writeDataAddr_valid,
-        io_source_2_readDataAddr_valid,
-        io_source_2_writeDataAddr_valid,
-        reset,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset
-          & (io_source_0_readDataAddr_valid & io_source_0_writeDataAddr_valid
-             | io_source_1_readDataAddr_valid & io_source_1_writeDataAddr_valid
-             | io_source_2_readDataAddr_valid & io_source_2_writeDataAddr_valid)) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Fabric.scala:31\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/IBus2Axi_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module IBus2Axi_Verification_Assert(
-  input io_axi_data_valid,
-        reset,
-        sraddrActive,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset & ~(~io_axi_data_valid | sraddrActive)) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at IBus2Axi.scala:66\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/SRAM_1_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module SRAM_1_Verification_Assert(
-  input io_fabric_writeDataAddr_valid,
-        io_fabric_readDataAddr_valid,
-        reset,
-        _GEN,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset & {1'h0, io_fabric_writeDataAddr_valid}
-          + {1'h0, io_fabric_readDataAddr_valid} > {1'h0, _GEN}) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/FabricMux_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module FabricMux_Verification_Assert(
-  input io_source_readDataAddr_valid,
-        io_source_writeDataAddr_valid,
-        reset,
-        _GEN,
-        _GEN_0,
-        _GEN_1,
-        _GEN_2,
-        _GEN_3,
-        _GEN_4,
-        _GEN_5,
-        _GEN_6,
-        _GEN_7,
-        _GEN_8,
-        _GEN_9,
-        _GEN_10,
-        _GEN_11,
-        _GEN_12,
-        _GEN_13,
-        _GEN_14,
-        _GEN_15,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    wire [1:0] _GEN_16 = {1'h0, _GEN};
-    always @(posedge clock) begin
-      if (~reset & io_source_readDataAddr_valid & io_source_writeDataAddr_valid) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Fabric.scala:72\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, io_source_readDataAddr_valid}
-          + {1'h0, io_source_writeDataAddr_valid} > _GEN_16) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_2} + {1'h0, _GEN_0} + {1'h0, _GEN_1} > _GEN_16) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Fabric.scala:88\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_6} + {1'h0, _GEN_5}
-          + {1'h0, _GEN_3 & _GEN_4} > _GEN_16) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_9} + {1'h0, _GEN_7} + {1'h0, _GEN_8} > _GEN_16) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_12} + {1'h0, _GEN_10} + {1'h0, _GEN_11} > _GEN_16) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_15} + {1'h0, _GEN_13} + {1'h0, _GEN_14} > _GEN_16) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/AxiSlave_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module AxiSlave_Verification_Assert(
-  input readIssued_valid,
-        reset,
-        readDataQueue_io_enq_ready,
-        _GEN,
-        _GEN_0,
-        _GEN_1,
-        _GEN_2,
-        clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset & ~(~readIssued_valid | readDataQueue_io_enq_ready)) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at AxiSlave.scala:130\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-      if (~reset & {1'h0, _GEN_1} + {1'h0, _GEN} + {1'h0, _GEN_0} > {1'h0, _GEN_2}) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed at Library.scala:240\n");
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-endmodule
-
-
-// ----- 8< ----- FILE "verification/assert/DBus2AxiV2_Verification_Assert.sv" ----- 8< -----
-
-// Generated by CIRCT firtool-1.114.0-2-g6cf2492e1
-
-// Users can define 'STOP_COND' to add an extra gate to stop conditions.
-`ifndef STOP_COND_
-  `ifdef STOP_COND
-    `define STOP_COND_ (`STOP_COND)
-  `else  // STOP_COND
-    `define STOP_COND_ 1
-  `endif // STOP_COND
-`endif // not def STOP_COND_
-
-// Users can define 'ASSERT_VERBOSE_COND' to add an extra gate to assert error printing.
-`ifndef ASSERT_VERBOSE_COND_
-  `ifdef ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ (`ASSERT_VERBOSE_COND)
-  `else  // ASSERT_VERBOSE_COND
-    `define ASSERT_VERBOSE_COND_ 1
-  `endif // ASSERT_VERBOSE_COND
-`endif // not def ASSERT_VERBOSE_COND_
-module DBus2AxiV2_Verification_Assert(
-  input [4:0] io_dbus_size,
-  input       _GEN,
-              io_dbus_valid,
-              reset,
-              clock
-);
-
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if (~reset & io_dbus_valid
-          & {1'h0, {1'h0, io_dbus_size[0]} + {1'h0, io_dbus_size[1]}}
-          + {1'h0,
-             {1'h0, io_dbus_size[2]} + {1'h0, io_dbus_size[3]}
-               + {1'h0, io_dbus_size[4]}} != {2'h0, _GEN}) begin
-        if (`ASSERT_VERBOSE_COND_)
-          $error("Assertion failed: Invalid dbus size=%d\n", io_dbus_size);
-        if (`STOP_COND_)
-          $fatal;
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
 endmodule
 
 
