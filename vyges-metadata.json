@@ -313,6 +313,8 @@
         ],
         "note": "CoralNPUChiselSubsystem needs the rvv_inc/ headers on the include path + these config defines."
       }
-    }
+    },
+    "module_prefixed": true,
+    "defines_prefixed": true
   }
 }
