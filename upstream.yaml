@@ -16,3 +16,11 @@ license:
   spdx: Apache-2.0
   file: LICENSE
 metadata_locked: true
+
+# Vyges-authored content — excluded from upstream sync (net-new; no upstream
+# path collision). vyges-additions/ holds the integration wrapper + its
+# generator; rvv_inc/ holds the RVV backend headers the subsystem RTL includes.
+vyges_authored:
+  exclude_from_sync:
+    - "vyges-additions/"
+    - "rvv_inc/"

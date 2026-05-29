@@ -14,7 +14,7 @@
     "digital"
   ],
   "created": "2026-04-20T03:26:20Z",
-  "updated": "2026-05-29T04:24:49Z",
+  "updated": "2026-05-29T20:37:19Z",
   "source": {
     "type": "git",
     "url": "https://github.com/google-coral/coralnpu",
@@ -297,6 +297,22 @@
     },
     "schema": {
       "version": "1.0.0"
+    }
+  },
+  "integration": {
+    "soc_generator_hints": {
+      "top_module": "coralnpu_island",
+      "compute_island": true,
+      "build": {
+        "include_dirs": [
+          "rvv_inc"
+        ],
+        "defines": [
+          "VLEN_128",
+          "TB_SUPPORT"
+        ],
+        "note": "CoralNPUChiselSubsystem needs the rvv_inc/ headers on the include path + these config defines."
+      }
     }
   }
 }
