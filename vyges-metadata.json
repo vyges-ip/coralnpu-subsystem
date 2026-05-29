@@ -14,7 +14,7 @@
     "digital"
   ],
   "created": "2026-04-20T03:26:20Z",
-  "updated": "2026-04-20T03:26:20Z",
+  "updated": "2026-05-29T04:24:49Z",
   "source": {
     "type": "git",
     "url": "https://github.com/google-coral/coralnpu",
@@ -34,100 +34,168 @@
   ],
   "interfaces": [
     {
-      "type": "bus",
-      "direction": "slave",
-      "protocol": "TL-UL",
-      "port": "io_enq_ready",
-      "width": 1,
-      "description": "Ready signal for enqueue operation."
-    },
-    {
-      "type": "bus",
-      "direction": "master",
-      "protocol": "TL-UL",
-      "port": "io_enq_valid",
-      "width": 1,
-      "description": "Valid signal for enqueue operation."
-    },
-    {
-      "type": "bus",
-      "direction": "input",
-      "protocol": "TL-UL",
-      "port": "io_enq_bits_source",
-      "width": 8,
-      "description": "Source identifier for enqueue operation."
-    },
-    {
-      "type": "bus",
-      "direction": "input",
-      "protocol": "TL-UL",
-      "port": "io_enq_bits_beats",
-      "width": 3,
-      "description": "Number of beats for enqueue operation."
-    },
-    {
-      "type": "bus",
-      "direction": "input",
-      "protocol": "TL-UL",
-      "port": "io_enq_bits_size",
-      "width": 4,
-      "description": "Size of data for enqueue operation."
-    },
-    {
-      "type": "bus",
-      "direction": "slave",
-      "protocol": "TL-UL",
-      "port": "io_deq_ready",
-      "width": 1,
-      "description": "Ready signal for dequeue operation."
-    },
-    {
-      "type": "bus",
-      "direction": "master",
-      "protocol": "TL-UL",
-      "port": "io_deq_valid",
-      "width": 1,
-      "description": "Valid signal for dequeue operation."
-    },
-    {
-      "type": "bus",
-      "direction": "output",
-      "protocol": "TL-UL",
-      "port": "io_deq_bits_source",
-      "width": 8,
-      "description": "Source identifier for dequeue operation."
-    },
-    {
-      "type": "bus",
-      "direction": "output",
-      "protocol": "TL-UL",
-      "port": "io_deq_bits_beats",
-      "width": 3,
-      "description": "Number of beats for dequeue operation."
-    },
-    {
-      "type": "bus",
-      "direction": "output",
-      "protocol": "TL-UL",
-      "port": "io_deq_bits_size",
-      "width": 4,
-      "description": "Size of data for dequeue operation."
-    },
-    {
       "type": "clock",
       "direction": "input",
       "protocol": "generic",
-      "port": "clock",
+      "port": "io_clk_i",
       "width": 1,
-      "description": "Clock signal for synchronous operations."
+      "description": "Primary subsystem clock."
     },
     {
       "type": "reset",
       "direction": "input",
       "protocol": "generic",
-      "port": "reset",
+      "port": "io_rst_ni",
       "width": 1,
-      "description": "Reset signal for initialization."
+      "description": "Active-low synchronous reset for the subsystem."
+    },
+    {
+      "type": "clock",
+      "direction": "input",
+      "protocol": "generic",
+      "port": "io_async_ports_devices_ddr_clock",
+      "width": 1,
+      "description": "Asynchronous clock for the DDR clock-domain crossing."
+    },
+    {
+      "type": "reset",
+      "direction": "input",
+      "protocol": "generic",
+      "port": "io_async_ports_devices_ddr_reset",
+      "width": 1,
+      "description": "Asynchronous reset for the DDR clock-domain crossing."
+    },
+    {
+      "type": "bus",
+      "direction": "master",
+      "protocol": "TL-UL",
+      "port": "io_external_devices_i2c_master",
+      "description": "TL-UL host (master) port to the external I2C device; flattened a-channel request / d-channel response."
+    },
+    {
+      "type": "bus",
+      "direction": "master",
+      "protocol": "TL-UL",
+      "port": "io_external_devices_uart0",
+      "description": "TL-UL host (master) port to external UART0 device; flattened a-channel request / d-channel response."
+    },
+    {
+      "type": "bus",
+      "direction": "master",
+      "protocol": "TL-UL",
+      "port": "io_external_devices_uart1",
+      "description": "TL-UL host (master) port to external UART1 device; flattened a-channel request / d-channel response."
+    },
+    {
+      "type": "bus",
+      "direction": "master",
+      "protocol": "TL-UL",
+      "port": "io_external_devices_sram",
+      "description": "TL-UL host (master) port to external SRAM device; flattened a-channel request / d-channel response."
+    },
+    {
+      "type": "bus",
+      "direction": "master",
+      "protocol": "TL-UL",
+      "port": "io_external_devices_rom",
+      "description": "TL-UL host (master) port to external ROM device; flattened a-channel request / d-channel response."
+    },
+    {
+      "type": "bus",
+      "direction": "master",
+      "protocol": "AXI4",
+      "port": "io_ddr_ctrl_axi",
+      "description": "AXI4 master to the DDR controller (32-bit data, register-config path)."
+    },
+    {
+      "type": "bus",
+      "direction": "master",
+      "protocol": "AXI4",
+      "port": "io_ddr_mem_axi",
+      "description": "AXI4 master to DDR memory (256-bit data, bulk data path used by the NPU/DMA traffic)."
+    },
+    {
+      "type": "bus",
+      "direction": "slave",
+      "protocol": "custom",
+      "port": "io_external_ports_dm",
+      "description": "Debug-module request/response port (RISC-V debug DMI-style req/rsp pair)."
+    },
+    {
+      "type": "io",
+      "direction": "inout",
+      "protocol": "generic",
+      "port": "io_external_ports_gpio",
+      "description": "8-bit GPIO with separate input, output, and output-enable lanes."
+    },
+    {
+      "type": "io",
+      "direction": "inout",
+      "protocol": "SPI",
+      "port": "io_external_ports_spim",
+      "description": "SPI master controller pins."
+    },
+    {
+      "type": "io",
+      "direction": "inout",
+      "protocol": "SPI",
+      "port": "io_external_ports_spim_flash",
+      "description": "SPI flash master controller pins."
+    },
+    {
+      "type": "io",
+      "direction": "inout",
+      "protocol": "SPI",
+      "port": "io_external_ports_spi",
+      "description": "SPI peripheral (target) pins."
+    },
+    {
+      "type": "interrupt",
+      "direction": "input",
+      "protocol": "generic",
+      "port": "io_external_ports_irq",
+      "width": 1,
+      "description": "External interrupt request input to the subsystem."
+    },
+    {
+      "type": "control",
+      "direction": "input",
+      "protocol": "generic",
+      "port": "io_external_ports_boot_addr",
+      "width": 32,
+      "description": "Boot address loaded by the core at reset deassertion."
+    },
+    {
+      "type": "control",
+      "direction": "input",
+      "protocol": "generic",
+      "port": "io_external_ports_te",
+      "width": 1,
+      "description": "Test/trace enable control input."
+    },
+    {
+      "type": "status",
+      "direction": "output",
+      "protocol": "generic",
+      "port": "io_external_ports_wfi",
+      "width": 1,
+      "description": "Wait-for-interrupt status output (core is idle/halted on WFI)."
+    },
+    {
+      "type": "status",
+      "direction": "output",
+      "protocol": "generic",
+      "port": "io_external_ports_fault",
+      "width": 1,
+      "description": "Fault status output."
+    },
+    {
+      "type": "status",
+      "direction": "output",
+      "protocol": "generic",
+      "port": "io_external_ports_halted",
+      "width": 1,
+      "description": "Core-halted status output (debug)."
     }
   ],
   "parameters": [
