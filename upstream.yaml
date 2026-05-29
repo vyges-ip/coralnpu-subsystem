@@ -3,7 +3,7 @@ upstream:
   type: "monorepo"
   source: https://github.com/google-coral/coralnpu
   path: hdl/chisel
-  commit: f57ff99cef94f934e1972ad2045663493fa83521
+  commit: 50973ebef5734b37ba186acd3d370c572306fce3
   extracted_at: "2026-04-01T05:49:31Z"
   note: "SystemVerilog generated from Chisel via Bazel (bazelisk build). See BUILD files for emitter targets."
 import:
@@ -16,7 +16,6 @@ license:
   spdx: Apache-2.0
   file: LICENSE
 metadata_locked: true
-
 # Vyges-authored content — excluded from upstream sync (net-new; no upstream
 # path collision). vyges-additions/ holds the integration wrapper + its
 # generator; rvv_inc/ holds the RVV backend headers the subsystem RTL includes.
