@@ -3,7 +3,7 @@ upstream:
   type: "monorepo"
   source: https://github.com/google-coral/coralnpu
   path: hdl/chisel
-  commit: be666b5187c4c2ae2c1e5a28a47c3b231108c6d2
+  commit: 8555992e5c886a5a90b768cc9d2419ab335b0058
   extracted_at: "2026-04-01T05:49:31Z"
   note: "SystemVerilog generated from Chisel via Bazel (bazelisk build, repo-pinned Bazel 7.4.1). Emitted with firtool --disable-layers=Verification (set in CoralNPUChiselSubsystem.scala emitter) so the RTL is synthesis-clean — no SVA `bind` verification-layer blocks (sv2v cannot parse `bind`; Verilator/Vivado can). See BUILD emitter targets."
 import:
