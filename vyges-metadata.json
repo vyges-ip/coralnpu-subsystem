@@ -312,6 +312,10 @@
           "TB_SUPPORT"
         ],
         "note": "CoralNPUChiselSubsystem needs the rvv_inc/ headers on the include path + these config defines."
+      },
+      "defines": {
+        "VLEN_128": true,
+        "TB_SUPPORT": true
       }
     },
     "module_prefixed": true,
